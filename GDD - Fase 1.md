@@ -1,9 +1,5 @@
 ﻿Game Design Document	Grupo 10	JeR –2025
 
-![Patrón de fondo
-
-El contenido generado por IA puede ser incorrecto.](Aspose.Words.7d735e03-bd03-4a13-bbd2-3d14520eec6c.001.png)
-
 
 
 **Game Design Document (GDD)**
@@ -119,23 +115,24 @@ El jugador usará el teclado y el ratón para moverse por los menús del juego y
 
 De manera adicional se ilustra en este gráfico.
 
-![](Aspose.Words.7d735e03-bd03-4a13-bbd2-3d14520eec6c.002.png)
+![](media_gdd/Aspose.Words.7d735e03-bd03-4a13-bbd2-3d14520eec6c.002.png)
 
-![](Aspose.Words.7d735e03-bd03-4a13-bbd2-3d14520eec6c.003.png)
+![](media_gdd/Aspose.Words.7d735e03-bd03-4a13-bbd2-3d14520eec6c.003.png)
 ## <a name="_toc334434766"></a>**3. Arte y Diseño Visual (Bocetos y Modelados)**
 ### <a name="_toc1674867290"></a>**3.1 Interfaces**
 ### <a name="_toc1767770495"></a>**3.2 Entornos**
-![](Aspose.Words.7d735e03-bd03-4a13-bbd2-3d14520eec6c.004.png)
+![](media_gdd/Aspose.Words.7d735e03-bd03-4a13-bbd2-3d14520eec6c.004.png)
 
 Boceto Inicial de la pista de carreras
 
-![](Aspose.Words.7d735e03-bd03-4a13-bbd2-3d14520eec6c.005.png)
+![](media_gdd/Aspose.Words.7d735e03-bd03-4a13-bbd2-3d14520eec6c.005.png)
 
 Boceto de la pista de carreras con las frutas “manzana” y “limalimón”
 ### <a name="_toc516316722"></a>**3.3 Bocetos de Personajes**
-![](Aspose.Words.7d735e03-bd03-4a13-bbd2-3d14520eec6c.006.png)![](Aspose.Words.7d735e03-bd03-4a13-bbd2-3d14520eec6c.007.png)
+![](media_gdd/Aspose.Words.7d735e03-bd03-4a13-bbd2-3d14520eec6c.006.png)![](media_gdd/Aspose.Words.7d735e03-bd03-4a13-bbd2-3d14520eec6c.007.png)
 
 Personaje número 1: Osquiviry9
 
 2
+
 
