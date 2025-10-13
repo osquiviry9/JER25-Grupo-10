@@ -9,5 +9,5 @@
 * Óscar Pinadero Quintana \- [o.pinadero.2023@alumnos.urjc.es](mailto:o.pinadero.2023@alumnos.urjc.es) \- Osquiviry9  
 * Silvia Álvaro Curiel \- [s.alvaro.2023@alumnos.urjc.es](mailto:s.alvaro.2023@alumnos.urjc.es) \- NOMBRE GITHUB  
 * Julia Moya Sánchez \- [j.moya.2023@alumnos.urjc.es](mailto:j.moya.2023@alumnos.urjc.es) \- NOMBRE GITHUB  
-* Íñigo García Griñolo \- [i.garciag.2023@alumnos.urjc.es](mailto:i.garciag.2023@alumnos.urjc.es) \- NOMBRE GITHUB  
-* Henar San Román Santamaría \- [h.sanroman.2023@alumnos.urjc.es](mailto:h.sanroman.2023@alumnos.urjc.es) \- NOMBRE GITHUB
+* Íñigo García Griñolo \- [i.garciag.2023@alumnos.urjc.es](mailto:i.garciag.2023@alumnos.urjc.es) \- AindaGG
+* Henar San Román Santamaría \- [h.sanroman.2023@alumnos.urjc.es](mailto:h.sanroman.2023@alumnos.urjc.es) \- axhefaerie
