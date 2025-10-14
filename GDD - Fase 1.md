@@ -24,6 +24,7 @@ Henar San Román Santamaría
 [Índice ............................................................................................................. 2 ](#_page1_x82.00_y130.00)
 
 [Introducción ................................................................................................ 3 ](#_page2_x82.00_y180.00)
+
 [Información General ..................................................................................... 3 ](#_page2_x82.00_y332.00)
 
 1. [Nombre del juego ................................................................................ 3 ](#_page2_x82.00_y359.00)
@@ -256,4 +257,5 @@ Se publicarán tres trailers del juego, uno siendo un trailer-gameplay y adicion
 
 El objetivo de la campaña es llegar al máximo de personas posibles en el periodo de tiempo que dure la campaña.
 19 
+
 
