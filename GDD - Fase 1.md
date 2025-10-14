@@ -23,7 +23,8 @@ Henar San Román Santamaría
 
 [Índice ............................................................................................................. 2 ](#_page1_x82.00_y130.00)
 
-[Introducción ................................................................................................ 3 ](#_page2_x82.00_y180.00)[Información General ..................................................................................... 3 ](#_page2_x82.00_y332.00)
+[Introducción ................................................................................................ 3 ](#_page2_x82.00_y180.00)
+[Información General ..................................................................................... 3 ](#_page2_x82.00_y332.00)
 
 1. [Nombre del juego ................................................................................ 3 ](#_page2_x82.00_y359.00)
 1. [Género y dimensión ............................................................................. 3 ](#_page2_x82.00_y428.00)
@@ -237,6 +238,7 @@ Aparte de la música, el juego contará con diversos efectos de sonido que dará
 La historia sigue de cerca a nuestros ponis, viviendo tranquilamente en Tohelloso, pero una vez al año, un señor obliga a los ponis a correr una carrera a muerte entre los mismos. Este señor, apodado “Melgarga” tiene como misión exterminar a los ponis de una macabra manera, el que pierda será exterminado de una manera horrible, macabra y perturbadora. Utilizando ... ¡Una trituradora! ¿Sobrevivirás?  
 
 2. **Personajes<a name="_page17_x82.00_y733.00"></a> ![](Fotos_gdd/Melgarga1.png)![](Fotos_gdd/Melgarga2.png)![](Fotos_gdd/Melgarga3.png)**
+3. 
 - **Haiire**: Se comió una fruta, llamada *cuernocuerno fruit*, esto provocó que brotase un cuerno de su lóbulo frontal, pudiendo tirar rayos desde ahí y provocando una oleada de bulliyng por parte de los secuaces de Melgarga. Ahora busca venganza salvando a los ponis de sus malvadas garras. 
 - **Domdimadon** : Se comió la fruta después de Haiire, pero a diferencia de ella, es la mascota de Melgarga y por lo tanto no quiere salvar a los ponis.
 - **Ache**: Es un poni hipnotizador en aprendizaje que quiere usar sus poderes para vencer a Melgarga. 
@@ -254,3 +256,4 @@ Se publicarán tres trailers del juego, uno siendo un trailer-gameplay y adicion
 
 El objetivo de la campaña es llegar al máximo de personas posibles en el periodo de tiempo que dure la campaña.
 19 
+
