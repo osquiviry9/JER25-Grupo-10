@@ -245,11 +245,14 @@ Aparte de la música, el juego contará con diversos efectos de sonido que dará
 
 La historia sigue de cerca a nuestros ponis, viviendo tranquilamente en Tohelloso, pero una vez al año, un señor obliga a los ponis a correr una carrera a muerte entre los mismos. Este señor, apodado “Melgarga” tiene como misión exterminar a los ponis de una macabra manera, el que pierda será exterminado de una manera horrible, macabra y perturbadora. Utilizando ... ¡Una trituradora! ¿Sobrevivirás?
 
-### 2. **Personajes<a name="_page17_x82.00_y733.00"></a>**
-
 ![](Fotos_gdd/Melgarga1.png)
 ![](Fotos_gdd/Melgarga2.png)
 ![](Fotos_gdd/Melgarga3.png)
+
+Imágenes de inspiración de Melgarga
+
+
+### 2. **Personajes<a name="_page17_x82.00_y733.00"></a>**
 
 - **Haiire**: Se comió una fruta, llamada *cuernocuerno fruit*, esto provocó que brotase un cuerno de su lóbulo frontal, pudiendo tirar rayos desde ahí y provocando una oleada de bulliyng por parte de los secuaces de Melgarga. Ahora busca venganza salvando a los ponis de sus malvadas garras.
 - **Domdimadon** : Se comió la fruta después de Haiire, pero a diferencia de ella, es la mascota de Melgarga y por lo tanto no quiere salvar a los ponis.
@@ -269,3 +272,4 @@ Se publicarán tres trailers del juego, uno siendo un trailer-gameplay y adicion
 
 El objetivo de la campaña es llegar al máximo de personas posibles en el periodo de tiempo que dure la campaña.
 19
+
