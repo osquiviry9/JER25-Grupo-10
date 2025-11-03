@@ -6,20 +6,31 @@ export default class IntroScene extends Phaser.Scene {
     }
 
     preload() {
-        this.cameras.main.setBackgroundColor('#000000');
-        this.load.image('studioLogo', 'assets/logo.png');
+        this.load.image('logo', 'assets/logo.png');
     }
 
     create() {
-        const centerX = this.cameras.main.centerX;
-        const centerY = this.cameras.main.centerY;
+        const { width, height } = this.scale;
 
-        this.add.image(centerX, centerY, 'studioLogo').setOrigin(0.5);
+        // Fondo negro
+        this.cameras.main.setBackgroundColor('#000000');
 
+        // Fade IN desde negro
+        this.cameras.main.fadeIn(1000, 0, 0, 0);
+
+        const logo = this.add.image(width / 2, height / 2, 'logo');
+        logo.setOrigin(0.5);
+        logo.setScale(0.7); // Ajusta si lo ves muy grande/pequeño
+
+        // Esperar 2.5s y hacer fade OUT
         this.time.delayedCall(2500, () => {
-            this.scene.stop('IntroScene');  
-            this.scene.start('MainMenuScene'); 
+            this.cameras.main.fadeOut(1000, 0, 0, 0);
+        });
 
+        // Cuando termine el fade OUT → cambiar de escena
+        this.cameras.main.once('camerafadeoutcomplete', () => {
+            this.scene.stop('IntroScene');
+            this.scene.start('MainMenuScene');
         });
     }
 }

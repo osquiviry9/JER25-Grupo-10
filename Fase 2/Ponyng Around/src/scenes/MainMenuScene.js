@@ -6,6 +6,7 @@ export default class MainMenuScene extends Phaser.Scene {
     }
 
     create() {
+
         const { width, height } = this.scale;
 
         const title = this.add.text(width / 2, height * 0.25, 'PONYNG AROUND', {
@@ -26,7 +27,7 @@ export default class MainMenuScene extends Phaser.Scene {
         });
 
         const menuItems = [
-            { label: 'JUGAR', scene: 'GameScene' },
+            { label: 'JUGAR', scene: 'CharacterSelectScene' },
             { label: 'AJUSTES', action: () => console.log('Abrir ajustes') },
             { label: 'CRÉDITOS', action: () => console.log('Mostrar créditos') }
         ];
