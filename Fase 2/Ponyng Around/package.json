@@ -1,6 +1,6 @@
 {
-  "name": "quintana",
-  "version": "1.0.0",
+  "name": "ponyng-around",
+  "version": "1.0.3",
   "main": "index.js",
   "scripts": {
     "build": "webpack --mode production",
@@ -12,7 +12,7 @@
     "game",
     "pixelart"
   ],
-  "author": "Ruben Rodriguez",
+  "author": "Óscar Pinadero Quintana, Silvia Álvaro Curiel, Henar San Román Santamaría Julia Moya Sánchez e Íñigo García Griñolo",
   "license": "Apache-2.0",
   "description": "",
   "dependencies": {

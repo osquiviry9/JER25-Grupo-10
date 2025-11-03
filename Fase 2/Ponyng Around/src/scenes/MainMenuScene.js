@@ -13,7 +13,7 @@ export default class MainMenuScene extends Phaser.Scene {
             fontFamily: 'Arial',
             fontSize: '64px',
             fontStyle: 'bold',
-            color: '#ff69b4', 
+            color: '#ff69b4',
             stroke: '#000000',
             strokeThickness: 6
         }).setOrigin(0.5);
@@ -40,8 +40,8 @@ export default class MainMenuScene extends Phaser.Scene {
                 fontSize: '40px',
                 color: '#ffffff'
             })
-            .setOrigin(0.5)
-            .setInteractive({ useHandCursor: true });
+                .setOrigin(0.5)
+                .setInteractive({ useHandCursor: true });
 
             button.on('pointerover', () => {
                 button.setColor('#ff69b4');

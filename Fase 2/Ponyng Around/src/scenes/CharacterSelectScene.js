@@ -15,7 +15,9 @@ export default class CharacterSelectScene extends Phaser.Scene {
             { key: 'Haiire', path: 'assets/ponis/Julia/' },
             { key: 'Inigo', path: 'assets/ponis/Inigo/' },
             { key: 'Kamil', path: 'assets/ponis/Silvia/' },
-            { key: 'Beersquiviry', path: 'assets/ponis/Oscar/' }
+            { key: 'Beersquiviry', path: 'assets/ponis/Oscar/' },
+            { key: 'Mayo', path: 'assets/ponis/Maria/' }
+
         ];
     }
 
@@ -39,7 +41,6 @@ export default class CharacterSelectScene extends Phaser.Scene {
 
 
     create() {
-        // ✅ Flecha atrás más pequeña y elegante
         this.backButton = this.add.text(40, 40, '⬅', {
             fontSize: '32px',
             fontFamily: 'Arial Black',
@@ -51,7 +52,6 @@ export default class CharacterSelectScene extends Phaser.Scene {
             .setInteractive({ useHandCursor: true })
             .setDepth(10);
 
-        // Hover: efecto suave
         this.backButton.on('pointerover', () => {
             this.backButton.setStyle({ backgroundColor: '#ff8ac7' });
         });
@@ -59,7 +59,6 @@ export default class CharacterSelectScene extends Phaser.Scene {
             this.backButton.setStyle({ backgroundColor: '#ff69b4' });
         });
 
-        // Click → volver al menú
         this.backButton.on('pointerdown', () => {
             this.cameras.main.fadeOut(400, 0, 0, 0);
             this.cameras.main.once('camerafadeoutcomplete', () => {
@@ -109,13 +108,13 @@ export default class CharacterSelectScene extends Phaser.Scene {
     createPoniesGrid() {
         const { width, height } = this.scale;
 
-        const iconSize = 110;
-        const spacing = 140;
+        const iconSize = 95;
+        const spacing = 120;
 
         const p1_y = 170;
         const p2_y = 380;
 
-        const nameOffset = 75; // distancia del texto del nombre respecto al icono
+        const nameOffset = 75;
 
         const totalWidth = spacing * (this.ponies.length - 1);
         const startX = width / 2 - totalWidth / 2;
@@ -127,7 +126,6 @@ export default class CharacterSelectScene extends Phaser.Scene {
         this.ponies.forEach((pony, i) => {
             const x = startX + i * spacing;
 
-            // Jugador 1
             const icon1 = this.add.image(x, p1_y, `${pony.key}_static`)
                 .setInteractive({ useHandCursor: true })
                 .setData('ponyKey', pony.key)
@@ -138,7 +136,6 @@ export default class CharacterSelectScene extends Phaser.Scene {
             icon1.on('pointerdown', () => this.selectPony('p1', pony, icon1, p1_y, nameOffset));
             this.iconGroups.p1.push(icon1);
 
-            // Jugador 2
             const icon2 = this.add.image(x, p2_y, `${pony.key}_static`)
                 .setInteractive({ useHandCursor: true })
                 .setData('ponyKey', pony.key)
@@ -155,26 +152,23 @@ export default class CharacterSelectScene extends Phaser.Scene {
 
 
     selectPony(player, pony, icon) {
-        const nameOffset = 90; // posición del nombre
-        const videoSize = 110; // ✅ tamaño más pequeño
+        const nameOffset = 90;
+        const videoSize = 95;
         const otherPlayer = player === 'p1' ? 'p2' : 'p1';
 
         if (this.selectedPonies[otherPlayer]?.key === pony.key) return;
 
         this.selectedPonies[player] = pony;
 
-        // Limpieza
         ['Highlight', 'NameText', 'Video'].forEach(type => {
             if (this[player + type]) this[player + type].destroy();
         });
 
-        // ✅ Marco de selección
         this[player + 'Highlight'] = this.add.rectangle(icon.x, icon.y, 120, 120)
             .setStrokeStyle(6, 0xff69b4)
             .setOrigin(0.5)
             .setDepth(3);
 
-        // ✅ Vídeo centrado y pequeño
         const video = this.add.video(icon.x, icon.y, `${pony.key}_anim`)
             .setOrigin(0.5)
             .setDepth(2);
@@ -183,7 +177,6 @@ export default class CharacterSelectScene extends Phaser.Scene {
         const scale = videoSize / Math.max(video.width, video.height);
         video.setScale(scale);
 
-        // ✅ máscara mejor ajustada
         const maskGraphics = this.make.graphics({ add: false });
         maskGraphics.fillStyle(0xffffff);
         maskGraphics.fillRect(
@@ -195,7 +188,6 @@ export default class CharacterSelectScene extends Phaser.Scene {
         video.setMask(maskGraphics.createGeometryMask());
         this[player + 'Video'] = video;
 
-        // ✅ Nombre único y centrado
         this[player + 'NameText'] = this.add.text(icon.x, icon.y + nameOffset, pony.key.toUpperCase(), {
             fontSize: '24px',
             fontFamily: 'Arial Black',
@@ -217,10 +209,8 @@ export default class CharacterSelectScene extends Phaser.Scene {
 
         const video = this.add.video(x, y, `${pony.key}_anim`);
 
-        // ✅ Tamaño máximo para la celda
         const maxSize = 150;
 
-        // ✅ Mantener proporción sin deformar
         video.setDisplaySize(
             maxSize,
             maxSize * (video.height / video.width)
@@ -228,7 +218,6 @@ export default class CharacterSelectScene extends Phaser.Scene {
 
         video.setOrigin(0.5);
 
-        // ✅ Centrado y sin sobresalir
         const maskShape = this.make.graphics();
         maskShape.fillStyle(0xffffff);
         maskShape.fillRect(
@@ -240,7 +229,7 @@ export default class CharacterSelectScene extends Phaser.Scene {
         const mask = maskShape.createGeometryMask();
         video.setMask(mask);
 
-        video.play(true); // loop ✅
+        video.play(true);
     }
 
 
