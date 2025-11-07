@@ -1,8 +1,9 @@
 import Phaser from 'phaser';
 
+
 const CONFIG = {
-    WIDTH: 800,
-    HEIGHT: 600,
+    WIDTH: 1920,
+    HEIGHT: 1080,
 
     // Velocidad base del scroll
     BASE_SPEED: 2.5,
@@ -20,9 +21,9 @@ const CONFIG = {
     GRAVITY_Y: 900,
 
     // Geometría pista
-    TRACK_HEIGHT: 80,
-    RED_OFFSET_FROM_CENTER: -20, 
-    GROUND_HEIGHT: 16,           
+    TRACK_HEIGHT: 520,
+    RED_OFFSET_FROM_CENTER: -20,
+    GROUND_HEIGHT: 16,
 
     // Distancia total a la meta
     TOTAL_DISTANCE_PX: 7500
@@ -44,20 +45,31 @@ export default class RaceScene extends Phaser.Scene {
     }
 
     preload() {
+
         const g = this.make.graphics({ x: 0, y: 0, add: false });
 
-        // Pista (tile)
+        // Background color
+        this.load.image('ColorBackground', 'assets/Backgrounds/fondoPlano.jpeg');
+
+        // Floor tile
+        this.load.image('TileFloor', 'assets/Backgrounds/TileableBackground.PNG');
+
+        // Background tile front
+        // this.load.image('ColorBackground', 'assets/Backgrounds/TileableBackground.PNG');
+
+        /*// Pista (tile) 
         g.fillStyle(0x777777, 1); g.fillRect(0, 0, 50, 50);
         g.fillStyle(0x555555, 1); g.fillRect(25, 0, 25, 25); g.fillRect(0, 25, 25, 25);
-        g.generateTexture('trackTile', 50, 50);
+        g.generateTexture('TileFloor', 50, 50);
         g.clear();
+        */
 
-        // Obstáculo rojo
+        // Red obstacle
         g.fillStyle(0x8b0000, 1); g.fillRect(0, 0, 40, 40);
         g.generateTexture('obstacle', 40, 40);
         g.clear();
 
-        // Booster verde
+        // Green booster 
         g.fillStyle(0x32cd32, 1); g.fillRect(0, 0, 40, 40);
         g.generateTexture('booster', 40, 40);
         g.clear();
@@ -70,15 +82,32 @@ export default class RaceScene extends Phaser.Scene {
 
     create() {
         const { width, height } = this.scale;
+
         this.cameras.main.setBackgroundColor('#000');
 
-        // Centros de pista
-        this.laneYTop = height * 0.40;
-        this.laneYBottom = height * 0.65;
+        // General color background
+        const bg = this.add.image(width / 2, height / 2, 'ColorBackground')
+            .setOrigin(0.5)
+            .setDepth(-2);
+            // bg.setScale(0.8); 
 
-        // Pistas
-        this.trackTop = this.add.tileSprite(width / 2, this.laneYTop, width, CONFIG.TRACK_HEIGHT, 'trackTile');
-        this.trackBot = this.add.tileSprite(width / 2, this.laneYBottom, width, CONFIG.TRACK_HEIGHT, 'trackTile');
+        // Floors coords
+        this.laneYTop = this.TRACK_HEIGHT / 2; // centro de la parte superior
+        this.laneYBottom = this.TRACK_HEIGHT + this.TRACK_HEIGHT / 2; // ocupa toda la mitad superior
+
+        // UPPER FLOOR
+        const trackTop =this.trackTop = this.add.tileSprite(width / 2, this.laneYTop, width, this.TRACK_HEIGHT, 'TileFloor')
+            .setOrigin(0.5)
+            .setDepth(-1)
+            .setTileScale(1);
+            // trackTop.setScale(0.8); 
+
+        // DOWN FLOOR
+        const trackBot = this.trackBot = this.add.tileSprite(width / 2, this.laneYBottom, width, this.TRACK_HEIGHT, 'TileFloor')
+            .setOrigin(0.5)
+            .setDepth(-1)
+            .setTileScale(1); 
+            // trackBot.setScale(0.8); 
 
         // Líneas separadoras 
         this.add.rectangle(width / 2, this.laneYTop - CONFIG.TRACK_HEIGHT / 2, width, 3, 0xffffff).setAlpha(0.9);
@@ -114,8 +143,8 @@ export default class RaceScene extends Phaser.Scene {
             const H = CONFIG.GROUND_HEIGHT;
             const groundCenterY = redLineY + H / 2;
 
-            const rect = this.add.rectangle(width / 2, groundCenterY, width, H, 0x00ff00, 0); 
-            this.physics.add.existing(rect, true); 
+            const rect = this.add.rectangle(width / 2, groundCenterY, width, H, 0x00ff00, 0);
+            this.physics.add.existing(rect, true);
             return rect;
         };
 
@@ -181,7 +210,7 @@ export default class RaceScene extends Phaser.Scene {
         )
             .setOrigin(0.5)
             .setAlpha(0)
-            .setInteractive({ useHandCursor: true }) 
+            .setInteractive({ useHandCursor: true })
             .on('pointerdown', () => {
                 this.scene.start('MainMenuScene');
             })
@@ -375,7 +404,7 @@ export default class RaceScene extends Phaser.Scene {
             this.scale.width,
             this.scale.height,
             0x000000,
-            0.55 
+            0.55
         ).setDepth(50).setScrollFactor(0);
 
         const stopGroup = g => g.children.each(o => {
@@ -394,7 +423,7 @@ export default class RaceScene extends Phaser.Scene {
 
         this.backButton
             .setAlpha(0)
-            .setDepth(51); 
+            .setDepth(51);
 
         this.tweens.add({
             targets: this.backButton,
@@ -411,7 +440,7 @@ export default class RaceScene extends Phaser.Scene {
         }).setOrigin(0.5)
             .setScale(0.5)
             .setAlpha(0)
-            .setDepth(51); 
+            .setDepth(51);
 
         this.tweens.add({
             targets: label,
@@ -425,6 +454,7 @@ export default class RaceScene extends Phaser.Scene {
 
     // ---------- Bucle ----------
     update(_, dtMs) {
+
         this.updateProgressUI();
 
         if (!this.state.running || this.state.finished) return;
@@ -433,12 +463,19 @@ export default class RaceScene extends Phaser.Scene {
         const topScroll = this.state.lanes.top.speed * 100 * dt;
         const botScroll = this.state.lanes.bottom.speed * 100 * dt;
 
+        // Move floor
         this.trackTop.tilePositionX += topScroll;
         this.trackBot.tilePositionX += botScroll;
 
+        // Move background (slower -> parallax)
+        // const avgScroll = (topScroll + botScroll) / 2;
+        // this.bg.tilePositionX += avgScroll * 0.3; // ← se mueve al 30% de la velocidad de las pistas
+
+        // JUMP
         if (Phaser.Input.Keyboard.JustDown(this.keys.jumpTop)) this.jump(this.playerTop);
         if (Phaser.Input.Keyboard.JustDown(this.keys.jumpBottom)) this.jump(this.playerBottom);
 
+        // BOOSTS
         if (Phaser.Input.Keyboard.JustDown(this.keys.accelTop) && !this.state.lanes.top.altered)
             this.applyAlteration('top', CONFIG.ACCEL_FACTOR);
         if (Phaser.Input.Keyboard.JustDown(this.keys.accelBottom) && !this.state.lanes.bottom.altered)
@@ -457,6 +494,7 @@ export default class RaceScene extends Phaser.Scene {
         this.obstaclesBot.children.iterate(o => o && o.body && o.body.setVelocityX(vxBot));
         this.boostersBot.children.iterate(o => o && o.body && o.body.setVelocityX(vxBot));
 
+        // PROGRESS
         this.state.progress.top += topScroll;
         this.state.progress.bottom += botScroll;
 
@@ -466,6 +504,7 @@ export default class RaceScene extends Phaser.Scene {
             this.finishRace('bottom');
         }
 
+        // CLEAN
         const off = -50;
         const clean = g => g.children.each(o => { if (o && o.x < off) o.destroy(); });
         clean(this.obstaclesTop); clean(this.boostersTop);

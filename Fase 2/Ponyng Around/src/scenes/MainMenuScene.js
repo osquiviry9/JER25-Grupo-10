@@ -58,7 +58,7 @@ export default class MainMenuScene extends Phaser.Scene {
         const buttons = [
             { x: width * 0.5, y: height * 0.2, key: 'bttnPlay', hover: 'bttnPlayHover', action: () => this.scene.start('CharacterSelectScene'), scale: 1 },
             { x: width * 0.84, y: height * 0.8, key: 'bttnSettings', hover: 'bttnSettingsHover', action: () => console.log('Abrir ajustes'), scale: 1},
-            { x: width * 0.23, y: height * 0.79, key: 'bttnCredits', hover: 'bttnCreditsHover', action: () => console.log('Mostrar créditos'), scale: 0.8},
+            { x: width * 0.24, y: height * 0.35, key: 'bttnCredits', hover: 'bttnCreditsHover', action: () => console.log('Mostrar créditos'), scale: 0.8},
         ];
 
         buttons.forEach(btn => {
