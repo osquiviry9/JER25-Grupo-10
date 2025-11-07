@@ -100,7 +100,7 @@ export default class CharacterSelectScene extends Phaser.Scene {
 
             this.cameras.main.fadeOut(600, 0, 0, 0);
             this.cameras.main.once('camerafadeoutcomplete', () => {
-                this.scene.start('GameScene');
+                this.scene.start('RaceScene');
             });
         });
     }

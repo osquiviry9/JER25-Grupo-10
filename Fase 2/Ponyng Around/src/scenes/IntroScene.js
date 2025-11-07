@@ -10,6 +10,7 @@ export default class IntroScene extends Phaser.Scene {
     }
 
     create() {
+
         const { width, height } = this.scale;
 
         this.cameras.main.setBackgroundColor('#000000');
