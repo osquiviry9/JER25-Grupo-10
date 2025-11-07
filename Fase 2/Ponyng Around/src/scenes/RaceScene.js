@@ -4,6 +4,7 @@ const CONFIG = {
     WIDTH: 800,
     HEIGHT: 600,
 
+    // Velocidad base del scroll
     BASE_SPEED: 2.5,
     ACCEL_FACTOR: 2.5,
     SLOW_FACTOR: 0.1,
@@ -21,9 +22,9 @@ const CONFIG = {
     // Geometría pista
     TRACK_HEIGHT: 80,
     RED_OFFSET_FROM_CENTER: -20, 
-    GROUND_HEIGHT: 16,          
+    GROUND_HEIGHT: 16,           
 
-    // Distancia total a la meta, cambar si necesario
+    // Distancia total a la meta
     TOTAL_DISTANCE_PX: 7500
 };
 
@@ -71,20 +72,26 @@ export default class RaceScene extends Phaser.Scene {
         const { width, height } = this.scale;
         this.cameras.main.setBackgroundColor('#000');
 
+        // Centros de pista
         this.laneYTop = height * 0.40;
         this.laneYBottom = height * 0.65;
 
+        // Pistas
         this.trackTop = this.add.tileSprite(width / 2, this.laneYTop, width, CONFIG.TRACK_HEIGHT, 'trackTile');
         this.trackBot = this.add.tileSprite(width / 2, this.laneYBottom, width, CONFIG.TRACK_HEIGHT, 'trackTile');
 
+        // Líneas separadoras 
         this.add.rectangle(width / 2, this.laneYTop - CONFIG.TRACK_HEIGHT / 2, width, 3, 0xffffff).setAlpha(0.9);
         this.add.rectangle(width / 2, this.laneYBottom - CONFIG.TRACK_HEIGHT / 2, width, 3, 0xffffff).setAlpha(0.9);
 
+        // Línea roja (referencia)
         const redTopY = this.laneYTop + CONFIG.RED_OFFSET_FROM_CENTER;
         const redBotY = this.laneYBottom + CONFIG.RED_OFFSET_FROM_CENTER;
 
+        // Meta decorativa
         this.finish = this.add.image(width - 30, height / 2, 'finish').setAlpha(0.75);
 
+        // Selección previa
         const p1 = this.registry.get('player1Character');
         const p2 = this.registry.get('player2Character');
 
@@ -140,7 +147,6 @@ export default class RaceScene extends Phaser.Scene {
         this.physics.add.overlap(this.playerTop, this.boostersTop, (p, b) => overlapBooster(p, b, 'top'));
         this.physics.add.overlap(this.playerBottom, this.boostersBot, (p, b) => overlapBooster(p, b, 'bottom'));
 
-        // Controles
         this.keys = this.input.keyboard.addKeys({
             jumpTop: 'W',
             jumpBottom: 'UP',
@@ -369,7 +375,7 @@ export default class RaceScene extends Phaser.Scene {
             this.scale.width,
             this.scale.height,
             0x000000,
-            0.55 // opacidad
+            0.55 
         ).setDepth(50).setScrollFactor(0);
 
         const stopGroup = g => g.children.each(o => {
@@ -430,7 +436,6 @@ export default class RaceScene extends Phaser.Scene {
         this.trackTop.tilePositionX += topScroll;
         this.trackBot.tilePositionX += botScroll;
 
-        // Controles
         if (Phaser.Input.Keyboard.JustDown(this.keys.jumpTop)) this.jump(this.playerTop);
         if (Phaser.Input.Keyboard.JustDown(this.keys.jumpBottom)) this.jump(this.playerBottom);
 
@@ -455,7 +460,6 @@ export default class RaceScene extends Phaser.Scene {
         this.state.progress.top += topScroll;
         this.state.progress.bottom += botScroll;
 
-        //Condicion de victria
         if (this.state.progress.top >= CONFIG.TOTAL_DISTANCE_PX) {
             this.finishRace('top');
         } else if (this.state.progress.bottom >= CONFIG.TOTAL_DISTANCE_PX) {
