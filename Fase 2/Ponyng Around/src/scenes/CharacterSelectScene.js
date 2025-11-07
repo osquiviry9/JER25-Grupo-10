@@ -73,7 +73,7 @@ export default class CharacterSelectScene extends Phaser.Scene {
         this.cameras.main.setBackgroundColor('#FFC6E0');
         this.cameras.main.fadeIn(600, 255, 198, 224);
 
-        this.title = this.add.text(width / 2, 50, 'Elige tu Poni!!', {
+        this.title = this.add.text(width / 2, 300, 'Elige tu Poni!!', {
             fontSize: '40px',
             fontFamily: 'Arial Black',
             color: '#ff69b4',
@@ -84,7 +84,7 @@ export default class CharacterSelectScene extends Phaser.Scene {
 
         this.createPoniesGrid();
 
-        this.startButton = this.add.text(width / 2, height - 80, 'INICIAR CARRERA', {
+        this.startButton = this.add.text(width / 2, height -200, 'INICIAR CARRERA', {
             fontSize: '50px',
             fontFamily: 'Arial',
             color: '#000000ff'

@@ -5,10 +5,37 @@ export default class MainMenuScene extends Phaser.Scene {
         super('MainMenuScene');
     }
 
+    preload() {
+
+        // Fondo
+        this.load.image('menuBackground', 'assets/Backgrounds/StartingMenu.JPG');
+
+        // Buttons
+        // Play button
+        this.load.image('bttnPlay', 'assets/Buttons/playbttn.png');
+        this.load.image('bttnPlayHover', 'assets//Buttons/playbttn_hover.png');
+
+        // Settings button
+        this.load.image('bttnSettings', 'assets/Buttons/settingsbttn.png');
+        this.load.image('bttnSettingsHover', 'assets/Buttons/settingsbttn_hover.png');
+
+        // Credit button
+        this.load.image('bttnCredits', 'assets/Buttons/creditsbttn.png');
+        this.load.image('bttnCreditsHover', 'assets/Buttons/creditsbttn_hover.png');
+        
+    }
+
     create() {
 
         const { width, height } = this.scale;
 
+        this.cameras.main.setBackgroundColor('#000000'); // cambiar ?
+
+        const bg = this.add.image(width / 2, height / 2, 'menuBackground');
+        bg.setOrigin(0.5);
+        bg.setScale(0.8); 
+
+        /* 
         const title = this.add.text(width / 2, height * 0.25, 'PONYNG AROUND', {
             fontFamily: 'Arial',
             fontSize: '64px',
@@ -25,7 +52,39 @@ export default class MainMenuScene extends Phaser.Scene {
             repeat: -1,
             duration: 800
         });
+        */
 
+        //Lista de botones
+        const buttons = [
+            { x: width * 0.5, y: height * 0.4, key: 'bttnPlay', hover: 'bttnPlayHover', action: () => this.scene.start('CharacterSelectScene') },
+            { x: width * 0.75, y: height * 0.75, key: 'bttnSettings', hover: 'bttnSettingsHover', action: () => console.log('Abrir ajustes') },
+            { x: width * 0.25, y: height * 0.25, key: 'bttnCredits', hover: 'bttnCreditsHover', action: () => console.log('Mostrar créditos') },
+        ];
+
+        buttons.forEach(btn => {
+            const button = this.add.image(btn.x, btn.y, btn.key)
+                .setInteractive({ useHandCursor: true })
+                .setScale(1);
+
+            // Hover
+            button.on('pointerover', () => {
+                button.setTexture(btn.hover);
+                button.setScale(1.05);
+            });
+
+            // Salir hover
+            button.on('pointerout', () => {
+                button.setTexture(btn.key);
+                button.setScale(1);
+            });
+
+            // Click
+            button.on('pointerdown', btn.action);
+        });
+    }
+}
+
+        /*
         const menuItems = [
             { label: 'JUGAR', scene: 'CharacterSelectScene' },
             { label: 'AJUSTES', action: () => console.log('Abrir ajustes') },
@@ -61,5 +120,6 @@ export default class MainMenuScene extends Phaser.Scene {
                 }
             });
         });
+        
     }
-}
+}*/
