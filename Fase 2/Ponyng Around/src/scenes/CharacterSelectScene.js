@@ -9,23 +9,30 @@ export default class CharacterSelectScene extends Phaser.Scene {
             p1: null,
             p2: null
         };
+        this.currentIndex = {
+            p1:0, 
+            p2:0
+        };
+        
+            this.selected = {
+            p1:false, 
+            p2:false
+        };
 
         this.ponies = [
-            { key: 'Ache', path: 'assets/ponis/Henar/' },
-            { key: 'Haiire', path: 'assets/ponis/Julia/' },
-            { key: 'Inigo', path: 'assets/ponis/Inigo/' },
-            { key: 'Kamil', path: 'assets/ponis/Silvia/' },
-            { key: 'Beersquiviry', path: 'assets/ponis/Oscar/' },
-            { key: 'Mayo', path: 'assets/ponis/Maria/' }
-
+            { key: 'Ache', path: 'assets/ponis/Ache/Ache_Complete.png' },
+            { key: 'Haiire', path: 'assets/ponis/Haire/Haire_Complete.png' },
+            { key: 'Domdomdadom', path: 'assets/ponis/Dod/Dom_Complete.png' },
+            { key: 'Kamil', path: 'assets/ponis/Kamil/Kamil_Complete.png' },
+            { key: 'Beersquiviry', path: 'assets/ponis/Beersquiviri/Beer_Complete.png' },
         ];
     }
 
     preload() {
         this.ponies.forEach(pony => {
-            this.load.image(`${pony.key}_static`, `${pony.path}static.jpg`);
-            this.load.video(`${pony.key}_anim`, `${pony.path}anim.mp4`, 'loadeddata', false, true);
+            this.load.image(`${pony.key}_static`, pony.path);
         });
+        this.load.image('marco','assets/UI/Border_Portrait.png')
     }
 
     showStartButton() {
@@ -69,7 +76,7 @@ export default class CharacterSelectScene extends Phaser.Scene {
 
 
         const { width, height } = this.scale;
-
+        
         this.cameras.main.setBackgroundColor('#FFC6E0');
         this.cameras.main.fadeIn(600, 255, 198, 224);
 
@@ -82,7 +89,10 @@ export default class CharacterSelectScene extends Phaser.Scene {
         }).setOrigin(0.5);
 
 
-        this.createPoniesGrid();
+        //this.createPoniesGrid();
+
+        this.createCharacterPanel('p1', width * 0.25, height * 0.5);
+        this.createCharacterPanel('p2', width * 0.75, height * 0.5);
 
         this.startButton = this.add.text(width / 2, height -200, 'INICIAR CARRERA', {
             fontSize: '50px',
@@ -105,7 +115,115 @@ export default class CharacterSelectScene extends Phaser.Scene {
         });
     }
 
-    createPoniesGrid() {
+    createCharacterPanel(player,centerX,centerY){
+
+        // Show actual poni
+        const pony = this.ponies[this.currentIndex[player]];
+        const image = this.add.image(centerX, centerY - 40, `${pony.key}_static`)
+        .setOrigin(0.5)
+        .setDisplaySize(580,600);
+        
+        const marco = this.add.image(centerX,centerY - 40, 'marco')
+        .setOrigin(0.5)
+        .setDisplaySize(635,700);
+
+        const nameText = this.add.text(centerX, centerY - 410, pony.key, {
+        fontSize: '28px',
+        fontFamily: 'Arial Black',
+        color: '#000'
+    }).setOrigin(0.5);
+
+
+
+    // Arrows
+     const leftArrow = this.add.text(centerX - 335, centerY - 30, '⬅', {
+            fontSize: '48px',
+            color: '#000'
+        }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+
+        const rightArrow = this.add.text(centerX + 335, centerY - 30, '➡', {
+            fontSize: '48px',
+            color: '#000'
+        }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+
+        leftArrow.on('pointerdown', () => {
+             if (!this.selected[player]) {
+                 this.changePony(player, -1, image, nameText, readyButton);
+            }           
+        });
+
+        rightArrow.on('pointerdown', () => {
+            if (!this.selected[player]) {
+            this.changePony(player, 1, image, nameText);
+            }  
+        });
+
+
+        // Ready button
+         const readyButton = this.add.text(centerX, centerY + 350, 'Listo', {
+            fontSize: '32px',
+            fontFamily: 'Arial Black',
+            backgroundColor: '#ff69b4',
+            color: '#fff',
+            padding: { left: 20, right: 20, top: 10, bottom: 10 }
+        }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+
+        readyButton.on('pointerdown', () => {
+            if (readyButton.alpha < 1) return;
+            
+            this.selected[player] = true;
+            readyButton.setStyle({ backgroundColor: '#242121ff' });
+            this.checkReady();
+        });
+
+        this[`readyButton_${player}`] = readyButton;
+    }
+
+   
+
+    changePony(player, direction, image, nameText) {
+        const total = this.ponies.length;
+        this.currentIndex[player] = (this.currentIndex[player] + direction + total) % total;
+
+        const newPony = this.ponies[this.currentIndex[player]];
+        image.setTexture(`${newPony.key}_static`);
+        nameText.setText(newPony.key);
+
+        this.updateReadyButtons();
+    }
+
+    updateReadyButtons(){
+        const p1Index = this.currentIndex.p1;
+        const p2Index = this.currentIndex.p2;
+
+        if (p1Index === p2Index) {
+            if (!this.selected.p1)
+                this[`readyButton_p1`].setAlpha(0.5).disableInteractive();
+            if (!this.selected.p2)
+                this[`readyButton_p2`].setAlpha(0.5).disableInteractive();
+            } else {
+            if (!this.selected.p1)
+                this[`readyButton_p1`].setAlpha(1).setInteractive({ useHandCursor: true });
+            if (!this.selected.p2)
+                this[`readyButton_p2`].setAlpha(1).setInteractive({ useHandCursor: true });
+        }
+    }
+    checkReady() {
+        if (this.selected.p1 && this.selected.p2) {
+            this.tweens.add({
+                targets: this.startButton,
+                alpha: 1,
+                duration: 600,
+                onStart: () => this.startButton.setVisible(true)
+            });
+        }
+    }
+    }
+
+
+
+    /*
+     /*createPoniesGrid() {
         const { width, height } = this.scale;
 
         const iconSize = 95;
@@ -147,9 +265,6 @@ export default class CharacterSelectScene extends Phaser.Scene {
             this.iconGroups.p2.push(icon2);
         });
     }
-
-
-
 
     selectPony(player, pony, icon) {
         const nameOffset = 90;
@@ -232,5 +347,4 @@ export default class CharacterSelectScene extends Phaser.Scene {
         video.play(true);
     }
 
-
-}
+*/

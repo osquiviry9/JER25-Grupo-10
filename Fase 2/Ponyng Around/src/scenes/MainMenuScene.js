@@ -56,26 +56,25 @@ export default class MainMenuScene extends Phaser.Scene {
 
         //Lista de botones
         const buttons = [
-            { x: width * 0.5, y: height * 0.4, key: 'bttnPlay', hover: 'bttnPlayHover', action: () => this.scene.start('CharacterSelectScene') },
-            { x: width * 0.75, y: height * 0.75, key: 'bttnSettings', hover: 'bttnSettingsHover', action: () => console.log('Abrir ajustes') },
-            { x: width * 0.25, y: height * 0.25, key: 'bttnCredits', hover: 'bttnCreditsHover', action: () => console.log('Mostrar créditos') },
+            { x: width * 0.5, y: height * 0.2, key: 'bttnPlay', hover: 'bttnPlayHover', action: () => this.scene.start('CharacterSelectScene'), scale: 1 },
+            { x: width * 0.84, y: height * 0.8, key: 'bttnSettings', hover: 'bttnSettingsHover', action: () => console.log('Abrir ajustes'), scale: 1},
+            { x: width * 0.23, y: height * 0.79, key: 'bttnCredits', hover: 'bttnCreditsHover', action: () => console.log('Mostrar créditos'), scale: 0.8},
         ];
 
         buttons.forEach(btn => {
             const button = this.add.image(btn.x, btn.y, btn.key)
                 .setInteractive({ useHandCursor: true })
-                .setScale(1);
-
+                .setScale(btn.scale);
             // Hover
             button.on('pointerover', () => {
                 button.setTexture(btn.hover);
-                button.setScale(1.05);
+                button.setScale(btn.scale * 1.05);
             });
 
             // Salir hover
             button.on('pointerout', () => {
                 button.setTexture(btn.key);
-                button.setScale(1);
+                button.setScale(btn.scale);
             });
 
             // Click

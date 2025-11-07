@@ -19,8 +19,10 @@ export default class IntroAnimScene extends Phaser.Scene {
 
         // Video al centro de la pantalla
         const video = this.add.video(width / 2, height / 2, 'introVideo');
-
+        video.setOrigin(0.5);
+        video.setScale(0.8); 
         // Escala
+
         //video.setDisplaySize(width, height);
 
         // Reproduccion del video
