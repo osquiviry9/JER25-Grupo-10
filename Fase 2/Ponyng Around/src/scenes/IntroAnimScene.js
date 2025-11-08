@@ -8,7 +8,7 @@ export default class IntroAnimScene extends Phaser.Scene {
 
     preload() {
         
-        this.load.video('introVideo', 'assets/AnimationVideos/Intro.mp4', 'loadeddata', false, true);
+        this.load.video('introVideo', 'assets/Animations/Intro.mp4', 'loadeddata', false, true);
     }
 
     

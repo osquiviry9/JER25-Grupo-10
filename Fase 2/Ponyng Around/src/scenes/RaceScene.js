@@ -24,7 +24,7 @@ const CONFIG = {
     TRACK_HEIGHT: 520,
     RED_OFFSET_FROM_CENTER: -20,
     GROUND_HEIGHT: 16,
-    //AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+    
     // Distancia total a la meta
     TOTAL_DISTANCE_PX: 7500
 };
@@ -57,6 +57,9 @@ export default class RaceScene extends Phaser.Scene {
         // Background tile front
         // this.load.image('ColorBackground', 'assets/Backgrounds/TileableBackground.PNG');
 
+        // SUN
+        this.load.image('Sun', 'assets/Elements/Sun.PNG');
+
         // Red obstacle
         g.fillStyle(0x8b0000, 1); g.fillRect(0, 0, 40, 40);
         g.generateTexture('obstacle', 40, 40);
@@ -67,6 +70,8 @@ export default class RaceScene extends Phaser.Scene {
         g.generateTexture('booster', 40, 40);
         g.clear();
 
+        // =========== PONIES =============
+
     }
 
     create() {
@@ -75,17 +80,29 @@ export default class RaceScene extends Phaser.Scene {
         this.cameras.main.setBackgroundColor('#000');
 
         // General color background
-        const bg = this.add.image(width / 2, height / 2, 'ColorBackground')
+        this.add.image(width / 2, height / 2, 'ColorBackground')
             .setOrigin(0.5)
-            .setDepth(-2);
+            .setDepth(0);
+
+        // Sun 1
+        this.add.image((width / 2) + 600, (height / 2) - 430, 'Sun')
+            .setScale(0.4)
+            .setDepth(2);
+
+        // Sun 1
+        this.add.image((width / 2) + 600, (height / 2) + 130, 'Sun')
+            .setScale(0.4)
+            .setDepth(2);
 
         // Floors coords
         this.laneYTop = CONFIG.TRACK_HEIGHT / 2;
         this.laneYBottom =  height - CONFIG.TRACK_HEIGHT / 2; 
 
         //Creation of the traks 
-        this.trackTop = this.add.tileSprite(width / 2, this.laneYTop, width, CONFIG.TRACK_HEIGHT, 'TileFloor');
-        this.trackBot = this.add.tileSprite(width / 2, this.laneYBottom, width, CONFIG.TRACK_HEIGHT, 'TileFloor');
+        this.trackTop = this.add.tileSprite(width / 2, this.laneYTop, width, CONFIG.TRACK_HEIGHT, 'TileFloor')
+            .setDepth(1);
+        this.trackBot = this.add.tileSprite(width / 2, this.laneYBottom, width, CONFIG.TRACK_HEIGHT, 'TileFloor')
+            .setDepth(1);
 
         // Middle line
         this.add.rectangle(width / 2, height / 2, width, 3, 0xffffff);
@@ -163,6 +180,7 @@ export default class RaceScene extends Phaser.Scene {
 
         this.startCountdown();
 
+        /* BOTON VOLVER 
         this.backButton = this.add.text(
             this.scale.width / 2,
             this.scale.height / 2 + 120,
@@ -198,10 +216,10 @@ export default class RaceScene extends Phaser.Scene {
                 this.backButton.setScale(1);
                 this.backButton.setShadowBlur(10);
             });
+        */
 
-
-        // Ajuste de cámara para encuadrar todo sin recortar
-        const margin = 0.8; // 80% del área visible
+        // Camera adjustment to frame everything without cropping
+        const margin = 0.8;
         const zoomX = (width * margin) / width;
         const zoomY = (height * margin) / height;
         const zoom = Math.min(zoomX, zoomY);
@@ -377,6 +395,7 @@ export default class RaceScene extends Phaser.Scene {
     }
 
     finishRace(winner) {
+
         if (this.state.finished) return;
         this.state.finished = true;
         this.state.running = false;
@@ -404,12 +423,21 @@ export default class RaceScene extends Phaser.Scene {
         const p1 = this.registry.get('player1Character') || {};
         const p2 = this.registry.get('player2Character') || {};
 
+        // WINNER
         const winnerKey = winner === 'top' ? p1 : p2;
-        const winnerName = winnerKey.name || winnerKey.key || 'Jugador';
+        const winnerName = winnerKey.key; // || 'Jugador';
+
+        // LOOSER
+        const looserKey = winner === 'top' ? p2 : p1; 
+        const looserName = looserKey.key; // || 'Jugador';
+
+        // Save for final scene:
+        this.registry.set('looser', looserName );
 
         // Show who won
         const msg = `¡${winnerName} WON!`;
 
+        /* BOTON DE VOLVER
         this.backButton
             .setAlpha(0)
             .setDepth(51);
@@ -419,7 +447,7 @@ export default class RaceScene extends Phaser.Scene {
             alpha: 1,
             duration: 400
         });
-
+        */
         const label = this.add.text(this.scale.width / 2, this.scale.height / 2, msg, {
             fontFamily: 'Arial Black',
             fontSize: '64px',
@@ -437,6 +465,11 @@ export default class RaceScene extends Phaser.Scene {
             scale: 1,
             duration: 400,
             ease: 'Back.Out'
+        });
+
+        // START FINAL SCENE (after 5 secs):
+        this.time.delayedCall(2000, () => {
+            this.scene.start('FinalScene');
         });
     }
 

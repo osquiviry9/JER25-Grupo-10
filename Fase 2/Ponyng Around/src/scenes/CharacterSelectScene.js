@@ -29,9 +29,12 @@ export default class CharacterSelectScene extends Phaser.Scene {
     }
 
     preload() {
+
         this.ponies.forEach(pony => {
             this.load.image(`${pony.key}_static`, pony.path);
+
         });
+
         this.load.image('marco', 'assets/UI/Border_Portrait.png')
     }
 
@@ -48,6 +51,8 @@ export default class CharacterSelectScene extends Phaser.Scene {
 
 
     create() {
+
+        // ARROWS
         this.backButton = this.add.text(40, 40, '⬅', {
             fontSize: '32px',
             fontFamily: 'Arial Black',
@@ -74,12 +79,12 @@ export default class CharacterSelectScene extends Phaser.Scene {
         });
 
 
-
         const { width, height } = this.scale;
 
         this.cameras.main.setBackgroundColor('#FFC6E0');
         this.cameras.main.fadeIn(600, 255, 198, 224);
 
+        // CHOOSE BUTTON
         const choose = this.title = this.add.text(width / 2, 300, 'Choose your \npony!', {
             fontSize: '40px',
             fontFamily: 'Arial Black',
@@ -98,11 +103,11 @@ export default class CharacterSelectScene extends Phaser.Scene {
             duration: 800
         });
 
-        //this.createPoniesGrid();
-
+        // PANELS
         this.createCharacterPanel('p1', width * 0.25, height * 0.5);
         this.createCharacterPanel('p2', width * 0.75, height * 0.5);
 
+        // START BUTTON
         const start = this.startButton = this.add.text(width / 2, height - 200, 'START', {
             fontSize: '50px',
             fontFamily: 'Arial',
@@ -151,7 +156,6 @@ export default class CharacterSelectScene extends Phaser.Scene {
             fontFamily: 'Arial Black',
             color: '#000'
         }).setOrigin(0.5);
-
 
 
         // Arrows
