@@ -18,7 +18,8 @@ const config = {
             debug: false
         }
     },
-    scene: [IntroScene,IntroAnimScene,MainMenuScene, CharacterSelectScene,RaceScene]
+    scene: [MainMenuScene, CharacterSelectScene,RaceScene]
+    //scene: [IntroScene,IntroAnimScene,MainMenuScene, CharacterSelectScene,RaceScene]
 };
 
 new Phaser.Game(config);

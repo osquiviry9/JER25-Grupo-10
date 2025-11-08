@@ -49,20 +49,13 @@ export default class RaceScene extends Phaser.Scene {
         const g = this.make.graphics({ x: 0, y: 0, add: false });
 
         // Background color
-        this.load.image('ColorBackground', 'assets/Backgrounds/fondoPlano.jpeg');
+        this.load.image('ColorBackground', 'assets/Backgrounds/fondoPlano1.jpeg');
 
         // Floor tile
         this.load.image('TileFloor', 'assets/Backgrounds/TileableBackground.PNG');
 
         // Background tile front
         // this.load.image('ColorBackground', 'assets/Backgrounds/TileableBackground.PNG');
-
-        /*// Pista (tile) 
-        g.fillStyle(0x777777, 1); g.fillRect(0, 0, 50, 50);
-        g.fillStyle(0x555555, 1); g.fillRect(25, 0, 25, 25); g.fillRect(0, 25, 25, 25);
-        g.generateTexture('TileFloor', 50, 50);
-        g.clear();
-        */
 
         // Red obstacle
         g.fillStyle(0x8b0000, 1); g.fillRect(0, 0, 40, 40);
@@ -74,7 +67,6 @@ export default class RaceScene extends Phaser.Scene {
         g.generateTexture('booster', 40, 40);
         g.clear();
 
-        
     }
 
     create() {
@@ -86,25 +78,21 @@ export default class RaceScene extends Phaser.Scene {
         const bg = this.add.image(width / 2, height / 2, 'ColorBackground')
             .setOrigin(0.5)
             .setDepth(-2);
-        // bg.setScale(0.8); 
 
         // Floors coords
         this.laneYTop = CONFIG.TRACK_HEIGHT / 2;
-        this.laneYBottom = CONFIG.TRACK_HEIGHT + CONFIG.TRACK_HEIGHT / 2;
+        this.laneYBottom =  height - CONFIG.TRACK_HEIGHT / 2; 
 
         //Creation of the traks 
         this.trackTop = this.add.tileSprite(width / 2, this.laneYTop, width, CONFIG.TRACK_HEIGHT, 'TileFloor');
         this.trackBot = this.add.tileSprite(width / 2, this.laneYBottom, width, CONFIG.TRACK_HEIGHT, 'TileFloor');
 
-
-        // Líneas separadoras 
-        this.add.rectangle(width / 2, this.laneYTop - CONFIG.TRACK_HEIGHT / 2, width, 3, 0xffffff).setAlpha(0.9);
-        this.add.rectangle(width / 2, this.laneYBottom - CONFIG.TRACK_HEIGHT / 2, width, 3, 0xffffff).setAlpha(0.9);
+        // Middle line
+        this.add.rectangle(width / 2, height / 2, width, 3, 0xffffff);
 
         // Línea roja (referencia)
         const redTopY = this.laneYTop + CONFIG.RED_OFFSET_FROM_CENTER;
         const redBotY = this.laneYBottom + CONFIG.RED_OFFSET_FROM_CENTER;
-
 
         // Selección previa
         const p1 = this.registry.get('player1Character');
@@ -211,6 +199,15 @@ export default class RaceScene extends Phaser.Scene {
                 this.backButton.setShadowBlur(10);
             });
 
+
+        // Ajuste de cámara para encuadrar todo sin recortar
+        const margin = 0.8; // 80% del área visible
+        const zoomX = (width * margin) / width;
+        const zoomY = (height * margin) / height;
+        const zoom = Math.min(zoomX, zoomY);
+
+        this.cameras.main.setZoom(zoom);
+        this.cameras.main.centerOn(width / 2, height / 2);
 
     }
 
