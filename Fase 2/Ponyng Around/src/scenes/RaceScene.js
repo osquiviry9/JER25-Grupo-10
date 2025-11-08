@@ -74,10 +74,7 @@ export default class RaceScene extends Phaser.Scene {
         g.generateTexture('booster', 40, 40);
         g.clear();
 
-        // Meta
-        g.fillStyle(0xffffff, 1); g.fillRect(0, 0, 10, CONFIG.HEIGHT);
-        g.generateTexture('finish', 10, CONFIG.HEIGHT);
-        g.destroy();
+        
     }
 
     create() {
@@ -89,25 +86,16 @@ export default class RaceScene extends Phaser.Scene {
         const bg = this.add.image(width / 2, height / 2, 'ColorBackground')
             .setOrigin(0.5)
             .setDepth(-2);
-            // bg.setScale(0.8); 
+        // bg.setScale(0.8); 
 
         // Floors coords
-        this.laneYTop = this.TRACK_HEIGHT / 2; // centro de la parte superior
-        this.laneYBottom = this.TRACK_HEIGHT + this.TRACK_HEIGHT / 2; // ocupa toda la mitad superior
+        this.laneYTop = CONFIG.TRACK_HEIGHT / 2;
+        this.laneYBottom = CONFIG.TRACK_HEIGHT + CONFIG.TRACK_HEIGHT / 2;
 
-        // UPPER FLOOR
-        const trackTop =this.trackTop = this.add.tileSprite(width / 2, this.laneYTop, width, this.TRACK_HEIGHT, 'TileFloor')
-            .setOrigin(0.5)
-            .setDepth(-1)
-            .setTileScale(1);
-            // trackTop.setScale(0.8); 
+        //Creation of the traks 
+        this.trackTop = this.add.tileSprite(width / 2, this.laneYTop, width, CONFIG.TRACK_HEIGHT, 'TileFloor');
+        this.trackBot = this.add.tileSprite(width / 2, this.laneYBottom, width, CONFIG.TRACK_HEIGHT, 'TileFloor');
 
-        // DOWN FLOOR
-        const trackBot = this.trackBot = this.add.tileSprite(width / 2, this.laneYBottom, width, this.TRACK_HEIGHT, 'TileFloor')
-            .setOrigin(0.5)
-            .setDepth(-1)
-            .setTileScale(1); 
-            // trackBot.setScale(0.8); 
 
         // Líneas separadoras 
         this.add.rectangle(width / 2, this.laneYTop - CONFIG.TRACK_HEIGHT / 2, width, 3, 0xffffff).setAlpha(0.9);
@@ -117,8 +105,6 @@ export default class RaceScene extends Phaser.Scene {
         const redTopY = this.laneYTop + CONFIG.RED_OFFSET_FROM_CENTER;
         const redBotY = this.laneYBottom + CONFIG.RED_OFFSET_FROM_CENTER;
 
-        // Meta decorativa
-        this.finish = this.add.image(width - 30, height / 2, 'finish').setAlpha(0.75);
 
         // Selección previa
         const p1 = this.registry.get('player1Character');
@@ -148,12 +134,12 @@ export default class RaceScene extends Phaser.Scene {
             return rect;
         };
 
-        this.playerTop = makePony(90, redTopY + 8, p1);
-        this.playerBottom = makePony(90, redBotY + 8, p2);
+        this.playerTop = makePony(90, redTopY + 195, p1);  //CONTORL THE SPAWN COORDINATES OF PONIS
+        this.playerBottom = makePony(90, redBotY + 195, p2);
 
 
-        this.groundTop = makeGroundAtRed(redTopY + 30);
-        this.groundBot = makeGroundAtRed(redBotY + 30);
+        this.groundTop = makeGroundAtRed(redTopY + 200);  //control the invisible gorund coorinates
+        this.groundBot = makeGroundAtRed(redBotY + 200);
 
         this.physics.add.collider(this.playerTop, this.groundTop);
         this.physics.add.collider(this.playerBottom, this.groundBot);
@@ -233,14 +219,14 @@ export default class RaceScene extends Phaser.Scene {
         const centerX = this.scale.width / 2;
 
         // Jugador 1 más arriba
-        this.uiP1Label = this.add.text(centerX, this.laneYTop - 100, 'Progreso:',
+        this.uiP1Label = this.add.text(centerX, this.laneYTop - 150, 'Progreso:',
             {
                 fontFamily: 'Arial Black',
                 fontSize: '20px',
-                color: '#ffffff'
+                color: '#070707ff'
             }).setOrigin(0.5);
 
-        this.uiP1Pct = this.add.text(centerX, this.laneYTop - 76, '0%',
+        this.uiP1Pct = this.add.text(centerX, this.laneYTop  -120, '0%',
             {
                 fontFamily: 'Arial Black',
                 fontSize: '26px',
@@ -248,18 +234,18 @@ export default class RaceScene extends Phaser.Scene {
             }).setOrigin(0.5);
 
         // Jugador 2 más abajo
-        this.uiP2Label = this.add.text(centerX, this.laneYBottom + 80, 'Progreso:',
+        this.uiP2Label = this.add.text(centerX, this.laneYBottom  -150, 'Progreso:',
             {
                 fontFamily: 'Arial Black',
                 fontSize: '20px',
-                color: '#ffffff'
+                color: '#000000ff'
             }).setOrigin(0.5);
 
-        this.uiP2Pct = this.add.text(centerX, this.laneYBottom + 110, '0%',
+        this.uiP2Pct = this.add.text(centerX, this.laneYBottom  -120, '0%',
             {
                 fontFamily: 'Arial Black',
                 fontSize: '26px',
-                color: '#66fffb'
+                color: '#067fffff'
             }).setOrigin(0.5);
     }
 
@@ -366,8 +352,8 @@ export default class RaceScene extends Phaser.Scene {
             : (isBooster ? this.boostersBot : this.obstaclesBot);
 
         const redY = (laneKey === 'top')
-            ? (this.laneYTop + CONFIG.RED_OFFSET_FROM_CENTER + 30)
-            : (this.laneYBottom + CONFIG.RED_OFFSET_FROM_CENTER + 30);
+            ? (this.laneYTop + CONFIG.RED_OFFSET_FROM_CENTER + 200)
+            : (this.laneYBottom + CONFIG.RED_OFFSET_FROM_CENTER + 200);
 
         const key = isBooster ? 'booster' : 'obstacle';
 
@@ -398,6 +384,7 @@ export default class RaceScene extends Phaser.Scene {
         this.state.finished = true;
         this.state.running = false;
 
+        // Darkm background
         this.overlay = this.add.rectangle(
             this.scale.width / 2,
             this.scale.height / 2,
@@ -407,6 +394,7 @@ export default class RaceScene extends Phaser.Scene {
             0.55
         ).setDepth(50).setScrollFactor(0);
 
+        // Stop EVERYTHINHG!
         const stopGroup = g => g.children.each(o => {
             if (o && o.body) o.body.setVelocity(0, 0);
         });
@@ -415,11 +403,15 @@ export default class RaceScene extends Phaser.Scene {
         stopGroup(this.obstaclesBot);
         stopGroup(this.boostersBot);
 
-        const p1 = this.registry.get('player1Character');
-        const p2 = this.registry.get('player2Character');
+        // Recover the name of the ponis
+        const p1 = this.registry.get('player1Character') || {};
+        const p2 = this.registry.get('player2Character') || {};
+
         const winnerKey = winner === 'top' ? p1 : p2;
-        const winnerName = winnerKey.name ?? winnerKey.key ?? '???';
-        const msg = `¡GANÓ ${winnerName}!`;
+        const winnerName = winnerKey.name || winnerKey.key || 'Jugador';
+
+        // Show who won
+        const msg = `¡${winnerName} WON!`;
 
         this.backButton
             .setAlpha(0)
@@ -452,7 +444,7 @@ export default class RaceScene extends Phaser.Scene {
     }
 
 
-    // ---------- Bucle ----------
+    // ---------- Loop ----------
     update(_, dtMs) {
 
         this.updateProgressUI();
