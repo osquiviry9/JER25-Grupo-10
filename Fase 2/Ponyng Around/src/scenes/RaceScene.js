@@ -24,7 +24,7 @@ const CONFIG = {
     TRACK_HEIGHT: 520,
     RED_OFFSET_FROM_CENTER: -20,
     GROUND_HEIGHT: 16,
-    
+
     // Distancia total a la meta
     TOTAL_DISTANCE_PX: 7500
 };
@@ -49,13 +49,16 @@ export default class RaceScene extends Phaser.Scene {
         const g = this.make.graphics({ x: 0, y: 0, add: false });
 
         // Background color
-        this.load.image('ColorBackground', 'assets/Backgrounds/fondoPlano1.jpeg');
+        this.load.image('ColorBackground', 'assets/Backgrounds/fondoPlano.jpeg');
 
         // Floor tile
-        this.load.image('TileFloor', 'assets/Backgrounds/TileableBackground.PNG');
+        this.load.image('TileFloor', 'assets/Backgrounds/TileableBackground1.png');
 
-        // Background tile front
-        // this.load.image('ColorBackground', 'assets/Backgrounds/TileableBackground.PNG');
+        // Background tile front (plants)
+        this.load.image('Plants', 'assets/Backgrounds/TileableForefround.png');
+
+        // Clouds
+        this.load.image('Clouds', 'assets/Elements/Clouds.PNG');
 
         // SUN
         this.load.image('Sun', 'assets/Elements/Sun.PNG');
@@ -71,6 +74,49 @@ export default class RaceScene extends Phaser.Scene {
         g.clear();
 
         // =========== PONIES =============
+        // RUN ANIMATIONS:
+        // Ache
+        for (let i = 1; i <= 4; i++) {
+            this.load.image(`AcheRun${i}`, `assets/ponis/Ache/Ache_Run${i}.PNG`);
+        }
+        // Haire
+        for (let i = 1; i <= 4; i++) {
+            this.load.image(`HaireRun${i}`, `assets/ponis/Haire/Haire_Run${i}.PNG`);
+        }
+        // Kamil
+        for (let i = 1; i <= 4; i++) {
+            this.load.image(`KamilRun${i}`, `assets/ponis/Kamil/Kamil_Run${i}.PNG`);
+        }
+        // Beersquiviri
+        for (let i = 1; i <= 4; i++) {
+            this.load.image(`BeerRun${i}`, `assets/ponis/Beersquiviri/Beer_Run${i}.PNG`);
+        }
+        // Dom
+        for (let i = 1; i <= 4; i++) {
+            this.load.image(`DomRun${i}`, `assets/ponis/Dod/Dod_Run${i}.PNG`);
+        }
+
+        // JUMP ANIMATIONS:
+        // Ache
+        for (let i = 1; i <= 2; i++) {
+            this.load.image(`AcheJump${i}`, `assets/ponis/Ache/Ache_Jump${i}.PNG`);
+        }
+        // Haire
+        for (let i = 1; i <= 2; i++) {
+            this.load.image(`HaireJump${i}`, `assets/ponis/Haire/Haire_Jump${i}.PNG`);
+        }
+        // Kamil
+        for (let i = 1; i <= 2; i++) {
+            this.load.image(`KamilJump${i}`, `assets/ponis/Kamil/Kamil_Jump${i}.PNG`);
+        }
+        // Beersquiviri
+        for (let i = 1; i <= 2; i++) {
+            this.load.image(`BeerJump${i}`, `assets/ponis/Beersquiviri/Beer_Jump${i}.PNG`);
+        }
+        // Dom
+        for (let i = 1; i <= 2; i++) {
+            this.load.image(`DomJump${i}`, `assets/ponis/Dod/Dod_Jump${i}.PNG`);
+        }
 
     }
 
@@ -82,27 +128,41 @@ export default class RaceScene extends Phaser.Scene {
         // General color background
         this.add.image(width / 2, height / 2, 'ColorBackground')
             .setOrigin(0.5)
-            .setDepth(0);
+            .setDepth(-1);
 
-        // Sun 1
+        // Sun TOP
         this.add.image((width / 2) + 600, (height / 2) - 430, 'Sun')
             .setScale(0.4)
-            .setDepth(2);
+            .setDepth(0);
 
-        // Sun 1
+        // Sun BOTTOM
         this.add.image((width / 2) + 600, (height / 2) + 130, 'Sun')
             .setScale(0.4)
-            .setDepth(2);
+            .setDepth(0);
 
         // Floors coords
         this.laneYTop = CONFIG.TRACK_HEIGHT / 2;
-        this.laneYBottom =  height - CONFIG.TRACK_HEIGHT / 2; 
+        this.laneYBottom = height - CONFIG.TRACK_HEIGHT / 2;
+
+        // Clouds
+        this.cloudsTop = this.add.tileSprite(width / 2, this.laneYTop, width, CONFIG.TRACK_HEIGHT, 'Clouds')
+            .setAlpha(0.8)
+            .setDepth(1);
+        this.cloudsBot = this.add.tileSprite(width / 2, this.laneYBottom, width, CONFIG.TRACK_HEIGHT, 'Clouds')
+            .setAlpha(0.8)
+            .setDepth(1);
+
+        // FRONT PLANTS
+        this.plantsTop = this.add.tileSprite(width / 2, this.laneYTop + 6.6, width, CONFIG.TRACK_HEIGHT, 'Plants')
+            .setDepth(4);
+        this.plantsBot = this.add.tileSprite(width / 2, this.laneYBottom + 6.6, width, CONFIG.TRACK_HEIGHT, 'Plants')
+            .setDepth(4);
 
         //Creation of the traks 
         this.trackTop = this.add.tileSprite(width / 2, this.laneYTop, width, CONFIG.TRACK_HEIGHT, 'TileFloor')
-            .setDepth(1);
+            .setDepth(2);
         this.trackBot = this.add.tileSprite(width / 2, this.laneYBottom, width, CONFIG.TRACK_HEIGHT, 'TileFloor')
-            .setDepth(1);
+            .setDepth(2);
 
         // Middle line
         this.add.rectangle(width / 2, height / 2, width, 3, 0xffffff);
@@ -111,10 +171,11 @@ export default class RaceScene extends Phaser.Scene {
         const redTopY = this.laneYTop + CONFIG.RED_OFFSET_FROM_CENTER;
         const redBotY = this.laneYBottom + CONFIG.RED_OFFSET_FROM_CENTER;
 
-        // Selección previa
+        // Previous character selection
         const p1 = this.registry.get('player1Character');
         const p2 = this.registry.get('player2Character');
 
+        
         const makePony = (x, redLineY, keyOrObj) => {
             const key = (keyOrObj && keyOrObj.key) ? keyOrObj.key : keyOrObj;
             const img = this.physics.add.image(x, redLineY, `${key}_static`).setOrigin(0.5, 1);
@@ -129,6 +190,38 @@ export default class RaceScene extends Phaser.Scene {
 
             return img;
         };
+        
+
+        /*  PRUEBA QUE NO ME SALE PARA PONER LAS ANIMACIONES
+        const makeUpPony = (x, redLineY, keyOrObj) => {
+            const ponyKey = keyOrObj.key;
+
+            // Animación dinámica: Ache1, Ache2, Ache3, Ache4
+            const RunFrames = [];
+            for (let i = 1; i <= 4; i++) {
+                RunFrames.push({ key: `${ponyKey}${i}` });
+            }
+
+            // Crear animación única para cada pony
+            const animKey = `${ponyKey}_run`;
+
+            this.anims.create({
+                key: animKey,
+                frames: RunFrames,
+                frameRate: 10,
+                repeat: -1
+            });
+
+            // Crear sprite del pony
+            const sprite = this.physics.add
+                .sprite(x, redLineY, `${ponyKey}1`) // primer frame
+                .setDepth(3);
+
+            sprite.play(animKey);
+
+            return sprite;
+        };
+        */
 
         const makeGroundAtRed = (redLineY) => {
             const H = CONFIG.GROUND_HEIGHT;
@@ -139,8 +232,8 @@ export default class RaceScene extends Phaser.Scene {
             return rect;
         };
 
-        this.playerTop = makePony(90, redTopY + 195, p1);  //CONTORL THE SPAWN COORDINATES OF PONIS
-        this.playerBottom = makePony(90, redBotY + 195, p2);
+        this.playerTop = makePony(90, redTopY + 195, p1).setDepth(3);  //CONTORL THE SPAWN COORDINATES OF PONIS
+        this.playerBottom = makePony(90, redBotY + 195, p2).setDepth(3);
 
 
         this.groundTop = makeGroundAtRed(redTopY + 200);  //control the invisible gorund coorinates
@@ -231,6 +324,7 @@ export default class RaceScene extends Phaser.Scene {
 
     // ---------- UI Progreso ----------
     createProgressUI() {
+
         const centerX = this.scale.width / 2;
 
         // Jugador 1 más arriba
@@ -239,29 +333,33 @@ export default class RaceScene extends Phaser.Scene {
                 fontFamily: 'Arial Black',
                 fontSize: '20px',
                 color: '#070707ff'
-            }).setOrigin(0.5);
+            }).setOrigin(0.5)
+            .setDepth(5);
 
-        this.uiP1Pct = this.add.text(centerX, this.laneYTop  -120, '0%',
+        this.uiP1Pct = this.add.text(centerX, this.laneYTop - 120, '0%',
             {
                 fontFamily: 'Arial Black',
                 fontSize: '26px',
                 color: '#ffff66'
-            }).setOrigin(0.5);
+            }).setOrigin(0.5)
+            .setDepth(5);
 
         // Jugador 2 más abajo
-        this.uiP2Label = this.add.text(centerX, this.laneYBottom  -150, 'Progreso:',
+        this.uiP2Label = this.add.text(centerX, this.laneYBottom - 150, 'Progreso:',
             {
                 fontFamily: 'Arial Black',
                 fontSize: '20px',
                 color: '#000000ff'
-            }).setOrigin(0.5);
+            }).setOrigin(0.5)
+            .setDepth(5);
 
-        this.uiP2Pct = this.add.text(centerX, this.laneYBottom  -120, '0%',
+        this.uiP2Pct = this.add.text(centerX, this.laneYBottom - 120, '0%',
             {
                 fontFamily: 'Arial Black',
                 fontSize: '26px',
                 color: '#067fffff'
-            }).setOrigin(0.5);
+            }).setOrigin(0.5)
+            .setDepth(5);
     }
 
 
@@ -283,7 +381,7 @@ export default class RaceScene extends Phaser.Scene {
             color: '#ffffff',
             stroke: '#ff69b4',
             strokeThickness: 8
-        }).setOrigin(0.5).setAlpha(0);
+        }).setOrigin(0.5).setAlpha(0).setDepth(6);
 
         const showNext = () => {
             if (i >= steps.length) {
@@ -374,7 +472,7 @@ export default class RaceScene extends Phaser.Scene {
 
         const obj = group.create(CONFIG.WIDTH + 30, redY, key)
             .setOrigin(0.5, 1)
-            .setDepth(1);
+            .setDepth(3);
 
         obj.body.setAllowGravity(false);
         obj.body.setImmovable(true);
@@ -428,11 +526,11 @@ export default class RaceScene extends Phaser.Scene {
         const winnerName = winnerKey.key; // || 'Jugador';
 
         // LOOSER
-        const looserKey = winner === 'top' ? p2 : p1; 
+        const looserKey = winner === 'top' ? p2 : p1;
         const looserName = looserKey.key; // || 'Jugador';
 
         // Save for final scene:
-        this.registry.set('looser', looserName );
+        this.registry.set('looser', looserName);
 
         // Show who won
         const msg = `¡${winnerName} WON!`;
@@ -441,13 +539,14 @@ export default class RaceScene extends Phaser.Scene {
         this.backButton
             .setAlpha(0)
             .setDepth(51);
-
+ 
         this.tweens.add({
             targets: this.backButton,
             alpha: 1,
             duration: 400
         });
         */
+
         const label = this.add.text(this.scale.width / 2, this.scale.height / 2, msg, {
             fontFamily: 'Arial Black',
             fontSize: '64px',
@@ -468,9 +567,10 @@ export default class RaceScene extends Phaser.Scene {
         });
 
         // START FINAL SCENE (after 5 secs):
-        this.time.delayedCall(2000, () => {
+        this.time.delayedCall(5000, () => {
             this.scene.start('FinalScene');
         });
+
     }
 
 
@@ -489,9 +589,13 @@ export default class RaceScene extends Phaser.Scene {
         this.trackTop.tilePositionX += topScroll;
         this.trackBot.tilePositionX += botScroll;
 
-        // Move background (slower -> parallax)
-        // const avgScroll = (topScroll + botScroll) / 2;
-        // this.bg.tilePositionX += avgScroll * 0.3; // ← se mueve al 30% de la velocidad de las pistas
+        // Clouds (slower -> parallax)
+        this.cloudsTop.tilePositionX += topScroll * 0.1;
+        this.cloudsBot.tilePositionX += topScroll * 0.1;
+
+        // Plants (faster -> parallax)
+        this.plantsTop.tilePositionX += topScroll * 2;
+        this.plantsBot.tilePositionX += topScroll * 2;
 
         // JUMP
         if (Phaser.Input.Keyboard.JustDown(this.keys.jumpTop)) this.jump(this.playerTop);

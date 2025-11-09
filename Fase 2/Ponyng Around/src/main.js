@@ -18,7 +18,7 @@ const config = {
             debug: false
         }
     },
-    scene: [RaceScene, FinalScene]
+    scene: [CharacterSelectScene, RaceScene, FinalScene]
     // scene: [MainMenuScene, CharacterSelectScene, RaceScene, FinalScene]
     //scene: [IntroScene,IntroAnimScene,MainMenuScene, CharacterSelectScene, RaceScene, FinalScene] <- LA BUENA
 };
