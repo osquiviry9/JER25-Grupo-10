@@ -34,8 +34,11 @@ export default class CharacterSelectScene extends Phaser.Scene {
             this.load.image(`${pony.key}_static`, pony.path);
 
         });
-
-        this.load.image('marco', 'assets/UI/Border_Portrait.png')
+        this.load.image('background', 'assets/Backgrounds/backgroundColor3.png');
+        this.load.image('border1', 'assets/UI/Border1_Selector.png');
+        this.load.image('border2', 'assets/UI/Border2_Selector.png');
+        this.load.image('arrowIzq', 'assets/UI/ArrowsIzq_Selector.png');
+        this.load.image('arrowDer', 'assets/UI/ArrowsDer_Selector.png');
     }
 
     showStartButton() {
@@ -51,8 +54,6 @@ export default class CharacterSelectScene extends Phaser.Scene {
 
 
     create() {
-
-        // ARROWS
         this.backButton = this.add.text(40, 40, '⬅', {
             fontSize: '32px',
             fontFamily: 'Arial Black',
@@ -81,11 +82,18 @@ export default class CharacterSelectScene extends Phaser.Scene {
 
         const { width, height } = this.scale;
 
-        this.cameras.main.setBackgroundColor('#FFC6E0');
+        // Añadir foto de fondo para hacer marco
+        this.cameras.main.setBackgroundColor('#000000');
         this.cameras.main.fadeIn(600, 255, 198, 224);
 
+        const bg = this.add.image(width / 2, height / 2, 'background');
+        bg.setOrigin(0.5);
+        bg.setScale(0.8); 
+        //const cam = this.camera(width / 2, height / 2, 'menuBackground');
+        //cam.setBackgroundColor('#FFC6E0');
+
         // CHOOSE BUTTON
-        const choose = this.title = this.add.text(width / 2, 300, 'Choose your \npony!', {
+        const choose = this.title = this.add.text(width / 2, 210, 'Choose your \npony!', {
             fontSize: '40px',
             fontFamily: 'Arial Black',
             color: '#ff69b4',
@@ -103,9 +111,18 @@ export default class CharacterSelectScene extends Phaser.Scene {
             duration: 800
         });
 
+        // A random value is asigned to each player so the poni in the selector appears random every time, and it's different from each player
+        const randomIndexP1 = Phaser.Math.Between(0, this.ponies.length - 1);
+        const randomIndexP2 = Phaser.Math.Between(0, this.ponies.length - 1);
+        while (randomIndexP2 === randomIndexP1) {
+        this.currentIndex.p2 = Phaser.Math.Between(0, this.ponies.length - 1);
+    }
+        this.currentIndex.p1 = randomIndexP1;
+        this.currentIndex.p2 = randomIndexP2;
+
         // PANELS
-        this.createCharacterPanel('p1', width * 0.25, height * 0.5);
-        this.createCharacterPanel('p2', width * 0.75, height * 0.5);
+        this.createCharacterPanel('p1', width * 0.29, height * 0.55);
+        this.createCharacterPanel('p2', width * 0.71, height * 0.55);
 
         // START BUTTON
         const start = this.startButton = this.add.text(width / 2, height - 200, 'START', {
@@ -140,34 +157,42 @@ export default class CharacterSelectScene extends Phaser.Scene {
     }
 
     createCharacterPanel(player, centerX, centerY) {
-
         // Show actual poni
         const pony = this.ponies[this.currentIndex[player]];
         const image = this.add.image(centerX, centerY - 40, `${pony.key}_static`)
             .setOrigin(0.5)
-            .setDisplaySize(580, 600);
+            .setDisplaySize(580, 600)
+            .setScale(0.5);
 
-        const marco = this.add.image(centerX, centerY - 40, 'marco')
+        // Shows the 2 possible asset for the border
+        const borderKey = player;
+        if (borderKey === 'p1'){
+            const border = this.add.image(centerX, centerY - 40, 'border1')
             .setOrigin(0.5)
-            .setDisplaySize(635, 700);
+            .setDisplaySize(635, 700)
+            .setScale(0.5);
+        }
+        else {
+            const border = this.add.image(centerX, centerY - 40, 'border2')
+            .setOrigin(0.5)
+            .setDisplaySize(635, 700)
+            .setScale(0.5);
+        }
 
-        const nameText = this.add.text(centerX, centerY - 410, pony.key, {
+        // Shows the name of the poni on sceen
+        const nameText = this.add.text(centerX, centerY - 380, pony.key, {
             fontSize: '28px',
             fontFamily: 'Arial Black',
             color: '#000'
         }).setOrigin(0.5);
 
 
-        // Arrows
-        const leftArrow = this.add.text(centerX - 335, centerY - 30, '⬅', {
-            fontSize: '48px',
-            color: '#000'
-        }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+        // Shows the arrows to change character
+        const leftArrow = this.add.image(centerX - 325, centerY - 30, 'arrowIzq'
+        ).setOrigin(0.5).setInteractive({ useHandCursor: true }).setScale(0.4);
 
-        const rightArrow = this.add.text(centerX + 335, centerY - 30, '➡', {
-            fontSize: '48px',
-            color: '#000'
-        }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+        const rightArrow = this.add.image(centerX + 320, centerY - 30, 'arrowDer', 
+        ).setOrigin(0.5).setInteractive({ useHandCursor: true }).setScale(0.38);
 
         leftArrow.on('pointerdown', () => {
             if (!this.selected[player]) {
@@ -182,8 +207,8 @@ export default class CharacterSelectScene extends Phaser.Scene {
         });
 
 
-        // Ready button
-        const readyButton = this.add.text(centerX, centerY + 350, 'Done', {
+        // Shows the ready button to choose the character
+        const readyButton = this.add.text(centerX, centerY + 320, 'Done', {
             fontSize: '32px',
             fontFamily: 'Arial Black',
             backgroundColor: '#ff69b4',
@@ -191,18 +216,54 @@ export default class CharacterSelectScene extends Phaser.Scene {
             padding: { left: 20, right: 20, top: 10, bottom: 10 }
         }).setOrigin(0.5).setInteractive({ useHandCursor: true });
 
+        // Shows cancel button, so the player can choose another poni once they have pressed the ready button (it's invisible at firt)
+        const cancelButton = this.add.text(centerX, centerY + 320, 'Cancel', {
+            fontSize: '32px',
+            fontFamily: 'Arial Black',
+            backgroundColor: '#242121ff',
+            color: '#fff',
+            padding: { left: 20, right: 20, top: 10, bottom: 10 }
+        }).setOrigin(0.5).setVisible(false).setInteractive({ useHandCursor: true });
+        
+
         readyButton.on('pointerdown', () => {
-            if (readyButton.alpha < 1) return;
+            if (readyButton.alpha < 1) return;      // checks if the ready button can be pressed (if the poni is selected by the other player)
 
             this.selected[player] = true;
             readyButton.setStyle({ backgroundColor: '#242121ff' });
+            
+            // Shows the cancel button once the ready button is pressed
+            cancelButton.setVisible(true);
+
+            // Registers selected poni and calls the methods bellow so hte 'Done0 button is updated and then checks if they are both ready
+            const selectedPony = this.ponies[this.currentIndex[player]];
+            this.selectedPonies[player] = selectedPony;
+            this.updateReadyButtons();
             this.checkReady();
         });
 
-        this[`readyButton_${player}`] = readyButton;
+        cancelButton.on('pointerdown', () => {
+
+            this.selected[player] = false;
+            
+            // Shows the ready button and restores it's style
+            cancelButton.setVisible(false);
+            readyButton.setStyle({ backgroundColor: '#ff69b4' });
+
+            // Update the ready button so the player can change ponis again
+            this.updateReadyButtons();
+            //this.checkReady();
+            if (!(this.selected.p1 && this.selected.p2)) {
+        this.startButton.setVisible(false);
+        this.startButton.setAlpha(0);
     }
+        });
 
-
+        
+        // Saves reference
+        this[`readyButton_${player}`] = readyButton;
+        this[`cancelButton_${player}`] = cancelButton;
+    }
 
     changePony(player, direction, image, nameText) {
         const total = this.ponies.length;
@@ -219,7 +280,7 @@ export default class CharacterSelectScene extends Phaser.Scene {
         const p1Index = this.currentIndex.p1;
         const p2Index = this.currentIndex.p2;
 
-        if (p1Index === p2Index) {
+        if (p1Index === p2Index && (this.selected.p1 || this.selected.p2)) {
             if (!this.selected.p1)
                 this[`readyButton_p1`].setAlpha(0.5).disableInteractive();
             if (!this.selected.p2)
@@ -231,6 +292,7 @@ export default class CharacterSelectScene extends Phaser.Scene {
                 this[`readyButton_p2`].setAlpha(1).setInteractive({ useHandCursor: true });
         }
     }
+
     checkReady() {
         if (this.selected.p1 && this.selected.p2) {
             this.tweens.add({

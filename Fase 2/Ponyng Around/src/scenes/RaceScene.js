@@ -69,9 +69,9 @@ export default class RaceScene extends Phaser.Scene {
         g.clear();
 
         // Green booster 
-        g.fillStyle(0x32cd32, 1); g.fillRect(0, 0, 40, 40);
+        /*g.fillStyle(0x32cd32, 1); g.fillRect(0, 0, 40, 40);
         g.generateTexture('booster', 40, 40);
-        g.clear();
+        g.clear();*/
 
         // =========== PONIES =============
         // RUN ANIMATIONS:
@@ -118,6 +118,10 @@ export default class RaceScene extends Phaser.Scene {
             this.load.image(`DomJump${i}`, `assets/ponis/Dod/Dod_Jump${i}.PNG`);
         }
 
+
+        // PowerUps
+        //this.load.image('LimeLemon', 'assets/Elements/LimeLemon_PowerUp.png');
+        this.load.image('Apple', 'assets/Elements/Apple_PowerUp.png');
     }
 
     create() {
@@ -468,12 +472,14 @@ export default class RaceScene extends Phaser.Scene {
             ? (this.laneYTop + CONFIG.RED_OFFSET_FROM_CENTER + 200)
             : (this.laneYBottom + CONFIG.RED_OFFSET_FROM_CENTER + 200);
 
-        const key = isBooster ? 'booster' : 'obstacle';
+        const key = isBooster ? 'Apple' : 'obstacle';
 
         const obj = group.create(CONFIG.WIDTH + 30, redY, key)
             .setOrigin(0.5, 1)
             .setDepth(3);
 
+        if (isBooster) obj.setScale(0.4);
+        
         obj.body.setAllowGravity(false);
         obj.body.setImmovable(true);
 
