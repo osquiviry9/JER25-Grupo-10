@@ -22,7 +22,7 @@ const CONFIG = {
 
     // Geometría pista
     TRACK_HEIGHT: 520,
-    RED_OFFSET_FROM_CENTER: -20,
+    RED_OFFSET_FROM_CENTER: 20,
     GROUND_HEIGHT: 16,
 
     // Distancia total a la meta
@@ -63,6 +63,12 @@ export default class RaceScene extends Phaser.Scene {
         // SUN
         this.load.image('Sun', 'assets/Elements/Sun.PNG');
 
+        // Wood Fence
+        this.load.image('WoodFence', 'assets/Elements/WoodFence.PNG');
+
+        // Frame
+        this.load.image('Frame', 'assets/Elements/GameFrame.PNG');
+
         // Red obstacle
         g.fillStyle(0x8b0000, 1); g.fillRect(0, 0, 40, 40);
         g.generateTexture('obstacle', 40, 40);
@@ -81,7 +87,7 @@ export default class RaceScene extends Phaser.Scene {
         }
         // Haire
         for (let i = 1; i <= 4; i++) {
-            this.load.image(`HaireRun${i}`, `assets/ponis/Haire/Haire_Run${i}.PNG`);
+            this.load.image(`HaiireRun${i}`, `assets/ponis/Haire/Haire_Run${i}.PNG`);
         }
         // Kamil
         for (let i = 1; i <= 4; i++) {
@@ -89,11 +95,11 @@ export default class RaceScene extends Phaser.Scene {
         }
         // Beersquiviri
         for (let i = 1; i <= 4; i++) {
-            this.load.image(`BeerRun${i}`, `assets/ponis/Beersquiviri/Beer_Run${i}.PNG`);
+            this.load.image(`BeersquiviryRun${i}`, `assets/ponis/Beersquiviri/Beer_Run${i}.PNG`);
         }
         // Dom
         for (let i = 1; i <= 4; i++) {
-            this.load.image(`DomRun${i}`, `assets/ponis/Dod/Dod_Run${i}.PNG`);
+            this.load.image(`DomdomdadomRun${i}`, `assets/ponis/Dod/Dod_Run${i}.PNG`);
         }
 
         // JUMP ANIMATIONS:
@@ -103,7 +109,7 @@ export default class RaceScene extends Phaser.Scene {
         }
         // Haire
         for (let i = 1; i <= 2; i++) {
-            this.load.image(`HaireJump${i}`, `assets/ponis/Haire/Haire_Jump${i}.PNG`);
+            this.load.image(`HaiireJump${i}`, `assets/ponis/Haire/Haire_Jump${i}.PNG`);
         }
         // Kamil
         for (let i = 1; i <= 2; i++) {
@@ -111,13 +117,12 @@ export default class RaceScene extends Phaser.Scene {
         }
         // Beersquiviri
         for (let i = 1; i <= 2; i++) {
-            this.load.image(`BeerJump${i}`, `assets/ponis/Beersquiviri/Beer_Jump${i}.PNG`);
+            this.load.image(`BeersquiviryJump${i}`, `assets/ponis/Beersquiviri/Beer_Jump${i}.PNG`);
         }
         // Dom
         for (let i = 1; i <= 2; i++) {
-            this.load.image(`DomJump${i}`, `assets/ponis/Dod/Dod_Jump${i}.PNG`);
+            this.load.image(`DomdomdadomJump${i}`, `assets/ponis/Dod/Dod_Jump${i}.PNG`);
         }
-
 
         // PowerUps
         //this.load.image('LimeLemon', 'assets/Elements/LimeLemon_PowerUp.png');
@@ -134,6 +139,10 @@ export default class RaceScene extends Phaser.Scene {
             .setOrigin(0.5)
             .setDepth(-1);
 
+        // Frame
+        this.add.image(width / 2, height / 2, 'Frame')
+            .setDepth(10);
+
         // Sun TOP
         this.add.image((width / 2) + 600, (height / 2) - 430, 'Sun')
             .setScale(0.4)
@@ -143,6 +152,23 @@ export default class RaceScene extends Phaser.Scene {
         this.add.image((width / 2) + 600, (height / 2) + 130, 'Sun')
             .setScale(0.4)
             .setDepth(0);
+
+        // PONIS RUN ANIMATION
+        const runPonies = ['Ache', 'Haiire', 'Kamil', 'Beersquiviry', 'Domdomdadom'];
+
+        runPonies.forEach(p => {
+            const frames = [];
+            for (let i = 1; i <= 4; i++) {
+                frames.push({ key: `${p}Run${i}` });
+            }
+
+            this.anims.create({
+                key: `${p}_run`,   // nombre dinámico
+                frames,
+                frameRate: 9,
+                repeat: -1
+            });
+        });
 
         // Floors coords
         this.laneYTop = CONFIG.TRACK_HEIGHT / 2;
@@ -172,61 +198,38 @@ export default class RaceScene extends Phaser.Scene {
         this.add.rectangle(width / 2, height / 2, width, 3, 0xffffff);
 
         // Línea roja (referencia)
-        const redTopY = this.laneYTop + CONFIG.RED_OFFSET_FROM_CENTER;
-        const redBotY = this.laneYBottom + CONFIG.RED_OFFSET_FROM_CENTER;
+        const redTopY = this.laneYTop + 20;
+        const redBotY = this.laneYBottom + 20;
 
         // Previous character selection
         const p1 = this.registry.get('player1Character');
         const p2 = this.registry.get('player2Character');
 
-
         const makePony = (x, redLineY, keyOrObj) => {
+
             const key = (keyOrObj && keyOrObj.key) ? keyOrObj.key : keyOrObj;
-            const img = this.physics.add.image(x, redLineY, `${key}_static`).setOrigin(0.5, 1);
+
+            // Usamos el primer frame como textura inicial
+            const sprite = this.physics.add.sprite(x, redLineY, `${key}Run4`)
+                .setOrigin(0.5, 1);
 
             const targetHeight = 80;
-            img.setScale(targetHeight / img.height);
+            sprite.setScale(0.35);
 
-            img.body.setAllowGravity(true);
-            img.body.setGravityY(CONFIG.GRAVITY_Y);
-            img.body.setAllowRotation(false);
-            img.body.setBounce(0);
+            sprite.body.setAllowGravity(true);
+            sprite.body.setGravityY(CONFIG.GRAVITY_Y);
+            sprite.body.setAllowRotation(false);
+            sprite.body.setBounce(0);
 
-            return img;
-        };
-
-
-        /*  PRUEBA QUE NO ME SALE PARA PONER LAS ANIMACIONES
-        const makeUpPony = (x, redLineY, keyOrObj) => {
-            const ponyKey = keyOrObj.key;
-
-            // Animación dinámica: Ache1, Ache2, Ache3, Ache4
-            const RunFrames = [];
-            for (let i = 1; i <= 4; i++) {
-                RunFrames.push({ key: `${ponyKey}${i}` });
-            }
-
-            // Crear animación única para cada pony
-            const animKey = `${ponyKey}_run`;
-
-            this.anims.create({
-                key: animKey,
-                frames: RunFrames,
-                frameRate: 10,
-                repeat: -1
+            // Wait 4 secs
+            this.time.delayedCall(4000, () => {
+                sprite.play(`${key}_run`);
             });
-
-            // Crear sprite del pony
-            const sprite = this.physics.add
-                .sprite(x, redLineY, `${ponyKey}1`) // primer frame
-                .setDepth(3);
-
-            sprite.play(animKey);
 
             return sprite;
         };
-        */
 
+        // Invisible platform
         const makeGroundAtRed = (redLineY) => {
             const H = CONFIG.GROUND_HEIGHT;
             const groundCenterY = redLineY + H / 2;
@@ -236,8 +239,8 @@ export default class RaceScene extends Phaser.Scene {
             return rect;
         };
 
-        this.playerTop = makePony(90, redTopY + 195, p1).setDepth(3);  //CONTORL THE SPAWN COORDINATES OF PONIS
-        this.playerBottom = makePony(90, redBotY + 195, p2).setDepth(3);
+        this.playerTop = makePony(300, redTopY, p1).setDepth(3);  //CONTORL THE SPAWN COORDINATES OF PONIS
+        this.playerBottom = makePony(300, redBotY, p2).setDepth(3);
 
 
         this.groundTop = makeGroundAtRed(redTopY + 200);  //control the invisible gorund coorinates
@@ -469,17 +472,18 @@ export default class RaceScene extends Phaser.Scene {
             : (isBooster ? this.boostersBot : this.obstaclesBot);
 
         const redY = (laneKey === 'top')
-            ? (this.laneYTop + CONFIG.RED_OFFSET_FROM_CENTER + 200)
-            : (this.laneYBottom + CONFIG.RED_OFFSET_FROM_CENTER + 200);
+            ? (this.laneYTop + CONFIG.RED_OFFSET_FROM_CENTER + 150)
+            : (this.laneYBottom + CONFIG.RED_OFFSET_FROM_CENTER + 150);
 
-        const key = isBooster ? 'Apple' : 'obstacle';
+        const key = isBooster ? 'Apple' : 'WoodFence';
 
         const obj = group.create(CONFIG.WIDTH + 30, redY, key)
             .setOrigin(0.5, 1)
             .setDepth(3);
 
-        if (isBooster) obj.setScale(0.4);
-
+        if (isBooster) obj.setScale(0.4)
+            else obj.setScale(0.4);
+        
         obj.body.setAllowGravity(false);
         obj.body.setImmovable(true);
 
@@ -589,8 +593,8 @@ export default class RaceScene extends Phaser.Scene {
         if (!this.state.running || this.state.finished) return;
 
         const dt = dtMs / 1000;
-        const topScroll = this.state.lanes.top.speed * 100 * dt;
-        const botScroll = this.state.lanes.bottom.speed * 100 * dt;
+        const topScroll = this.state.lanes.top.speed * 150 * dt;
+        const botScroll = this.state.lanes.bottom.speed * 150 * dt;
 
         // Move floor
         this.trackTop.tilePositionX += topScroll;

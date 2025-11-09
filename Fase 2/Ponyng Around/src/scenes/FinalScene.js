@@ -122,8 +122,8 @@ export default class FinalScene extends Phaser.Scene {
         this.anims.create({
             key: 'blood',
             frames: bloodFrames,
-            frameRate: 18, 
-            repeat: -1     
+            frameRate: 18,
+            repeat: 0
         });
 
         // MEAT only deinition, because if not it will start the animation
@@ -133,25 +133,25 @@ export default class FinalScene extends Phaser.Scene {
         this.anims.create({
             key: 'meat',
             frames: meatFrames,
-            frameRate: 15,
-            repeat: -1     
+            frameRate: 8,
+            repeat: 0
         });
 
         // ========= PONIS ==========
 
         // ---------- GET THE LOOSER PONI ----------//
 
-        
+
         const looserName = this.registry.get('looser'); // Registry created end of Racescene
         const deathKey = `${looserName}D`;
 
         this.registry.set('looser', looserName); //save name of looser
 
 
-        const pony = this.physics.add.image(width / 2 - 600, height / 2, deathKey) 
-            .setDepth(7)
-            .setScale(0.4)
-            .setVelocityX(150);
+        const pony = this.physics.add.image((width / 2) - 960, (height / 2), deathKey)
+            .setDepth(5)
+            .setScale(0.5)
+            .setVelocityX(120);
 
         const crusherZoneX = width / 2 - 100;
 
@@ -162,32 +162,52 @@ export default class FinalScene extends Phaser.Scene {
             if (!this.hasCrashed && pony.x >= crusherZoneX) {
                 this.hasCrashed = true;
 
-                //The ponie goes straight for a while
-                pony.setVelocityX(200);
+                this.time.delayedCall(1500, () => {
+                    //The pony goes straight for a while
+                    pony.setVelocityX(130);
 
-                // When 0.4 seconds pass, the srpite destroys
-                this.time.delayedCall(400, () => {
-                    pony.setVisible(false); 
-                    
-                    //Starts the blood animation
-                    const blood = this.add.sprite(width / 2, height / 2, 'Blood1')
-                        .setDepth(8)
-                        .setScale(0.8);
-                    blood.play('blood');
+                    // When 1 second pass, the srpite destroys
+                    this.time.delayedCall(800, () => {
+                        pony.setVisible(false);
 
-                    //Then the meat
-                    this.time.delayedCall(600, () => {
-                        const meat = this.add.sprite(width / 2 + 65 , height / 2 + 20 , 'Meat1') //ajuste porque no se que ha pasado
-                            .setDepth(9)
-                            .setScale(0.9);
-                        meat.play('meat');
+                        //Starts the blood animation
+                        const blood = this.add.sprite(width / 2, height / 2, 'Blood1')
+                            .setDepth(8);
+
+                        blood.play('blood');
+
+                        blood.once('animationcomplete', () => {
+
+                            blood.setVisible(false);
+
+                            // Wait before de shake
+                            this.time.delayedCall(400, () => {
+                                // Shake camera
+                                this.cameras.main.shake(1000, 0.01);
+                            });
+
+                            this.time.delayedCall(1000, () => {
+                                //Then the meat
+                                this.time.delayedCall(900, () => {
+                                    const meat = this.add.sprite(width / 2, height / 2, 'Meat1') //ajuste porque no se que ha pasado
+                                        .setDepth(1);
+
+                                    meat.play('meat');
+
+                                    meat.once('animationcomplete', () => {
+                                        meat.setVisible(false);
+                                    });
+                                });
+                            });
+                        });
                     });
 
 
+                    /*
                     // After 4 seconds change scene
                     this.time.delayedCall(4000, () => {
                         this.scene.start('CharacterSelectScene'); //CAMBIAR ESTA AL PUBLICAR
-                    });
+                    }); */
                 });
             }
         });

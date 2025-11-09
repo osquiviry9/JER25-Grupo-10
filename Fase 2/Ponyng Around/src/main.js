@@ -4,6 +4,8 @@ import MainMenuScene from './scenes/MainMenuScene.js';
 import CharacterSelectScene from './scenes/CharacterSelectScene.js';
 import RaceScene from './scenes/RaceScene.js';
 import FinalScene from './scenes/FinalScene.js';
+import SettingsScene from './scenes/SettingsScene.js';
+import CreditsScene from './scenes/CreditsScene.js';
 
 
 const config = {
@@ -18,8 +20,8 @@ const config = {
             debug: false
         }
     },
-    scene: [CharacterSelectScene, RaceScene, FinalScene]
-    //scene: [FinalScene]
+    scene: [MainMenuScene, SettingsScene, CreditsScene, CharacterSelectScene, RaceScene, FinalScene]
+    // scene: [FinalScene]
     // scene: [MainMenuScene, CharacterSelectScene, RaceScene, FinalScene]
     //scene: [IntroScene,IntroAnimScene,MainMenuScene, CharacterSelectScene, RaceScene, FinalScene] <- LA BUENA
 };

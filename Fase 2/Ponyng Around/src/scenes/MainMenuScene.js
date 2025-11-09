@@ -29,7 +29,7 @@ export default class MainMenuScene extends Phaser.Scene {
 
         const { width, height } = this.scale;
 
-        this.cameras.main.setBackgroundColor('#000000'); // cambiar ?
+        this.cameras.main.setBackgroundColor('#000000'); 
 
         const bg = this.add.image(width / 2, height / 2, 'menuBackground');
         bg.setOrigin(0.5);
@@ -56,9 +56,9 @@ export default class MainMenuScene extends Phaser.Scene {
 
         //Lista de botones
         const buttons = [
-            { x: width * 0.5, y: height * 0.2, key: 'bttnPlay', hover: 'bttnPlayHover', action: () => this.scene.start('CharacterSelectScene'), scale: 1 },
-            { x: width * 0.84, y: height * 0.8, key: 'bttnSettings', hover: 'bttnSettingsHover', action: () => console.log('Abrir ajustes'), scale: 1},
-            { x: width * 0.24, y: height * 0.35, key: 'bttnCredits', hover: 'bttnCreditsHover', action: () => console.log('Mostrar créditos'), scale: 0.8},
+            { x: width * 0.5, y: height * 0.2, key: 'bttnPlay', hover: 'bttnPlayHover', action: () => this.scene.start('CharacterSelectScene'), scale: 0.9 },
+            { x: width * 0.84, y: height * 0.8, key: 'bttnSettings', hover: 'bttnSettingsHover', action: () => this.scene.start('SettingsScene'), scale: 1},
+            { x: width * 0.24, y: height * 0.35, key: 'bttnCredits', hover: 'bttnCreditsHover', action: () => this.scene.start('CreditsScene'), scale: 0.7},
         ];
 
         buttons.forEach(btn => {
