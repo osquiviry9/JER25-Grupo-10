@@ -115,22 +115,18 @@ export default class FinalScene extends Phaser.Scene {
             .setDepth(4);
         this.platform.play('platform');
 
-        // BLOOD EXPLOSION: // ANADIR LOGICA PARA QUE APAREZCA SOLO CUANDO EL PONI LLEGA A LA TRITURADORA, PONER COLLIDER O ALGO
+        // BLOOD EXPLOSION only definition, because if not it will start the animation
         const bloodFrames = [];
-        for (let i = 1; i <= 8; i++) bloodFrames.push({ key: `Blood${i}` });
+        for (let i = 1; i <= 10; i++) bloodFrames.push({ key: `Blood${i}` });
 
         this.anims.create({
             key: 'blood',
             frames: bloodFrames,
-            frameRate: 15,
-            repeat: -1
+            frameRate: 18, 
+            repeat: -1     
         });
 
-        this.blood = this.physics.add.sprite((width / 2), (height / 2), 'Blood1')
-            .setDepth(8);
-        this.blood.play('blood');
-
-        // MEAT: // ANADIR LOGICA PARA QUE APAREZCA SOLO DESPUES DE QUE EL PONI ES TRITURADO, PONER COLLIDER O ALGO
+        // MEAT only deinition, because if not it will start the animation
         const meatFrames = [];
         for (let i = 1; i <= 12; i++) meatFrames.push({ key: `Meat${i}` });
 
@@ -138,27 +134,64 @@ export default class FinalScene extends Phaser.Scene {
             key: 'meat',
             frames: meatFrames,
             frameRate: 15,
-            repeat: -1
+            repeat: -1     
         });
-
-        this.blood = this.physics.add.sprite((width / 2), (height / 2), 'Meat1')
-            .setDepth(1);
-        this.blood.play('meat');
-
 
         // ========= PONIS ==========
 
-        // SOCORRO NO FUNCIONA AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        // ---------- GET THE LOOSER PONI ----------//
 
-        const looserName = this.registry.get('looser'); // <-- lee del registry
-        //const looserName = looserKey.name || looserKey.key || 'Jugador';
+        
+        const looserName = this.registry.get('looser'); // Registry created end of Racescene
+        const deathKey = `${looserName}D`;
 
-        if (looserName === 'Ache') {
-            this.add.image((width / 2)-200, height / 2, 'AcheD')
-                .setDepth(7);
-        }
+        this.registry.set('looser', looserName); //save name of looser
 
-        // Camera adjustment to frame everything without cropping
+
+        const pony = this.physics.add.image(width / 2 - 600, height / 2, deathKey) 
+            .setDepth(7)
+            .setScale(0.4)
+            .setVelocityX(150);
+
+        const crusherZoneX = width / 2 - 100;
+
+        this.hasCrashed = false;
+
+        // ----------- DEATH SEQUENCE -----------
+        this.physics.world.on('worldstep', () => {
+            if (!this.hasCrashed && pony.x >= crusherZoneX) {
+                this.hasCrashed = true;
+
+                //The ponie goes straight for a while
+                pony.setVelocityX(200);
+
+                // When 0.4 seconds pass, the srpite destroys
+                this.time.delayedCall(400, () => {
+                    pony.setVisible(false); 
+                    
+                    //Starts the blood animation
+                    const blood = this.add.sprite(width / 2, height / 2, 'Blood1')
+                        .setDepth(8)
+                        .setScale(0.8);
+                    blood.play('blood');
+
+                    //Then the meat
+                    this.time.delayedCall(600, () => {
+                        const meat = this.add.sprite(width / 2 + 65 , height / 2 + 20 , 'Meat1') //ajuste porque no se que ha pasado
+                            .setDepth(9)
+                            .setScale(0.9);
+                        meat.play('meat');
+                    });
+
+
+                    // After 4 seconds change scene
+                    this.time.delayedCall(4000, () => {
+                        this.scene.start('CharacterSelectScene'); //CAMBIAR ESTA AL PUBLICAR
+                    });
+                });
+            }
+        });
+
         const margin = 0.8;
         const zoomX = (width * margin) / width;
         const zoomY = (height * margin) / height;

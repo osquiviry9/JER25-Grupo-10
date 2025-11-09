@@ -179,7 +179,7 @@ export default class RaceScene extends Phaser.Scene {
         const p1 = this.registry.get('player1Character');
         const p2 = this.registry.get('player2Character');
 
-        
+
         const makePony = (x, redLineY, keyOrObj) => {
             const key = (keyOrObj && keyOrObj.key) ? keyOrObj.key : keyOrObj;
             const img = this.physics.add.image(x, redLineY, `${key}_static`).setOrigin(0.5, 1);
@@ -194,7 +194,7 @@ export default class RaceScene extends Phaser.Scene {
 
             return img;
         };
-        
+
 
         /*  PRUEBA QUE NO ME SALE PARA PONER LAS ANIMACIONES
         const makeUpPony = (x, redLineY, keyOrObj) => {
@@ -479,7 +479,7 @@ export default class RaceScene extends Phaser.Scene {
             .setDepth(3);
 
         if (isBooster) obj.setScale(0.4);
-        
+
         obj.body.setAllowGravity(false);
         obj.body.setImmovable(true);
 
@@ -529,14 +529,15 @@ export default class RaceScene extends Phaser.Scene {
 
         // WINNER
         const winnerKey = winner === 'top' ? p1 : p2;
-        const winnerName = winnerKey.key; // || 'Jugador';
+        const winnerName = winnerKey?.key || p1 || 'Jugador';
 
         // LOOSER
         const looserKey = winner === 'top' ? p2 : p1;
-        const looserName = looserKey.key; // || 'Jugador';
+        const looserName = looserKey?.key || p2 || 'Jugador';
 
-        // Save for final scene:
+        // 🔹 Guarda el nombre del perdedor para la FinalScene
         this.registry.set('looser', looserName);
+
 
         // Show who won
         const msg = `¡${winnerName} WON!`;
@@ -572,8 +573,8 @@ export default class RaceScene extends Phaser.Scene {
             ease: 'Back.Out'
         });
 
-        // START FINAL SCENE (after 5 secs):
-        this.time.delayedCall(5000, () => {
+        // START FINAL SCENE (after 5 secs): //ME PARECE MUHCO LE PINGO 3
+        this.time.delayedCall(3000, () => {
             this.scene.start('FinalScene');
         });
 
