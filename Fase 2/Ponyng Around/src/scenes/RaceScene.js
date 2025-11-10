@@ -17,7 +17,7 @@ const CONFIG = {
     BOOSTER_PROB: 0.25,
 
     // Salto
-    JUMP_VELOCITY: -360,
+    JUMP_VELOCITY: -500,
     GRAVITY_Y: 900,
 
     // Geometría pista
@@ -69,15 +69,10 @@ export default class RaceScene extends Phaser.Scene {
         // Frame
         this.load.image('Frame', 'assets/Elements/GameFrame.PNG');
 
-        // Red obstacle
-        g.fillStyle(0x8b0000, 1); g.fillRect(0, 0, 40, 40);
-        g.generateTexture('obstacle', 40, 40);
-        g.clear();
-
-        // Green booster 
-        /*g.fillStyle(0x32cd32, 1); g.fillRect(0, 0, 40, 40);
-        g.generateTexture('booster', 40, 40);
-        g.clear();*/
+        // =========== BUTTONS =============
+        // Pause button
+        this.load.image('bttnPause', 'assets/Buttons/pausebttn.png');
+        this.load.image('bttnPauseHover', 'assets//Buttons/pausebttn_hover.png');
 
         // =========== PONIES =============
         // RUN ANIMATIONS:
@@ -104,23 +99,23 @@ export default class RaceScene extends Phaser.Scene {
 
         // JUMP ANIMATIONS:
         // Ache
-        for (let i = 1; i <= 2; i++) {
+        for (let i = 1; i <= 3; i++) {
             this.load.image(`AcheJump${i}`, `assets/ponis/Ache/Ache_Jump${i}.PNG`);
         }
         // Haire
-        for (let i = 1; i <= 2; i++) {
+        for (let i = 1; i <= 3; i++) {
             this.load.image(`HaiireJump${i}`, `assets/ponis/Haire/Haire_Jump${i}.PNG`);
         }
         // Kamil
-        for (let i = 1; i <= 2; i++) {
+        for (let i = 1; i <= 3; i++) {
             this.load.image(`KamilJump${i}`, `assets/ponis/Kamil/Kamil_Jump${i}.PNG`);
         }
         // Beersquiviri
-        for (let i = 1; i <= 2; i++) {
+        for (let i = 1; i <= 3; i++) {
             this.load.image(`BeersquiviryJump${i}`, `assets/ponis/Beersquiviri/Beer_Jump${i}.PNG`);
         }
         // Dom
-        for (let i = 1; i <= 2; i++) {
+        for (let i = 1; i <= 3; i++) {
             this.load.image(`DomdomdadomJump${i}`, `assets/ponis/Dod/Dod_Jump${i}.PNG`);
         }
 
@@ -153,6 +148,33 @@ export default class RaceScene extends Phaser.Scene {
             .setScale(0.4)
             .setDepth(0);
 
+        //Buttons
+        const buttons = [
+            { x: width * 0.95, y: height * 0.1, key: 'bttnPause', hover: 'bttnPause', action: () => this.scene.start('PauseScene'), scale: 0.6, depth: 9},
+        ];
+
+        buttons.forEach(btn => {
+            const button = this.add.image(btn.x, btn.y, btn.key)
+                .setInteractive({ useHandCursor: true })
+                .setScale(btn.scale)
+                .setDepth(btn.depth);
+
+            // Hover
+            button.on('pointerover', () => {
+                button.setTexture(btn.hover);
+                button.setScale(btn.scale * 1.05);
+            });
+
+            // Salir hover
+            button.on('pointerout', () => {
+                button.setTexture(btn.key);
+                button.setScale(btn.scale);
+            });
+
+            // Click
+            button.on('pointerdown', btn.action);
+        });
+
         // PONIS RUN ANIMATION
         const runPonies = ['Ache', 'Haiire', 'Kamil', 'Beersquiviry', 'Domdomdadom'];
 
@@ -167,6 +189,23 @@ export default class RaceScene extends Phaser.Scene {
                 frames,
                 frameRate: 9,
                 repeat: -1
+            });
+        });
+
+        // PONIS JUMP ANIMATION
+        const jumpPonies = ['Ache', 'Haiire', 'Kamil', 'Beersquiviry', 'Domdomdadom'];
+
+        jumpPonies.forEach(p => {
+            const frames = [];
+            for (let i = 1; i <= 3; i++) {
+                frames.push({ key: `${p}Jump${i}` });
+            }
+
+            this.anims.create({
+                key: `${p}_jump`,   // nombre dinámico
+                frames,
+                frameRate: 9,
+                repeat: 0
             });
         });
 
@@ -212,6 +251,8 @@ export default class RaceScene extends Phaser.Scene {
             // Usamos el primer frame como textura inicial
             const sprite = this.physics.add.sprite(x, redLineY, `${key}Run4`)
                 .setOrigin(0.5, 1);
+
+            sprite.name = key;
 
             const targetHeight = 80;
             sprite.setScale(0.35);
@@ -433,8 +474,21 @@ export default class RaceScene extends Phaser.Scene {
 
     jump(player) {
         if (!this.isOnGround(player)) return;
+
         player.setVelocityY(CONFIG.JUMP_VELOCITY);
+
+        // reproducir animación de salto
+        if (player.name) {
+            player.play(`${player.name}_jump`, true);
+        }
+
+        this.time.delayedCall(800, () => {
+            if (player.name) {
+                player.play(`${player.name}_run`, true);
+            }
+        });
     }
+
 
     applyAlteration(laneKey, factor) {
         const lane = this.state.lanes[laneKey];
@@ -455,8 +509,14 @@ export default class RaceScene extends Phaser.Scene {
 
     hitObstacle(laneKey, obstacle) {
         const lane = this.state.lanes[laneKey];
-        if (lane.immune) { obstacle.destroy(); return; }
+
+        if (lane.immune) {
+            obstacle.destroy();
+            return;
+        }
+
         obstacle.destroy();
+
         this.applyAlteration(laneKey, CONFIG.SLOW_FACTOR);
     }
 
@@ -472,8 +532,8 @@ export default class RaceScene extends Phaser.Scene {
             : (isBooster ? this.boostersBot : this.obstaclesBot);
 
         const redY = (laneKey === 'top')
-            ? (this.laneYTop + CONFIG.RED_OFFSET_FROM_CENTER + 150)
-            : (this.laneYBottom + CONFIG.RED_OFFSET_FROM_CENTER + 150);
+            ? (this.laneYTop + CONFIG.RED_OFFSET_FROM_CENTER + 200)
+            : (this.laneYBottom + CONFIG.RED_OFFSET_FROM_CENTER + 200);
 
         const key = isBooster ? 'Apple' : 'WoodFence';
 
@@ -482,8 +542,8 @@ export default class RaceScene extends Phaser.Scene {
             .setDepth(3);
 
         if (isBooster) obj.setScale(0.4)
-            else obj.setScale(0.4);
-        
+        else obj.setScale(0.4);
+
         obj.body.setAllowGravity(false);
         obj.body.setImmovable(true);
 

@@ -6,6 +6,7 @@ import RaceScene from './scenes/RaceScene.js';
 import FinalScene from './scenes/FinalScene.js';
 import SettingsScene from './scenes/SettingsScene.js';
 import CreditsScene from './scenes/CreditsScene.js';
+import PauseScene from './scenes/PauseScene.js';
 
 
 const config = {
@@ -20,7 +21,7 @@ const config = {
             debug: false
         }
     },
-    scene: [MainMenuScene, SettingsScene, CreditsScene, CharacterSelectScene, RaceScene, FinalScene]
+    scene: [MainMenuScene, SettingsScene, CreditsScene, CharacterSelectScene, RaceScene, PauseScene, FinalScene]
     // scene: [FinalScene]
     // scene: [MainMenuScene, CharacterSelectScene, RaceScene, FinalScene]
     //scene: [IntroScene,IntroAnimScene,MainMenuScene, CharacterSelectScene, RaceScene, FinalScene] <- LA BUENA
