@@ -150,8 +150,20 @@ export default class RaceScene extends Phaser.Scene {
 
         //Buttons
         const buttons = [
-            { x: width * 0.95, y: height * 0.1, key: 'bttnPause', hover: 'bttnPause', action: () => this.scene.start('PauseScene'), scale: 0.6, depth: 9},
+            {
+                x: width * 0.95,
+                y: height * 0.1,
+                key: 'bttnPause',
+                hover: 'bttnPauseHover',
+                scale: 0.6,
+                depth: 9,
+                action: () => {
+                    this.scene.launch('PauseScene'); // Opens
+                    this.scene.pause();              // Here was the PROBLEM!!!!!!!! It not pauses!
+                }
+            },
         ];
+
 
         buttons.forEach(btn => {
             const button = this.add.image(btn.x, btn.y, btn.key)
@@ -237,8 +249,8 @@ export default class RaceScene extends Phaser.Scene {
         this.add.rectangle(width / 2, height / 2, width, 3, 0xffffff);
 
         // Línea roja (referencia)
-        const redTopY = this.laneYTop + 20;
-        const redBotY = this.laneYBottom + 20;
+        const redTopY = this.laneYTop;  //me voy a podar alfa - beta mente las venas no funcionaaaaa porqueeee ayudaaaaa
+        const redBotY = this.laneYBottom;
 
         // Previous character selection
         const p1 = this.registry.get('player1Character');
@@ -254,7 +266,7 @@ export default class RaceScene extends Phaser.Scene {
 
             sprite.name = key;
 
-            const targetHeight = 80;
+            const targetHeight = 0;
             sprite.setScale(0.35);
 
             sprite.body.setAllowGravity(true);

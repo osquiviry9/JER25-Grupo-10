@@ -167,6 +167,68 @@ export default class CharacterSelectScene extends Phaser.Scene {
 
         this.cameras.main.setZoom(zoom);
         this.cameras.main.centerOn(width / 2, height / 2);
+
+        // ----------- KEYBOARD CONTROLS -----------
+
+        this.keysP1 = this.input.keyboard.addKeys({
+            left: Phaser.Input.Keyboard.KeyCodes.A,
+            right: Phaser.Input.Keyboard.KeyCodes.D,
+            jump: Phaser.Input.Keyboard.KeyCodes.W
+        });
+
+        this.keysP2 = this.input.keyboard.addKeys({
+            left: Phaser.Input.Keyboard.KeyCodes.LEFT,
+            right: Phaser.Input.Keyboard.KeyCodes.RIGHT,
+            jump: Phaser.Input.Keyboard.KeyCodes.UP 
+        });
+
+        // --- PLAYER 1 ---
+        this.keysP1.left.on('down', () => {
+            if (!this.selected.p1) {
+                this.changePony('p1', -1, this[`ponyImage_p1`], this[`ponyName_p1`]);
+            }
+        });
+
+        this.keysP1.right.on('down', () => {
+            if (!this.selected.p1) {
+                this.changePony('p1', 1, this[`ponyImage_p1`], this[`ponyName_p1`]);
+            }
+        });
+
+        this.keysP1.jump.on('down', () => {
+            if (!this.selected.p1) {
+
+                this[`readyButton_p1`].emit('pointerdown');
+            } else {
+
+                this[`cancelButton_p1`].emit('pointerdown');
+            }
+        });
+
+        // --- PLAYER 2 ---
+        this.keysP2.left.on('down', () => {
+            if (!this.selected.p2) {
+                this.changePony('p2', -1, this[`ponyImage_p2`], this[`ponyName_p2`]);
+            }
+        });
+
+        this.keysP2.right.on('down', () => {
+            if (!this.selected.p2) {
+                this.changePony('p2', 1, this[`ponyImage_p2`], this[`ponyName_p2`]);
+            }
+        });
+
+        this.keysP2.jump.on('down', () => {
+            if (!this.selected.p2) {
+               
+                this[`readyButton_p2`].emit('pointerdown');
+            } else {
+
+                this[`cancelButton_p2`].emit('pointerdown');
+            }
+        });
+
+
     }
 
     createCharacterPanel(player, centerX, centerY) {
@@ -176,6 +238,8 @@ export default class CharacterSelectScene extends Phaser.Scene {
             .setOrigin(0.5)
             .setDisplaySize(580, 600)
             .setScale(0.5);
+        this[`ponyImage_${player}`] = image;
+
 
         // Shows the 2 possible asset for the border
         const borderKey = player;
@@ -198,6 +262,27 @@ export default class CharacterSelectScene extends Phaser.Scene {
             fontFamily: 'Arial Black',
             color: '#000'
         }).setOrigin(0.5);
+        this[`ponyName_${player}`] = nameText;
+
+
+        // ----------- JUMPING TEXT  -----------
+        const jumpKeyText = (player === 'p1') ? '¡Salta con  W!' : '¡Salta con  ↑!'; //texto controles
+        const jumpKeyColor = (player === 'p1') ? '#ff69b4' : '#67b7ff';
+
+        this.add.text(centerX, centerY + 390, jumpKeyText, {
+            fontFamily: 'Arial Black',
+            fontSize: '28px',
+            color: jumpKeyColor,
+            stroke: '#000000',
+            strokeThickness: 5,
+            shadow: {
+                offsetX: 3,
+                offsetY: 3,
+                color: '#000000',
+                blur: 6,
+                fill: true
+            }
+        }).setOrigin(0.5).setDepth(5);
 
 
         // Shows the arrows to change character
@@ -220,8 +305,11 @@ export default class CharacterSelectScene extends Phaser.Scene {
         });
 
 
-        // Shows the ready button to choose the character
-        const readyButton = this.add.text(centerX, centerY + 320, 'Done', {
+        
+        const keyLabel = (player === 'p1') ? 'W' : '↑';
+
+        // ----------- DONE BUTTON -----------
+        const readyButton = this.add.text(centerX, centerY + 320, `Done (${keyLabel})`, {
             fontSize: '32px',
             fontFamily: 'Arial Black',
             backgroundColor: '#ff69b4',
@@ -229,8 +317,8 @@ export default class CharacterSelectScene extends Phaser.Scene {
             padding: { left: 20, right: 20, top: 10, bottom: 10 }
         }).setOrigin(0.5).setInteractive({ useHandCursor: true });
 
-        // Shows cancel button, so the player can choose another poni once they have pressed the ready button (it's invisible at firt)
-        const cancelButton = this.add.text(centerX, centerY + 320, 'Cancel', {
+        // ----------- CANCEL BUTTON -----------
+        const cancelButton = this.add.text(centerX, centerY + 320, `Cancel (${keyLabel})`, {
             fontSize: '32px',
             fontFamily: 'Arial Black',
             backgroundColor: '#242121ff',
@@ -239,16 +327,15 @@ export default class CharacterSelectScene extends Phaser.Scene {
         }).setOrigin(0.5).setVisible(false).setInteractive({ useHandCursor: true });
 
 
+
         readyButton.on('pointerdown', () => {
-            if (readyButton.alpha < 1) return;      // checks if the ready button can be pressed (if the poni is selected by the other player)
+            if (readyButton.alpha < 1) return;      
 
             this.selected[player] = true;
             readyButton.setStyle({ backgroundColor: '#242121ff' });
 
-            // Shows the cancel button once the ready button is pressed
             cancelButton.setVisible(true);
 
-            // Registers selected poni and calls the methods bellow so hte 'Done0 button is updated and then checks if they are both ready
             const selectedPony = this.ponies[this.currentIndex[player]];
             this.selectedPonies[player] = selectedPony;
             this.updateReadyButtons();
@@ -259,13 +346,11 @@ export default class CharacterSelectScene extends Phaser.Scene {
 
             this.selected[player] = false;
 
-            // Shows the ready button and restores it's style
             cancelButton.setVisible(false);
             readyButton.setStyle({ backgroundColor: '#ff69b4' });
 
             // Update the ready button so the player can change ponis again
             this.updateReadyButtons();
-            //this.checkReady();
             if (!(this.selected.p1 && this.selected.p2)) {
                 this.startButton.setVisible(false);
                 this.startButton.setAlpha(0);
@@ -273,7 +358,6 @@ export default class CharacterSelectScene extends Phaser.Scene {
         });
 
 
-        // Saves reference
         this[`readyButton_${player}`] = readyButton;
         this[`cancelButton_${player}`] = cancelButton;
     }
@@ -320,129 +404,3 @@ export default class CharacterSelectScene extends Phaser.Scene {
 
 
 
-/*
- /*createPoniesGrid() {
-    const { width, height } = this.scale;
-
-    const iconSize = 95;
-    const spacing = 120;
-
-    const p1_y = 170;
-    const p2_y = 380;
-
-    const nameOffset = 75;
-
-    const totalWidth = spacing * (this.ponies.length - 1);
-    const startX = width / 2 - totalWidth / 2;
-
-    this.iconGroups = { p1: [], p2: [] };
-
-
-
-    this.ponies.forEach((pony, i) => {
-        const x = startX + i * spacing;
-
-        const icon1 = this.add.image(x, p1_y, `${pony.key}_static`)
-            .setInteractive({ useHandCursor: true })
-            .setData('ponyKey', pony.key)
-            .setData('player', 'p1')
-            .setOrigin(0.5);
-
-        icon1.setScale(iconSize / icon1.width);
-        icon1.on('pointerdown', () => this.selectPony('p1', pony, icon1, p1_y, nameOffset));
-        this.iconGroups.p1.push(icon1);
-
-        const icon2 = this.add.image(x, p2_y, `${pony.key}_static`)
-            .setInteractive({ useHandCursor: true })
-            .setData('ponyKey', pony.key)
-            .setData('player', 'p2')
-            .setOrigin(0.5);
-
-        icon2.setScale(iconSize / icon2.width);
-        icon2.on('pointerdown', () => this.selectPony('p2', pony, icon2, p2_y, nameOffset));
-        this.iconGroups.p2.push(icon2);
-    });
-}
-
-selectPony(player, pony, icon) {
-    const nameOffset = 90;
-    const videoSize = 95;
-    const otherPlayer = player === 'p1' ? 'p2' : 'p1';
-
-    if (this.selectedPonies[otherPlayer]?.key === pony.key) return;
-
-    this.selectedPonies[player] = pony;
-
-    ['Highlight', 'NameText', 'Video'].forEach(type => {
-        if (this[player + type]) this[player + type].destroy();
-    });
-
-    this[player + 'Highlight'] = this.add.rectangle(icon.x, icon.y, 120, 120)
-        .setStrokeStyle(6, 0xff69b4)
-        .setOrigin(0.5)
-        .setDepth(3);
-
-    const video = this.add.video(icon.x, icon.y, `${pony.key}_anim`)
-        .setOrigin(0.5)
-        .setDepth(2);
-    video.play(true);
-
-    const scale = videoSize / Math.max(video.width, video.height);
-    video.setScale(scale);
-
-    const maskGraphics = this.make.graphics({ add: false });
-    maskGraphics.fillStyle(0xffffff);
-    maskGraphics.fillRect(
-        icon.x - videoSize / 2,
-        icon.y - videoSize / 2,
-        videoSize,
-        videoSize
-    );
-    video.setMask(maskGraphics.createGeometryMask());
-    this[player + 'Video'] = video;
-
-    this[player + 'NameText'] = this.add.text(icon.x, icon.y + nameOffset, pony.key.toUpperCase(), {
-        fontSize: '24px',
-        fontFamily: 'Arial Black',
-        color: '#000'
-    }).setOrigin(0.5).setDepth(4);
-
-    if (this.selectedPonies.p1 && this.selectedPonies.p2) {
-        this.showStartButton();
-    }
-}
-
-
-
-showSelectedVideo(pony, icon) {
-    const x = icon.x;
-    const y = icon.y;
-
-    icon.destroy();
-
-    const video = this.add.video(x, y, `${pony.key}_anim`);
-
-    const maxSize = 150;
-
-    video.setDisplaySize(
-        maxSize,
-        maxSize * (video.height / video.width)
-    );
-
-    video.setOrigin(0.5);
-
-    const maskShape = this.make.graphics();
-    maskShape.fillStyle(0xffffff);
-    maskShape.fillRect(
-        x - maxSize / 2,
-        y - maxSize / 2,
-        maxSize,
-        maxSize
-    );
-    const mask = maskShape.createGeometryMask();
-    video.setMask(mask);
-
-    video.play(true);
-}
-
-*/

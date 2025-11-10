@@ -203,11 +203,11 @@ export default class FinalScene extends Phaser.Scene {
                     });
 
 
-                    /*
-                    // After 4 seconds change scene
-                    this.time.delayedCall(4000, () => {
+                    
+                    // After 8 seconds change scene
+                    this.time.delayedCall(8000, () => {
                         this.scene.start('CharacterSelectScene'); //CAMBIAR ESTA AL PUBLICAR
-                    }); */
+                    }); 
                 });
             }
         });
