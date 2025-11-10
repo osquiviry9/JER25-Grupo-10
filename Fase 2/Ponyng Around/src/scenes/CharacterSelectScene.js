@@ -40,8 +40,10 @@ export default class CharacterSelectScene extends Phaser.Scene {
         this.load.image('background', 'assets/Backgrounds/backgroundColor3.png');
         this.load.image('border1', 'assets/UI/Border1_Selector.png');
         this.load.image('border2', 'assets/UI/Border2_Selector.png');
-        this.load.image('arrowIzq', 'assets/UI/ArrowsIzq_Selector.png');
-        this.load.image('arrowDer', 'assets/UI/ArrowsDer_Selector.png');
+        this.load.image('arrowIzq', 'assets/UI/ArrowIzq_Selector.png');
+        this.load.image('arrowDer', 'assets/UI/ArrowDer_Selector.png');
+        this.load.image('arrowIzqOn', 'assets/UI/ArrowIzqOn_Selector.png');
+        this.load.image('arrowDerOn', 'assets/UI/ArrowDerOn_Selector.png');
     }
 
     showStartButton() {
@@ -57,7 +59,7 @@ export default class CharacterSelectScene extends Phaser.Scene {
 
 
     create() {
-        this.backButton = this.add.text(40, 40, '⬅', {
+        this.backButton = this.add.text(60, 50, '⬅', {
             fontSize: '32px',
             fontFamily: 'Arial Black',
             color: '#ffffff',
@@ -232,7 +234,7 @@ export default class CharacterSelectScene extends Phaser.Scene {
     }
 
     createCharacterPanel(player, centerX, centerY) {
-        // Show actual poni
+        // ----------- PONI ASSETS  -----------
         const pony = this.ponies[this.currentIndex[player]];
         const image = this.add.image(centerX, centerY - 40, `${pony.key}_static`)
             .setOrigin(0.5)
@@ -241,7 +243,7 @@ export default class CharacterSelectScene extends Phaser.Scene {
         this[`ponyImage_${player}`] = image;
 
 
-        // Shows the 2 possible asset for the border
+        // ----------- BORDERS  -----------
         const borderKey = player;
         if (borderKey === 'p1') {
             const border = this.add.image(centerX, centerY - 40, 'border1')
@@ -256,7 +258,7 @@ export default class CharacterSelectScene extends Phaser.Scene {
                 .setScale(0.5);
         }
 
-        // Shows the name of the poni on sceen
+        // ----------- NAME TEXT  -----------
         const nameText = this.add.text(centerX, centerY - 380, pony.key, {
             fontSize: '28px',
             fontFamily: 'Arial Black',
@@ -284,27 +286,36 @@ export default class CharacterSelectScene extends Phaser.Scene {
             }
         }).setOrigin(0.5).setDepth(5);
 
+        // ----------- ARROWS  -----------
+        const arrows = [
+            { x: centerX - 337, y: centerY - 30, key: 'arrowIzq', hover: 'arrowIzqOn', scale: 0.43 },
+            { x: centerX + 332, y: centerY - 30, key: 'arrowDer', hover: 'arrowDerOn', scale: 0.41},
+        ];
 
-        // Shows the arrows to change character
-        const leftArrow = this.add.image(centerX - 325, centerY - 30, 'arrowIzq'
-        ).setOrigin(0.5).setInteractive({ useHandCursor: true }).setScale(0.4);
+        arrows.forEach(btn => {
+            const button = this.add.image(btn.x, btn.y, btn.key)
+                .setInteractive({ useHandCursor: true })
+                .setScale(btn.scale);
 
-        const rightArrow = this.add.image(centerX + 320, centerY - 30, 'arrowDer',
-        ).setOrigin(0.5).setInteractive({ useHandCursor: true }).setScale(0.38);
+            // Hover
+            button.on('pointerover', () => {
+                button.setTexture(btn.hover);
+                button.setScale(btn.scale * 1.05);
+            });
 
-        leftArrow.on('pointerdown', () => {
+            // Exit hover
+            button.on('pointerout', () => {
+                button.setTexture(btn.key);
+                button.setScale(btn.scale);
+            });
+
+            // Click
+            button.on('pointerdown', () => {
             if (!this.selected[player]) {
                 this.changePony(player, -1, image, nameText, readyButton);
             }
-        });
-
-        rightArrow.on('pointerdown', () => {
-            if (!this.selected[player]) {
-                this.changePony(player, 1, image, nameText);
-            }
-        });
-
-
+            });
+        })
         
         const keyLabel = (player === 'p1') ? 'W' : '↑';
 
@@ -316,17 +327,6 @@ export default class CharacterSelectScene extends Phaser.Scene {
             color: '#fff',
             padding: { left: 20, right: 20, top: 10, bottom: 10 }
         }).setOrigin(0.5).setInteractive({ useHandCursor: true });
-
-        // ----------- CANCEL BUTTON -----------
-        const cancelButton = this.add.text(centerX, centerY + 320, `Cancel (${keyLabel})`, {
-            fontSize: '32px',
-            fontFamily: 'Arial Black',
-            backgroundColor: '#242121ff',
-            color: '#fff',
-            padding: { left: 20, right: 20, top: 10, bottom: 10 }
-        }).setOrigin(0.5).setVisible(false).setInteractive({ useHandCursor: true });
-
-
 
         readyButton.on('pointerdown', () => {
             if (readyButton.alpha < 1) return;      
@@ -341,6 +341,15 @@ export default class CharacterSelectScene extends Phaser.Scene {
             this.updateReadyButtons();
             this.checkReady();
         });
+
+        // ----------- CANCEL BUTTON -----------
+        const cancelButton = this.add.text(centerX, centerY + 320, `Cancel (${keyLabel})`, {
+            fontSize: '32px',
+            fontFamily: 'Arial Black',
+            backgroundColor: '#242121ff',
+            color: '#fff',
+            padding: { left: 20, right: 20, top: 10, bottom: 10 }
+        }).setOrigin(0.5).setVisible(false).setInteractive({ useHandCursor: true });
 
         cancelButton.on('pointerdown', () => {
 
@@ -362,6 +371,7 @@ export default class CharacterSelectScene extends Phaser.Scene {
         this[`cancelButton_${player}`] = cancelButton;
     }
 
+    // ----------- CHANGE PONI FROM FRAME -----------
     changePony(player, direction, image, nameText) {
         const total = this.ponies.length;
         this.currentIndex[player] = (this.currentIndex[player] + direction + total) % total;
@@ -373,6 +383,7 @@ export default class CharacterSelectScene extends Phaser.Scene {
         this.updateReadyButtons();
     }
 
+    // ----------- UPDATES READY BUTTON SO PLAYER CANT CHOOSE THE SAME PONI -----------
     updateReadyButtons() {
         const p1Index = this.currentIndex.p1;
         const p2Index = this.currentIndex.p2;
@@ -390,6 +401,7 @@ export default class CharacterSelectScene extends Phaser.Scene {
         }
     }
 
+    // ----------- CHECK IF BOTH PLAYERS ARE READY -----------
     checkReady() {
         if (this.selected.p1 && this.selected.p2) {
             this.tweens.add({

@@ -5,7 +5,7 @@ const CONFIG = {
     WIDTH: 1920,
     HEIGHT: 1080,
 
-    // Velocidad base del scroll
+    // Base velocity of the scroll
     BASE_SPEED: 2.5,
     ACCEL_FACTOR: 2.5,
     SLOW_FACTOR: 0.1,
@@ -16,16 +16,16 @@ const CONFIG = {
     MAX_SPAWN: 3000,
     BOOSTER_PROB: 0.25,
 
-    // Salto
+    // Jump
     JUMP_VELOCITY: -500,
     GRAVITY_Y: 900,
 
-    // Geometría pista
+    // Track geometry
     TRACK_HEIGHT: 520,
     RED_OFFSET_FROM_CENTER: 20,
     GROUND_HEIGHT: 16,
 
-    // Distancia total a la meta
+    // Total distance to finish line
     TOTAL_DISTANCE_PX: 7500
 };
 
@@ -38,8 +38,8 @@ export default class RaceScene extends Phaser.Scene {
             finished: false,
             progress: { top: 0, bottom: 0 },
             lanes: {
-                top: { speed: CONFIG.BASE_SPEED, altered: false, immune: false },
-                bottom: { speed: CONFIG.BASE_SPEED, altered: false, immune: false }
+                top: { speed: CONFIG.BASE_SPEED, altered: false, immune: false, lives: 3 },
+                bottom: { speed: CONFIG.BASE_SPEED, altered: false, immune: false, lives: 3 }
             }
         };
     }
@@ -69,10 +69,13 @@ export default class RaceScene extends Phaser.Scene {
         // Frame
         this.load.image('Frame', 'assets/Elements/GameFrame.PNG');
 
-        //Bar
+        // Bar
         this.load.image('iconP1', 'assets/ponis/Ache/Ache_Run1.png'); 
         this.load.image('iconP2', 'assets/ponis/Haire/Haire_Run1.png');
 
+        // Lives 
+        this.load.image('Lives', 'assets/Elements/Lives_Full.png');
+        this.load.image('LivesEmpty', 'assets/Elements/Lives_Empty.png');
 
         // =========== BUTTONS =============
         // Pause button
@@ -153,6 +156,28 @@ export default class RaceScene extends Phaser.Scene {
             .setScale(0.4)
             .setDepth(0);
 
+        // Lives TOP
+        this.live1Top = this.add.image((width / 2) - 860, (height / 2) - 465, 'Lives')
+            .setScale(0.15)
+            .setDepth(10);
+        this.live2Top = this.add.image((width / 2) - 760, (height / 2) - 465, 'Lives')
+            .setScale(0.15)
+            .setDepth(10);
+        this.live3Top = this.add.image((width / 2) - 660, (height / 2) - 465, 'Lives')
+            .setScale(0.15)
+            .setDepth(10);
+        
+        // Lives BOTTOM
+        this.live1Bottom = this.add.image((width / 2) - 860, (height / 2) + 60, 'Lives')
+            .setScale(0.15)
+            .setDepth(10);
+        this.live2Bottom = this.add.image((width / 2) - 760, (height / 2) + 60, 'Lives')
+            .setScale(0.15)
+            .setDepth(10);
+        this.live3Bottom = this.add.image((width / 2) - 660, (height / 2) + 60, 'Lives')
+            .setScale(0.15)
+            .setDepth(10);
+        
         //Buttons
         const buttons = [
             {
@@ -164,15 +189,15 @@ export default class RaceScene extends Phaser.Scene {
                 depth: 9,
                 action: () => {
                     this.scene.launch('PauseScene'); // Opens
-                    this.scene.pause();              // Here was the PROBLEM!!!!!!!! It not pauses!
+                    this.scene.pause();              
                 }
             },
         ];
 
         this.input.keyboard.on('keydown-ESC', () => {
             if (!this.scene.isActive('PauseScene')) {
-            this.scene.pause(); // pausa la escena actual
-            this.scene.launch('PauseScene'); // abre la escena de pausa
+            this.scene.pause(); // pauses actual scene
+            this.scene.launch('PauseScene'); // opens pause scene
             }
         });
 
@@ -188,7 +213,7 @@ export default class RaceScene extends Phaser.Scene {
                 button.setScale(btn.scale * 1.05);
             });
 
-            // Salir hover
+            // Exit hover
             button.on('pointerout', () => {
                 button.setTexture(btn.key);
                 button.setScale(btn.scale);
@@ -208,7 +233,7 @@ export default class RaceScene extends Phaser.Scene {
             }
 
             this.anims.create({
-                key: `${p}_run`,   // nombre dinámico
+                key: `${p}_run`,   // dinamic name
                 frames,
                 frameRate: 9,
                 repeat: -1
@@ -225,7 +250,7 @@ export default class RaceScene extends Phaser.Scene {
             }
 
             this.anims.create({
-                key: `${p}_jump`,   // nombre dinámico
+                key: `${p}_jump`,   // dinamic name
                 frames,
                 frameRate: 9,
                 repeat: 0
@@ -259,8 +284,8 @@ export default class RaceScene extends Phaser.Scene {
         // Middle line
         this.add.rectangle(width / 2, height / 2, width, 3, 0xffffff);
 
-        // Línea roja (referencia)
-        const redTopY = this.laneYTop;  //me voy a podar alfa - beta mente las venas no funcionaaaaa porqueeee ayudaaaaa
+        // Red line (referencia)
+        const redTopY = this.laneYTop;  
         const redBotY = this.laneYBottom;
 
         // Previous character selection
@@ -271,7 +296,7 @@ export default class RaceScene extends Phaser.Scene {
 
             const key = (keyOrObj && keyOrObj.key) ? keyOrObj.key : keyOrObj;
 
-            // Usamos el primer frame como textura inicial
+            // Thge first frame is used as the initial texture
             const sprite = this.physics.add.sprite(x, redLineY, `${key}Run4`)
                 .setOrigin(0.5, 1);
 
@@ -303,11 +328,10 @@ export default class RaceScene extends Phaser.Scene {
             return rect;
         };
 
-        this.playerTop = makePony(300, redTopY, p1).setDepth(3);  //CONTORL THE SPAWN COORDINATES OF PONIS
+        this.playerTop = makePony(300, redTopY, p1).setDepth(3);  //CONTROL THE SPAWN COORDINATES OF PONIS
         this.playerBottom = makePony(300, redBotY, p2).setDepth(3);
 
-
-        this.groundTop = makeGroundAtRed(redTopY + 200);  //control the invisible gorund coorinates
+        this.groundTop = makeGroundAtRed(redTopY + 200);  //control the invisible ground coorinates
         this.groundBot = makeGroundAtRed(redBotY + 200);
 
         this.physics.add.collider(this.playerTop, this.groundTop);
@@ -344,7 +368,7 @@ export default class RaceScene extends Phaser.Scene {
 
         this.startCountdown();
 
-        /* BOTON VOLVER 
+        /* BACK BUTTON 
         this.backButton = this.add.text(
             this.scale.width / 2,
             this.scale.height / 2 + 120,
@@ -393,14 +417,14 @@ export default class RaceScene extends Phaser.Scene {
 
     }
 
-    // ---------- UI Progreso ----------
+    // ---------- UI Progress ----------
     createProgressUI() {
 
         const centerX = this.scale.width / 2;
         const centerY = this.scale.height / 2;
 
-        // Jugador 1 más arriba
-        this.uiP1Label = this.add.text(centerX, this.laneYTop - 150, 'Progreso:',
+        // Player 1 up
+        this.uiP1Label = this.add.text(centerX, this.laneYTop - 150, 'Progress:',
             {
                 fontFamily: 'Arial Black',
                 fontSize: '20px',
@@ -416,8 +440,8 @@ export default class RaceScene extends Phaser.Scene {
             }).setOrigin(0.5)
             .setDepth(5);
 
-        // Jugador 2 más abajo
-        this.uiP2Label = this.add.text(centerX, this.laneYBottom - 150, 'Progreso:',
+        // Player 2 down
+        this.uiP2Label = this.add.text(centerX, this.laneYBottom - 150, 'Progress:',
             {
                 fontFamily: 'Arial Black',
                 fontSize: '20px',
@@ -435,12 +459,12 @@ export default class RaceScene extends Phaser.Scene {
             
     
 
-        // Barra horizontal
+        // Horizontal bar
         this.progressBar = this.add.rectangle(centerX, centerY, 800, 20, 0x666666)
             .setOrigin(0.5)
             .setDepth(5);
 
-        // Iconos de los ponis al inicio de la barra
+        // Poni icons to show in the progress bar
         this.iconP1 = this.add.image(this.progressBar.x - this.progressBar.width / 2, centerY, 'iconP1')
             .setScale(0.1)
             .setDepth(6);
@@ -456,7 +480,7 @@ export default class RaceScene extends Phaser.Scene {
         this.uiP1Pct.setText(`${pctTop}%`);
         this.uiP2Pct.setText(`${pctBot}%`);
 
-        // Mover iconos a lo largo de la barra
+        // Move icons across the bar
         const startX = this.progressBar.x - this.progressBar.width / 2;
         const endX = this.progressBar.x + this.progressBar.width / 2;
 
@@ -490,14 +514,14 @@ export default class RaceScene extends Phaser.Scene {
                 targets: label,
                 alpha: 1,
                 scale: 1,
-                duration: 250,
+                duration: 150,
                 yoyo: false,
                 onComplete: () => {
                     this.time.delayedCall(500, () => {
                         this.tweens.add({
                             targets: label,
                             alpha: 0,
-                            duration: 200,
+                            duration: 100,
                             onComplete: () => { i += 1; showNext(); }
                         });
                     });
@@ -513,7 +537,7 @@ export default class RaceScene extends Phaser.Scene {
         showNext();
     }
 
-    // ---------- Lógica carrera ----------
+    // ---------- Race logic ----------
     isOnGround(player) {
         return player.body.blocked.down || Math.abs(player.body.velocity.y) < 1;
     }
@@ -523,7 +547,7 @@ export default class RaceScene extends Phaser.Scene {
 
         player.setVelocityY(CONFIG.JUMP_VELOCITY);
 
-        // reproducir animación de salto
+        // Jump animation
         if (player.name) {
             player.play(`${player.name}_jump`, true);
         }
@@ -560,7 +584,24 @@ export default class RaceScene extends Phaser.Scene {
             obstacle.destroy();
             return;
         }
-
+        lane.lives--;
+        // Destroy lives
+        if (laneKey === 'top') {
+            if (lane.lives === 2) this.live3Top.setTexture('LivesEmpty');
+            else if (lane.lives === 1) this.live2Top.setTexture('LivesEmpty');
+            else if (lane.lives === 0){
+                this.live1Top.setTexture('LivesEmpty');
+                this.finishRace('bottom');
+            } 
+                
+        } else if (laneKey === 'bottom') {
+            if (lane.lives === 2) this.live3Bottom.setTexture('LivesEmpty');
+            else if (lane.lives === 1) this.live2Bottom.setTexture('LivesEmpty');
+            else if (lane.lives === 0){
+                this.live1Bottom.setTexture('LivesEmpty');
+                this.finishRace('top');
+            } 
+    }
         obstacle.destroy();
 
         this.applyAlteration(laneKey, CONFIG.SLOW_FACTOR);
@@ -614,7 +655,7 @@ export default class RaceScene extends Phaser.Scene {
         this.state.finished = true;
         this.state.running = false;
 
-        // Darkm background
+        // Dark background
         this.overlay = this.add.rectangle(
             this.scale.width / 2,
             this.scale.height / 2,
@@ -645,14 +686,13 @@ export default class RaceScene extends Phaser.Scene {
         const looserKey = winner === 'top' ? p2 : p1;
         const looserName = looserKey?.key || p2 || 'Jugador';
 
-        // 🔹 Guarda el nombre del perdedor para la FinalScene
+        // Saves name for Final Scene
         this.registry.set('looser', looserName);
 
-
-        // Show who won
+        // Shows who won
         const msg = `¡${winnerName} WON!`;
 
-        /* BOTON DE VOLVER
+        /* BACK BUTTON
         this.backButton
             .setAlpha(0)
             .setDepth(51);
@@ -683,7 +723,7 @@ export default class RaceScene extends Phaser.Scene {
             ease: 'Back.Out'
         });
 
-        // START FINAL SCENE (after 5 secs): //ME PARECE MUHCO LE PINGO 3
+        // START FINAL SCENE (after 3 secs): 
         this.time.delayedCall(3000, () => {
             this.scene.start('FinalScene');
         });
