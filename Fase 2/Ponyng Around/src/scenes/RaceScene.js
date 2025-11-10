@@ -69,6 +69,11 @@ export default class RaceScene extends Phaser.Scene {
         // Frame
         this.load.image('Frame', 'assets/Elements/GameFrame.PNG');
 
+        //Bar
+        this.load.image('iconP1', 'assets/ponis/Ache/Ache_Run1.png'); 
+        this.load.image('iconP2', 'assets/ponis/Haire/Haire_Run1.png');
+
+
         // =========== BUTTONS =============
         // Pause button
         this.load.image('bttnPause', 'assets/Buttons/pausebttn.png');
@@ -164,6 +169,12 @@ export default class RaceScene extends Phaser.Scene {
             },
         ];
 
+        this.input.keyboard.on('keydown-ESC', () => {
+            if (!this.scene.isActive('PauseScene')) {
+            this.scene.pause(); // pausa la escena actual
+            this.scene.launch('PauseScene'); // abre la escena de pausa
+            }
+        });
 
         buttons.forEach(btn => {
             const button = this.add.image(btn.x, btn.y, btn.key)
@@ -386,6 +397,7 @@ export default class RaceScene extends Phaser.Scene {
     createProgressUI() {
 
         const centerX = this.scale.width / 2;
+        const centerY = this.scale.height / 2;
 
         // Jugador 1 más arriba
         this.uiP1Label = this.add.text(centerX, this.laneYTop - 150, 'Progreso:',
@@ -420,6 +432,21 @@ export default class RaceScene extends Phaser.Scene {
                 color: '#067fffff'
             }).setOrigin(0.5)
             .setDepth(5);
+            
+    
+
+        // Barra horizontal
+        this.progressBar = this.add.rectangle(centerX, centerY, 800, 20, 0x666666)
+            .setOrigin(0.5)
+            .setDepth(5);
+
+        // Iconos de los ponis al inicio de la barra
+        this.iconP1 = this.add.image(this.progressBar.x - this.progressBar.width / 2, centerY, 'iconP1')
+            .setScale(0.1)
+            .setDepth(6);
+        this.iconP2 = this.add.image(this.progressBar.x - this.progressBar.width / 2, centerY, 'iconP2')
+            .setScale(0.1)
+            .setDepth(6);
     }
 
 
@@ -428,6 +455,13 @@ export default class RaceScene extends Phaser.Scene {
         const pctBot = Math.min(100, Math.floor((this.state.progress.bottom / CONFIG.TOTAL_DISTANCE_PX) * 100));
         this.uiP1Pct.setText(`${pctTop}%`);
         this.uiP2Pct.setText(`${pctBot}%`);
+
+        // Mover iconos a lo largo de la barra
+        const startX = this.progressBar.x - this.progressBar.width / 2;
+        const endX = this.progressBar.x + this.progressBar.width / 2;
+
+        this.iconP1.x = startX + (endX - startX) * (pctTop / 100);
+        this.iconP2.x = startX + (endX - startX) * (pctBot / 100);
     }
 
     // ---------- Countdown ----------
@@ -718,5 +752,10 @@ export default class RaceScene extends Phaser.Scene {
         const clean = g => g.children.each(o => { if (o && o.x < off) o.destroy(); });
         clean(this.obstaclesTop); clean(this.boostersTop);
         clean(this.obstaclesBot); clean(this.boostersBot);
+
+        this.input.keyboard.on('keydown-ESCAPE', () => { 
+            this.scene.stop(); 
+            this.scene.resume('RaceScene');
+        });
     }
 }

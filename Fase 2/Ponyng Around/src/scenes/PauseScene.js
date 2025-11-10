@@ -17,6 +17,10 @@ export default class PauseScene extends Phaser.Scene {
         // Botón salir al menú principal
         this.load.image('bttnExit', 'assets/Buttons/exitbttn.png');
         this.load.image('bttnExitHover', 'assets/Buttons/exitbttn_hover.png');
+
+        // Botón ir al menú opciones
+        this.load.image('bttnSettings', 'assets/Buttons/settingsbttn.png');
+        this.load.image('bttnSettingsHover', 'assets/Buttons/settingsbttn_hover.png');
     }
 
     create() {
@@ -85,9 +89,31 @@ export default class PauseScene extends Phaser.Scene {
             this.scene.start('MainMenuScene'); // va al menú principal
         });
 
+        // ----------- BOTÓN OPCIONES -----------
+        const optionsBtn = this.add.image(width / 2, height / 2 + 50, 'bttnSettings')
+            .setInteractive({ useHandCursor: true })
+            .setScale(1)
+            .setDepth(11);
+
+        // Hover opciones
+        optionsBtn.on('pointerover', () => {
+            optionsBtn.setTexture('bttnSettingsHover');
+            optionsBtn.setScale(1.05);
+        });
+        optionsBtn.on('pointerout', () => {
+            optionsBtn.setTexture('bttnSettings');
+            optionsBtn.setScale(1);
+        });
+        optionsBtn.on('pointerdown', () => {
+            this.scene.pause('PauseScene');              // pausa la escena de pausa
+            this.scene.launch('SettingsScene', { previousScene: this.scene.key });
+            this.scene.bringToTop('SettingsScene');
+        });
+
+
         // Resume with "esc"??? podemos sino quitarlo 
-        this.input.keyboard.on('keydown-ESC', () => {
-            this.scene.stop();
+        this.input.keyboard.on('keydown-ESCAPE', () => { 
+            this.scene.stop(); 
             this.scene.resume('RaceScene');
         });
 
@@ -98,4 +124,5 @@ export default class PauseScene extends Phaser.Scene {
         this.cameras.main.setZoom(zoom);
         this.cameras.main.centerOn(width / 2, height / 2);
     }
+
 }
