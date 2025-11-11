@@ -7,8 +7,11 @@ export default class PauseScene extends Phaser.Scene {
 
     preload() {
 
-        // Fondo base
-        this.load.image('ColorBackground', 'assets/Backgrounds/fondoPlano.jpeg');
+        // Blood
+        this.load.image('BloodPause', 'assets/Backgrounds/BloodPause.png');
+
+        // Frame
+        this.load.image('Frame', 'assets/Elements/RedFrame.PNG');
 
         // Botón reanudar
         this.load.image('bttnBack', 'assets/Buttons/BackTemp.png');
@@ -18,7 +21,7 @@ export default class PauseScene extends Phaser.Scene {
         this.load.image('bttnExit', 'assets/Buttons/exitbttn.png');
         this.load.image('bttnExitHover', 'assets/Buttons/exitbttn_hover.png');
 
-        // Botón ir al menú opciones
+        // Settings button
         this.load.image('bttnSettings', 'assets/Buttons/settingsbttn.png');
         this.load.image('bttnSettingsHover', 'assets/Buttons/settingsbttn_hover.png');
     }
@@ -29,14 +32,17 @@ export default class PauseScene extends Phaser.Scene {
         // Traer esta escena al frente por si acaso se pilla con el depth
         this.scene.bringToTop();
 
+        // Frame
+        this.add.image(width / 2, height / 2, 'Frame').setDepth(11);
+
         // Overlay semitransparente aunque lo podemos cambiar!!!
         this.add.rectangle(width / 2, height / 2, width, height, 0x000000, 0.6)
-            .setDepth(10);
+            .setDepth(9);
 
         // Fondo decorativo suave
-        this.add.image(width / 2, height / 2, 'ColorBackground')
-            .setAlpha(0.3)
-            .setDepth(9);
+        this.add.image(width / 2, height / 2, 'BloodPause')
+            //.setAlpha(0.3)
+            .setDepth(10);
 
         // Título
         this.add.text(width / 2, height * 0.25, 'PAUSA', {

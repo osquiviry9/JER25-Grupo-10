@@ -31,7 +31,7 @@ export default class CharacterSelectScene extends Phaser.Scene {
     preload() {
 
         // Frame
-        this.load.image('Frame', 'assets/Elements/GameFrame.PNG');
+        this.load.image('Frame', 'assets/Elements/GreenFrame.PNG');
 
         this.ponies.forEach(pony => {
             this.load.image(`${pony.key}_static`, pony.path);

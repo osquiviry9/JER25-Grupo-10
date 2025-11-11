@@ -23,6 +23,9 @@ export default class FinalScene extends Phaser.Scene {
         // Back tube
         this.load.image('backTube', 'assets/Elements/TuberiaAtras.PNG');
 
+        // Final animation video
+        this.load.video('tubeVideo', 'assets/Animations/TubeAnim.mp4', 'loadeddata', false, true);
+
         // ============= PONIS =============
         this.load.image('AcheD', 'assets/ponis/Ache/Ache_Death.PNG');
         this.load.image('HaiireD', 'assets/ponis/Haire/Haire_Death.PNG');
@@ -151,7 +154,7 @@ export default class FinalScene extends Phaser.Scene {
         const pony = this.physics.add.image((width / 2) - 960, (height / 2), deathKey)
             .setDepth(5)
             .setScale(0.5)
-            .setVelocityX(120);
+            .setVelocityX(130);
 
         const crusherZoneX = width / 2 - 100;
 
@@ -167,7 +170,7 @@ export default class FinalScene extends Phaser.Scene {
                     pony.setVelocityX(130);
 
                     // When 1 second pass, the srpite destroys
-                    this.time.delayedCall(800, () => {
+                    this.time.delayedCall(750, () => {
                         pony.setVisible(false);
 
                         //Starts the blood animation
@@ -203,11 +206,20 @@ export default class FinalScene extends Phaser.Scene {
                     });
 
 
-                    
-                    // After 8 seconds change scene
-                    this.time.delayedCall(8000, () => {
-                        this.scene.start('CharacterSelectScene'); //CAMBIAR ESTA AL PUBLICAR
-                    }); 
+
+                    // After 6 seconds play anim
+                    this.time.delayedCall(6000, () => {
+                        // Tube video
+                        const video = this.add.video(width / 2, height / 2, 'tubeVideo');
+                        video.setOrigin(0.5);
+                        video.setDepth(15);
+
+                        video.play(false); // Only plays once
+
+                        video.once('complete', () => {
+                            this.scene.start('FinalProductScene'); //CHANGE SCENE
+                        });
+                    });
                 });
             }
         });
