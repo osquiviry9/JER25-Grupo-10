@@ -11,9 +11,9 @@ export default class PauseScene extends Phaser.Scene {
         this.load.image('BloodPause', 'assets/Backgrounds/BloodPause.png');
 
         // Frame
-        this.load.image('Frame', 'assets/Elements/RedFrame.PNG');
+        this.load.image('redFrame', 'assets/Elements/RedFrame.PNG');
 
-        // Botón reanudar
+        // Botón reanudar 
         this.load.image('bttnBack', 'assets/Buttons/BackTemp.png');
         this.load.image('bttnBackHover', 'assets/Buttons/BackTemp.png');
 
@@ -33,7 +33,7 @@ export default class PauseScene extends Phaser.Scene {
         this.scene.bringToTop();
 
         // Frame
-        this.add.image(width / 2, height / 2, 'Frame').setDepth(11);
+        this.add.image(width / 2, height / 2, 'redFrame').setDepth(11);
 
         // Overlay semitransparente aunque lo podemos cambiar!!!
         this.add.rectangle(width / 2, height / 2, width, height, 0x000000, 0.6)

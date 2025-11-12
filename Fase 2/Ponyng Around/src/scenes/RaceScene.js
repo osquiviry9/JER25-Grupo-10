@@ -67,7 +67,7 @@ export default class RaceScene extends Phaser.Scene {
         this.load.image('WoodFence', 'assets/Elements/WoodFence.PNG');
 
         // Frame
-        this.load.image('Frame', 'assets/Elements/RedFrame.PNG');
+        this.load.image('redFrame', 'assets/Elements/RedFrame.PNG');
 
         // Bar
         this.load.image('iconP1', 'assets/ponis/Ache/Ache_Run1.png');
@@ -143,7 +143,7 @@ export default class RaceScene extends Phaser.Scene {
             .setDepth(-1);
 
         // Frame
-        this.add.image(width / 2, height / 2, 'Frame')
+        this.add.image(width / 2, height / 2, 'redFrame')
             .setDepth(10);
 
         // Sun TOP
