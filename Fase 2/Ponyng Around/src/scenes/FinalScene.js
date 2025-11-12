@@ -8,6 +8,13 @@ export default class FinalScene extends Phaser.Scene {
 
     preload() {
 
+        // Chainsaw
+        this.load.audio('chainsawSound', 'assets/sound/chainsaw.mp3');
+
+        //Pipeline
+        this.load.audio('pipelineSound', 'assets/sound/pipeline.mp3');
+
+
         // Background
         this.load.image('finalBackground', 'assets/Backgrounds/FinalScene_Background.JPG');
 
@@ -37,6 +44,7 @@ export default class FinalScene extends Phaser.Scene {
         // Wheels
         for (let i = 1; i <= 7; i++) {
             this.load.image(`Wheels${i}`, `assets/Animations/WheelAnim/Rueda${i}.PNG`);
+            
         }
 
         // Platform
@@ -47,7 +55,9 @@ export default class FinalScene extends Phaser.Scene {
         // Blood explosion
         for (let i = 1; i <= 10; i++) {
             this.load.image(`Blood${i}`, `assets/Animations/BloodAnim/blood${i}.PNG`);
+        
         }
+        
 
         // Meat
         for (let i = 1; i <= 12; i++) {
@@ -56,6 +66,9 @@ export default class FinalScene extends Phaser.Scene {
 
         // ============= Buttons =============
 
+    
+
+        
 
     }
 
@@ -91,6 +104,7 @@ export default class FinalScene extends Phaser.Scene {
         // WHEELS:
         const wheelsFrames = [];
         for (let i = 1; i <= 7; i++) wheelsFrames.push({ key: `Wheels${i}` });
+        
 
         this.anims.create({
             key: 'wheels',
@@ -121,6 +135,7 @@ export default class FinalScene extends Phaser.Scene {
         // BLOOD EXPLOSION only definition, because if not it will start the animation
         const bloodFrames = [];
         for (let i = 1; i <= 10; i++) bloodFrames.push({ key: `Blood${i}` });
+        
 
         this.anims.create({
             key: 'blood',
@@ -170,6 +185,12 @@ export default class FinalScene extends Phaser.Scene {
                     pony.setVelocityX(130);
 
                     // When 1 second pass, the srpite destroys
+                    this.music = this.sound.add('chainsawSound', {
+                            });
+                    this.music.play();
+                        this.time.delayedCall(5000, () => {
+                        this.music.stop();
+                            });
                     this.time.delayedCall(750, () => {
                         pony.setVisible(false);
 
@@ -182,11 +203,12 @@ export default class FinalScene extends Phaser.Scene {
                         blood.once('animationcomplete', () => {
 
                             blood.setVisible(false);
-
+                            
                             // Wait before de shake
                             this.time.delayedCall(400, () => {
                                 // Shake camera
                                 this.cameras.main.shake(1000, 0.01);
+                                
                             });
 
                             this.time.delayedCall(1000, () => {
@@ -210,6 +232,12 @@ export default class FinalScene extends Phaser.Scene {
                     // After 6 seconds play anim
                     this.time.delayedCall(6000, () => {
                         // Tube video
+                        this.music = this.sound.add('pipelineSound', {
+                                });
+                                    this.music.play();
+                                    this.time.delayedCall(4000, () => {
+                                    this.music.stop();
+                                });
                         const video = this.add.video(width / 2, height / 2, 'tubeVideo');
                         video.setOrigin(0.5);
                         video.setDepth(15);

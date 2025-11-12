@@ -48,6 +48,9 @@ export default class RaceScene extends Phaser.Scene {
 
         const g = this.make.graphics({ x: 0, y: 0, add: false });
 
+        // Jumping sound
+        this.load.audio('boingSound', 'assets/sound/boing.mp3');
+
         // Background color
         this.load.image('ColorBackground', 'assets/Backgrounds/fondoPlano.jpeg');
 
@@ -515,6 +518,9 @@ export default class RaceScene extends Phaser.Scene {
         // Jump animation
         if (player.name) {
             player.play(`${player.name}_jump`, true);
+            this.music = this.sound.add('boingSound', {
+                });
+            this.music.play();
         }
 
         this.time.delayedCall(800, () => {
