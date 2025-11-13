@@ -432,13 +432,28 @@ export default class RaceScene extends Phaser.Scene {
             .setOrigin(0.5)
             .setDepth(5);
 
-        // Poni icons to show in the progress bar
-        this.iconP1 = this.add.image(this.progressBar.x - this.progressBar.width / 2, centerY, 'iconP1')
-            .setScale(0.1)
+        // Get the selected ponis
+        const p1 = this.registry.get('player1Character');
+        const p2 = this.registry.get('player2Character');
+
+        // Icon of the score of the poni 1
+        this.iconP1 = this.add.image(
+            this.progressBar.x - this.progressBar.width / 2,
+            centerY,
+            `${p1.key}Run1`
+        )
+            .setScale(0.12)
             .setDepth(6);
-        this.iconP2 = this.add.image(this.progressBar.x - this.progressBar.width / 2, centerY, 'iconP2')
-            .setScale(0.1)
+
+        // Icon of the score of the poni 2
+        this.iconP2 = this.add.image(
+            this.progressBar.x - this.progressBar.width / 2,
+            centerY,
+            `${p2.key}Run1`
+        )
+            .setScale(0.12)
             .setDepth(6);
+
     }
 
 
@@ -519,7 +534,7 @@ export default class RaceScene extends Phaser.Scene {
         if (player.name) {
             player.play(`${player.name}_jump`, true);
             this.music = this.sound.add('boingSound', {
-                });
+            });
             this.music.play();
         }
 
@@ -707,11 +722,12 @@ export default class RaceScene extends Phaser.Scene {
 
         // Clouds (slower -> parallax)
         this.cloudsTop.tilePositionX += topScroll * 0.1;
-        this.cloudsBot.tilePositionX += topScroll * 0.1;
+        this.cloudsBot.tilePositionX += botScroll * 0.1;
 
         // Plants (faster -> parallax)
         this.plantsTop.tilePositionX += topScroll * 2;
-        this.plantsBot.tilePositionX += topScroll * 2;
+        this.plantsBot.tilePositionX += botScroll * 2;
+
 
         // JUMP
         if (Phaser.Input.Keyboard.JustDown(this.keys.jumpTop)) this.jump(this.playerTop);

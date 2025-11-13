@@ -12,7 +12,7 @@ export default class FinalProductScene extends Phaser.Scene {
         this.load.video('AcheFinal_A', 'assets/Animations/AcheFinal.mp4', 'loadeddata', false, true);
 
         // Haire
-        this.load.video('HaireFinal_A', 'assets/Animations/HaireFinal.mp4', 'loadeddata', false, true);
+        this.load.video('HaiireFinal_A', 'assets/Animations/HaiireFinal.mp4', 'loadeddata', false, true);
 
         // Dom
         this.load.video('DomdomdadomFinal_A', 'assets/Animations/DomFinal.mp4', 'loadeddata', false, true);
@@ -28,7 +28,7 @@ export default class FinalProductScene extends Phaser.Scene {
         this.load.image('AcheFinal', 'assets/Backgrounds/AcheFinal.jpg');
 
         // Haire
-        this.load.image('HaireFinal', 'assets/Backgrounds/HaireFinal.jpg');
+        this.load.image('HaiireFinal', 'assets/Backgrounds/HaiireFinal.jpg');
 
         // Dom
         this.load.image('DomdomdadomFinal', 'assets/Backgrounds/DomFinal.jpg');

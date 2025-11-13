@@ -22,11 +22,11 @@ const config = {
             debug: false
         }
     },
-    scene: [MainMenuScene, SettingsScene, CreditsScene, CharacterSelectScene, RaceScene, PauseScene, FinalScene, FinalProductScene]
+    //scene: [MainMenuScene, SettingsScene, CreditsScene, CharacterSelectScene, RaceScene, PauseScene, FinalScene, FinalProductScene]
     //scene: [CharacterSelectScene,RaceScene]
-    // scene: [CharacterSelectScene,RaceScene, FinalScene, FinalProductScene]
+     scene: [CharacterSelectScene,RaceScene, FinalScene, FinalProductScene]
     // scene: [MainMenuScene, CharacterSelectScene, RaceScene, FinalScene]
-    //scene: [IntroScene,IntroAnimScene,MainMenuScene, CharacterSelectScene, RaceScene, FinalScene] <- LA BUENA
+    //scene: [IntroScene,IntroAnimScene,MainMenuScene, CharacterSelectScene, RaceScene, FinalScene, FinalProductScene] <- LA BUENA
 };
 
 new Phaser.Game(config);
