@@ -356,16 +356,25 @@ export default class RaceScene extends Phaser.Scene {
         this.boostersTop = this.physics.add.group();
         this.boostersBot = this.physics.add.group();
 
-        const overlapObstacle = (player, obstacle, laneKey) => {
-            if (!this.isOnGround(player)) return;
-            this.hitObstacle(laneKey, obstacle);
-        };
+
         const overlapBooster = (player, booster, laneKey) => {
             this.getBooster(laneKey, booster);
         };
 
-        this.physics.add.overlap(this.playerTop, this.obstaclesTop, (p, o) => overlapObstacle(p, o, 'top'));
-        this.physics.add.overlap(this.playerBottom, this.obstaclesBot, (p, o) => overlapObstacle(p, o, 'bottom'));
+        this.physics.add.overlap(
+            this.playerTop,
+            this.obstaclesTop,
+            (player, obstacle) => this.handleObstacleCollision(player, obstacle, 'top')
+        );
+
+        this.physics.add.overlap(
+            this.playerBottom,
+            this.obstaclesBot,
+            (player, obstacle) => this.handleObstacleCollision(player, obstacle, 'bottom')
+        );
+
+
+
         this.physics.add.overlap(this.playerTop, this.boostersTop, (p, b) => overlapBooster(p, b, 'top'));
         this.physics.add.overlap(this.playerBottom, this.boostersBot, (p, b) => overlapBooster(p, b, 'bottom'));
 
@@ -578,6 +587,21 @@ export default class RaceScene extends Phaser.Scene {
         });
     }
 
+    handleObstacleCollision(player, obstacle, laneKey) {
+        // If that obstacle was proccesed, do not do anything
+        if (!obstacle || obstacle.hasHit) return;
+
+        // Only if is on the ground
+        if (!this.isOnGround(player)) return;
+
+        // Mark as collision
+        obstacle.hasHit = true;
+
+        // 
+        this.hitObstacle(laneKey, obstacle);
+    }
+
+
     hitObstacle(laneKey, obstacle) {
         const lane = this.state.lanes[laneKey];
 
@@ -654,6 +678,39 @@ export default class RaceScene extends Phaser.Scene {
         obj.body.setVelocityX(-(lane.speed * 100));
     }
 
+    spawnFixed(laneKey, type) {
+
+        const isBooster = type === "booster";
+
+        const group = (laneKey === "top")
+            ? (isBooster ? this.boostersTop : this.obstaclesTop)
+            : (isBooster ? this.boostersBot : this.obstaclesBot);
+
+        const redY = (laneKey === "top")
+            ? (this.laneYTop + CONFIG.RED_OFFSET_FROM_CENTER + 200)
+            : (this.laneYBottom + CONFIG.RED_OFFSET_FROM_CENTER + 200);
+
+        const key = isBooster ? "Apple" : "WoodFence";
+
+        const obj = group.create(CONFIG.WIDTH - 40, redY, key)
+            .setOrigin(0.5, 1)
+            .setScale(0.4)
+            .setDepth(3);
+
+        obj.body.setAllowGravity(false);
+        obj.body.setImmovable(true);
+
+        const lane = this.state.lanes[laneKey];
+        obj.body.setVelocityX(-(lane.speed * 150));
+    }
+
+    closeToFinish(laneKey) {
+        const progress = this.state.progress[laneKey];
+        const pct = progress / CONFIG.TOTAL_DISTANCE_PX;
+        return pct >= 0.90; // Not genrating anything more when the ponie hit 90%
+    }
+
+
     spawnFinishLine() {
         const yTop = this.laneYTop + CONFIG.RED_OFFSET_FROM_CENTER + 250;
         const yBot = this.laneYBottom + CONFIG.RED_OFFSET_FROM_CENTER + 250;
@@ -663,8 +720,10 @@ export default class RaceScene extends Phaser.Scene {
             .setOrigin(0.5, 1)
             .setDepth(3)
             .setScale(0.45)
-            .setImmovable(true)
-            .setVelocityX(-(this.state.lanes.top.speed * 100));
+            .setImmovable(true);
+
+        this.finishTop.body.setAllowGravity(false);
+        ;
 
         // BOTTOM
         this.finishBottom = this.physics.add.sprite(CONFIG.WIDTH + 50, yBot, 'FinishLine')
@@ -676,15 +735,55 @@ export default class RaceScene extends Phaser.Scene {
     }
 
     startSpawner() {
-        const schedule = () => {
-            if (!this.state.running || this.state.finished) return;
-            const laneKey = Math.random() > 0.5 ? 'top' : 'bottom';
-            this.spawnOne(laneKey);
-            const next = Phaser.Math.Between(CONFIG.MIN_SPAWN, CONFIG.MAX_SPAWN);
-            this.time.delayedCall(next, schedule);
+
+        const createRandomSequence = () => {
+
+            // Sequence , 4 fences 1 booster
+            let seq = ["fence", "fence", "fence", "fence", "booster"];
+
+            // Shuffle to have differnt order
+            Phaser.Utils.Array.Shuffle(seq);
+
+            // Make sure booster is not the first or the last
+            if (seq[0] === "booster" || seq[4] === "booster") {
+                Phaser.Utils.Array.Shuffle(seq);
+            }
+
+            // Delays for distance
+            let t = 1500;
+            return seq.map(type => {
+                const delay = t;
+                t += Phaser.Math.Between(1800, 2800); // separation
+                return { type, delay };
+            });
         };
-        schedule();
+
+        // Sequence for each lane
+        this.spawnQueue = {
+            top: createRandomSequence(),
+            bottom: createRandomSequence()
+        };
+
+        // -------- TOP lane --------
+        this.spawnQueue.top.forEach(spawn => {
+            this.time.delayedCall(spawn.delay, () => {
+                //Block when we hit 90% of the lane
+                if (this.state.running && !this.state.finished && !this.closeToFinish("top")) {
+                    this.spawnFixed("top", spawn.type);
+                }
+            });
+        });
+
+        // -------- BOTTOM lane --------
+        this.spawnQueue.bottom.forEach(spawn => {
+            this.time.delayedCall(spawn.delay, () => {
+                if (this.state.running && !this.state.finished && !this.closeToFinish("bottom")) {
+                    this.spawnFixed("bottom", spawn.type);
+                }
+            });
+        });
     }
+
 
     finishRace(winner) {
 
