@@ -13,7 +13,7 @@ export default class SettingsScene extends Phaser.Scene {
         // Buttons
         // Back button
         this.load.image('bttnBack', 'assets/Buttons/BackTemp.png');
-        this.load.image('bttnBackHover', 'assets//Buttons/BackTemp.png');
+        this.load.image('bttnBackHover', 'assets/Buttons/BackTemp.png');
 
         // Music button
         this.load.image('bttnMusic', 'assets/Buttons/soundbttn.png');
@@ -62,10 +62,14 @@ export default class SettingsScene extends Phaser.Scene {
             backBtn.setScale(1);
         });
 
-        // Click: volver a la escena anterior
+        // volver a la escena anterior
         backBtn.on('pointerdown', () => {
-            this.scene.stop();                 // cierra la escena de opciones
-            this.scene.resume(this.previousScene); // vuelve a la escena que la abrió
+            
+            this.scene.start(this.previousScene);
+
+            
+            //this.scene.stop('SettingsScene');                 // cierra la escena de opciones
+            //this.scene.resume(this.previousScene); // vuelve a la escena que la abrió
         });
 
 

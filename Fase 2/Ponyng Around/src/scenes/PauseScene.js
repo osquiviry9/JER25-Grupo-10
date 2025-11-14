@@ -103,7 +103,7 @@ export default class PauseScene extends Phaser.Scene {
         });
         optionsBtn.on('pointerdown', () => {
             this.scene.pause('PauseScene');              // pauses PauseScene
-            this.scene.launch('SettingsScene', { previousScene: this.scene.key });
+            this.scene.start('SettingsScene', { previousScene: this.scene.key });
             this.scene.bringToTop('SettingsScene');
         });
 
