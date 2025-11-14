@@ -98,7 +98,7 @@ export default class PauseScene extends Phaser.Scene {
             optionsBtn.setScale(1.05);
         });
         optionsBtn.on('pointerout', () => {
-            optionsBtn.setTexture('bttnSettings');
+            optionsBtn.setTexture('bttnSettingsB');
             optionsBtn.setScale(1);
         });
         optionsBtn.on('pointerdown', () => {
