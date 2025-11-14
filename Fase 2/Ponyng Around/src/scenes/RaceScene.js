@@ -17,13 +17,15 @@ const CONFIG = {
     BOOSTER_PROB: 0.25,
 
     // Jump
-    JUMP_VELOCITY: -500,
-    GRAVITY_Y: 900,
+    JUMP_VELOCITY: -800,
+    GRAVITY_Y: 1400,
 
     // Track geometry
     TRACK_HEIGHT: 520,
     RED_OFFSET_FROM_CENTER: 20,
     GROUND_HEIGHT: 16,
+
+    SHOW_FINISH_AT: 0.70, // 70% del recorrido
 
     // Total distance to finish line
     TOTAL_DISTANCE_PX: 7500
@@ -69,6 +71,9 @@ export default class RaceScene extends Phaser.Scene {
         // Wood Fence
         this.load.image('WoodFence', 'assets/Elements/WoodFence.PNG');
 
+        // Finish line
+        this.load.image('FinishLine', 'assets/Elements/FinishLine.PNG');
+
         // Frame
         this.load.image('redFrame', 'assets/Elements/RedFrame.PNG');
 
@@ -110,23 +115,23 @@ export default class RaceScene extends Phaser.Scene {
 
         // JUMP ANIMATIONS:
         // Ache
-        for (let i = 1; i <= 2; i++) {
+        for (let i = 1; i <= 3; i++) {
             this.load.image(`AcheJump${i}`, `assets/ponis/Ache/Ache_Jump${i}.PNG`);
         }
         // Haire
-        for (let i = 1; i <= 2; i++) {
+        for (let i = 1; i <= 3; i++) {
             this.load.image(`HaiireJump${i}`, `assets/ponis/Haire/Haire_Jump${i}.PNG`);
         }
         // Kamil
-        for (let i = 1; i <= 2; i++) {
+        for (let i = 1; i <= 3; i++) {
             this.load.image(`KamilJump${i}`, `assets/ponis/Kamil/Kamil_Jump${i}.PNG`);
         }
         // Beersquiviri
-        for (let i = 1; i <= 2; i++) {
+        for (let i = 1; i <= 3; i++) {
             this.load.image(`BeersquiviryJump${i}`, `assets/ponis/Beersquiviri/Beer_Jump${i}.PNG`);
         }
         // Dom
-        for (let i = 1; i <= 2; i++) {
+        for (let i = 1; i <= 3; i++) {
             this.load.image(`DomdomdadomJump${i}`, `assets/ponis/Dod/Dod_Jump${i}.PNG`);
         }
 
@@ -248,14 +253,14 @@ export default class RaceScene extends Phaser.Scene {
 
         jumpPonies.forEach(p => {
             const frames = [];
-            for (let i = 1; i <= 2; i++) {
+            for (let i = 1; i <= 3; i++) {
                 frames.push({ key: `${p}Jump${i}` });
             }
 
             this.anims.create({
                 key: `${p}_jump`,   // dinamic name
                 frames,
-                frameRate: 5,
+                frameRate: 4,
                 repeat: -1
             });
         });
@@ -337,6 +342,8 @@ export default class RaceScene extends Phaser.Scene {
         // Fix player hitbox
         this.playerTop.body.setSize(this.playerTop.width * 0.6, this.playerTop.height * 0.8);
         this.playerTop.body.setOffset(this.playerTop.width * 0.2, this.playerTop.height * 0.2);
+        this.playerBottom.body.setSize(this.playerTop.width * 0.6, this.playerTop.height * 0.8);
+        this.playerBottom.body.setOffset(this.playerTop.width * 0.2, this.playerTop.height * 0.2);
 
         this.groundTop = makeGroundAtRed(redTopY + 200);  //control the invisible ground coorinates
         this.groundBot = makeGroundAtRed(redBotY + 200);
@@ -370,6 +377,8 @@ export default class RaceScene extends Phaser.Scene {
             slowTop: 'NUMPAD_EIGHT',
             slowBottom: 'NUMPAD_TWO'
         });
+
+        this.finishSpawned = false; // Finish line not spawned yet
 
         this.createProgressUI();
 
@@ -469,6 +478,12 @@ export default class RaceScene extends Phaser.Scene {
 
         this.iconP1.x = startX + (endX - startX) * (pctTop / 100);
         this.iconP2.x = startX + (endX - startX) * (pctBot / 100);
+
+        // ---------- SPAWN DE LA META ----------
+        if (!this.finishSpawned && (pctTop >= 80 || pctBot >= 80)) {
+            this.finishSpawned = true;
+            this.spawnFinishLine();
+        }
     }
 
     // ---------- Countdown ----------
@@ -570,7 +585,11 @@ export default class RaceScene extends Phaser.Scene {
             obstacle.destroy();
             return;
         }
+
+        this.cameras.main.shake(100, 0.01); // Little camera shake
+
         lane.lives--;
+
         // Destroy lives
         if (laneKey === 'top') {
             if (lane.lives === 2) this.live3Top.setTexture('LivesEmpty');
@@ -594,6 +613,17 @@ export default class RaceScene extends Phaser.Scene {
     }
 
     getBooster(laneKey, booster) {
+
+        const player = (laneKey === 'top') ? this.playerTop : this.playerBottom;
+
+        // Little animation
+        this.tweens.add({
+            targets: player,
+            alpha: 0.6,
+            duration: 100,
+            yoyo: true
+        })
+
         booster.destroy();
         this.applyAlteration(laneKey, CONFIG.ACCEL_FACTOR);
     }
@@ -622,6 +652,27 @@ export default class RaceScene extends Phaser.Scene {
 
         const lane = this.state.lanes[laneKey];
         obj.body.setVelocityX(-(lane.speed * 100));
+    }
+
+    spawnFinishLine() {
+        const yTop = this.laneYTop + CONFIG.RED_OFFSET_FROM_CENTER + 250;
+        const yBot = this.laneYBottom + CONFIG.RED_OFFSET_FROM_CENTER + 250;
+
+        // TOP
+        this.finishTop = this.physics.add.sprite(CONFIG.WIDTH + 50, yTop, 'FinishLine')
+            .setOrigin(0.5, 1)
+            .setDepth(3)
+            .setScale(0.45)
+            .setImmovable(true)
+            .setVelocityX(-(this.state.lanes.top.speed * 100));
+
+        // BOTTOM
+        this.finishBottom = this.physics.add.sprite(CONFIG.WIDTH + 50, yBot, 'FinishLine')
+            .setOrigin(0.5, 1)
+            .setDepth(4)
+            .setScale(0.45)
+            .setImmovable(true)
+            .setVelocityX(-(this.state.lanes.bottom.speed * 100));
     }
 
     startSpawner() {
@@ -659,6 +710,14 @@ export default class RaceScene extends Phaser.Scene {
         stopGroup(this.boostersTop);
         stopGroup(this.obstaclesBot);
         stopGroup(this.boostersBot);
+
+        // Stop ponis
+        if (this.playerTop && this.playerTop.anims) this.playerTop.anims.pause();
+        if (this.playerBottom && this.playerBottom.anims) this.playerBottom.anims.pause();
+
+        // Stop finish lines
+        if (this.finishTop) this.finishTop.body.setVelocityX(0);
+        if (this.finishBottom) this.finishBottom.body.setVelocityX(0);
 
         // Recover the name of the ponis
         const p1 = this.registry.get('player1Character') || {};
@@ -744,13 +803,17 @@ export default class RaceScene extends Phaser.Scene {
         if (Phaser.Input.Keyboard.JustDown(this.keys.slowBottom) && !this.state.lanes.bottom.altered)
             this.applyAlteration('bottom', CONFIG.SLOW_FACTOR);
 
-        const vxTop = -(this.state.lanes.top.speed * 100);
-        const vxBot = -(this.state.lanes.bottom.speed * 100);
+        const vxTop = -(this.state.lanes.top.speed * 150); // do NOT touch this, ITS PERFECT!
+        const vxBot = -(this.state.lanes.bottom.speed * 150);
 
         this.obstaclesTop.children.iterate(o => o && o.body && o.body.setVelocityX(vxTop));
         this.boostersTop.children.iterate(o => o && o.body && o.body.setVelocityX(vxTop));
         this.obstaclesBot.children.iterate(o => o && o.body && o.body.setVelocityX(vxBot));
         this.boostersBot.children.iterate(o => o && o.body && o.body.setVelocityX(vxBot));
+
+        // Move finish line
+        if (this.finishTop) this.finishTop.body.setVelocityX(vxTop);
+        if (this.finishBottom) this.finishBottom.body.setVelocityX(vxBot);
 
         // PROGRESS
         this.state.progress.top += topScroll;
@@ -761,6 +824,17 @@ export default class RaceScene extends Phaser.Scene {
         } else if (this.state.progress.bottom >= CONFIG.TOTAL_DISTANCE_PX) {
             this.finishRace('bottom');
         }
+
+        /* // Show finish line 
+        if (!this.finishSpawned) {
+            const pctTop = this.state.progress.top / CONFIG.TOTAL_DISTANCE_PX;
+            const pctBot = this.state.progress.bottom / CONFIG.TOTAL_DISTANCE_PX;
+
+            if (pctTop >= CONFIG.SHOW_FINISH_AT || pctBot >= CONFIG.SHOW_FINISH_AT) {
+                this.finishSpawned = true;
+                this.spawnFinishLine();
+            }
+        }*/
 
         // CLEAN
         const off = -50;

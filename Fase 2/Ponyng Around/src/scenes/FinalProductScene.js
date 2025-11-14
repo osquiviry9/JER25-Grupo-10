@@ -8,6 +8,10 @@ export default class FinalProductScene extends Phaser.Scene {
     preload() {
 
         // ============ Videos ============
+
+        // INTRO VIDEO
+        this.load.video('ChargingAnim', 'assets/Animations/ChargingVid.mp4', 'loadeddata', false, true);
+
         // Ache
         this.load.video('AcheFinal_A', 'assets/Animations/AcheFinal.mp4', 'loadeddata', false, true);
 
@@ -54,8 +58,11 @@ export default class FinalProductScene extends Phaser.Scene {
 
         this.registry.set('looser', looserName); //save name of looser
 
+        const videoCh = this.add.video(width / 2, height / 2, 'ChargingAnim').setScale(0.8);
+        videoCh.play(false);
+
         // Wait some time to play de video
-        this.time.delayedCall(3000, () => {
+        this.time.delayedCall(5000, () => {
             const video = this.add.video(width / 2, height / 2, videoKey)
                 .setScale(0.8).setDepth(2);
 

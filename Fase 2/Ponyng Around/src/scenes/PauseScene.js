@@ -8,22 +8,22 @@ export default class PauseScene extends Phaser.Scene {
     preload() {
 
         // Blood
-        this.load.image('BloodPause', 'assets/Backgrounds/BloodPause.png');
+        this.load.image('BloodPause', 'assets/Backgrounds/Pause.PNG');
 
         // Frame
         this.load.image('redFrame', 'assets/Elements/RedFrame.PNG');
 
-        // Botón reanudar 
-        this.load.image('bttnBack', 'assets/Buttons/BackTemp.png');
-        this.load.image('bttnBackHover', 'assets/Buttons/BackTemp.png');
+        // Resume button
+        this.load.image('bttnBack', 'assets/Buttons/PauseBlood.PNG');
+        this.load.image('bttnBackHover', 'assets/Buttons/PauseBlood_hover.PNG');
 
-        // Botón salir al menú principal
-        this.load.image('bttnExit', 'assets/Buttons/exitbttn.png');
-        this.load.image('bttnExitHover', 'assets/Buttons/exitbttn_hover.png');
+        // Main menu button
+        this.load.image('bttnExit', 'assets/Buttons/MainMenuBlood.PNG');
+        this.load.image('bttnExitHover', 'assets/Buttons/MainMenuBlood_hover.PNG');
 
         // Settings button
-        this.load.image('bttnSettings', 'assets/Buttons/settingsbttn.png');
-        this.load.image('bttnSettingsHover', 'assets/Buttons/settingsbttn_hover.png');
+        this.load.image('bttnSettingsB', 'assets/Buttons/SettingsBlood.PNG');
+        this.load.image('bttnSettingsHoverB', 'assets/Buttons/SettingsBlood_hover.PNG');
     }
 
     create() {
@@ -39,27 +39,18 @@ export default class PauseScene extends Phaser.Scene {
         this.add.rectangle(width / 2, height / 2, width, height, 0x000000, 0.6)
             .setDepth(9);
 
-        // Fondo decorativo suave
+        // Blood splash
         this.add.image(width / 2, height / 2, 'BloodPause')
             //.setAlpha(0.3)
             .setDepth(10);
 
-        // Título
-        this.add.text(width / 2, height * 0.25, 'PAUSA', {
-            fontFamily: 'Arial Black',
-            fontSize: '64px',
-            color: '#ff69b4',
-            stroke: '#000000',
-            strokeThickness: 6
-        }).setOrigin(0.5).setDepth(11);
-
-        // ----------- BOTÓN REANUDAR -----------
-        const resumeBtn = this.add.image(width / 2 - 300, height / 2 + 50, 'bttnBack')
+        // ----------- Resume button -----------
+        const resumeBtn = this.add.image(width / 2 - 510, height / 2 - 10, 'bttnBack')
             .setInteractive({ useHandCursor: true })
             .setScale(1)
             .setDepth(11);
 
-        // Hover reanudar
+        // Resume hover
         resumeBtn.on('pointerover', () => {
             resumeBtn.setTexture('bttnBackHover');
             resumeBtn.setScale(1.05);
@@ -69,17 +60,17 @@ export default class PauseScene extends Phaser.Scene {
             resumeBtn.setScale(1);
         });
         resumeBtn.on('pointerdown', () => {
-            this.scene.stop();               // cierra la escena de pausa
-            this.scene.resume('RaceScene');  // reanuda la carrera!!!!
+            this.scene.stop();               
+            this.scene.resume('RaceScene');  // resume race
         });
 
-        // ----------- BOTÓN MENÚ PRINCIPAL -----------
-        const menuBtn = this.add.image(width / 2 + 300, height / 2 + 50, 'bttnExit')
+        // ----------- Main menu button -----------
+        const menuBtn = this.add.image(width / 2 + 50, height / 2 - 200, 'bttnExit')
             .setInteractive({ useHandCursor: true })
             .setScale(1)
             .setDepth(11);
 
-        // Hover menú principal
+        // Hover main menu
         menuBtn.on('pointerover', () => {
             menuBtn.setTexture('bttnExitHover');
             menuBtn.setScale(1.05);
@@ -89,21 +80,21 @@ export default class PauseScene extends Phaser.Scene {
             menuBtn.setScale(1);
         });
         menuBtn.on('pointerdown', () => {
-            // Detiene todo y vuelve al menú principal
-            this.scene.stop('PauseScene');     // cierra la pausa
-            this.scene.stop('RaceScene');      // detiene la carrera
-            this.scene.start('MainMenuScene'); // va al menú principal
+            // Stops everything and goes back to the main menu
+            this.scene.stop('PauseScene');     
+            this.scene.stop('RaceScene');      
+            this.scene.start('MainMenuScene'); 
         });
 
-        // ----------- BOTÓN OPCIONES -----------
-        const optionsBtn = this.add.image(width / 2, height / 2 + 50, 'bttnSettings')
+        // ----------- Settings Button -----------
+        const optionsBtn = this.add.image(width / 2 + 160, height / 2 + 100, 'bttnSettingsB')
             .setInteractive({ useHandCursor: true })
             .setScale(1)
             .setDepth(11);
 
-        // Hover opciones
+        // Hover settings
         optionsBtn.on('pointerover', () => {
-            optionsBtn.setTexture('bttnSettingsHover');
+            optionsBtn.setTexture('bttnSettingsHoverB');
             optionsBtn.setScale(1.05);
         });
         optionsBtn.on('pointerout', () => {
@@ -111,13 +102,13 @@ export default class PauseScene extends Phaser.Scene {
             optionsBtn.setScale(1);
         });
         optionsBtn.on('pointerdown', () => {
-            this.scene.pause('PauseScene');              // pausa la escena de pausa
+            this.scene.pause('PauseScene');              // pauses PauseScene
             this.scene.launch('SettingsScene', { previousScene: this.scene.key });
             this.scene.bringToTop('SettingsScene');
         });
 
 
-        // Resume with "esc"??? podemos sino quitarlo 
+        // Resume also with esc
         this.input.keyboard.on('keydown-ESCAPE', () => { 
             this.scene.stop(); 
             this.scene.resume('RaceScene');

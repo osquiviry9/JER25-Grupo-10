@@ -44,7 +44,7 @@ export default class FinalScene extends Phaser.Scene {
         // Wheels
         for (let i = 1; i <= 7; i++) {
             this.load.image(`Wheels${i}`, `assets/Animations/WheelAnim/Rueda${i}.PNG`);
-            
+
         }
 
         // Platform
@@ -55,9 +55,9 @@ export default class FinalScene extends Phaser.Scene {
         // Blood explosion
         for (let i = 1; i <= 10; i++) {
             this.load.image(`Blood${i}`, `assets/Animations/BloodAnim/blood${i}.PNG`);
-        
+
         }
-        
+
 
         // Meat
         for (let i = 1; i <= 12; i++) {
@@ -66,9 +66,9 @@ export default class FinalScene extends Phaser.Scene {
 
         // ============= Buttons =============
 
-    
 
-        
+
+
 
     }
 
@@ -104,7 +104,7 @@ export default class FinalScene extends Phaser.Scene {
         // WHEELS:
         const wheelsFrames = [];
         for (let i = 1; i <= 7; i++) wheelsFrames.push({ key: `Wheels${i}` });
-        
+
 
         this.anims.create({
             key: 'wheels',
@@ -135,7 +135,7 @@ export default class FinalScene extends Phaser.Scene {
         // BLOOD EXPLOSION only definition, because if not it will start the animation
         const bloodFrames = [];
         for (let i = 1; i <= 10; i++) bloodFrames.push({ key: `Blood${i}` });
-        
+
 
         this.anims.create({
             key: 'blood',
@@ -175,23 +175,29 @@ export default class FinalScene extends Phaser.Scene {
 
         this.hasCrashed = false;
 
+        // Play chainsaw sound
+        this.music = this.sound.add('chainsawSound', {
+        });
+        this.music.play();
+
         // ----------- DEATH SEQUENCE -----------
         this.physics.world.on('worldstep', () => {
             if (!this.hasCrashed && pony.x >= crusherZoneX) {
                 this.hasCrashed = true;
 
                 this.time.delayedCall(1500, () => {
-                    //The pony goes straight for a while
+
+                    // The pony goes straight for a while
                     pony.setVelocityX(130);
 
-                    // When 1 second pass, the srpite destroys
-                    this.music = this.sound.add('chainsawSound', {
-                            });
-                    this.music.play();
-                        this.time.delayedCall(5000, () => {
+
+                    /*
+                    this.time.delayedCall(5000, () => {
                         this.music.stop();
-                            });
-                    this.time.delayedCall(750, () => {
+                    });*/
+
+                    // When 1 second pass, the srpite destroys
+                    this.time.delayedCall(560, () => {
                         pony.setVisible(false);
 
                         //Starts the blood animation
@@ -203,17 +209,24 @@ export default class FinalScene extends Phaser.Scene {
                         blood.once('animationcomplete', () => {
 
                             blood.setVisible(false);
-                            
+
                             // Wait before de shake
                             this.time.delayedCall(400, () => {
+
+                                // Stop chainsaw sound
+                                this.music.stop();
+
+                                // Stop wheels
+                                this.wheels.stop('wheels');
+
                                 // Shake camera
                                 this.cameras.main.shake(1000, 0.01);
-                                
+
                             });
 
                             this.time.delayedCall(1000, () => {
                                 //Then the meat
-                                this.time.delayedCall(900, () => {
+                                this.time.delayedCall(1300, () => {
                                     const meat = this.add.sprite(width / 2, height / 2, 'Meat1') //ajuste porque no se que ha pasado
                                         .setDepth(1);
 
@@ -228,16 +241,15 @@ export default class FinalScene extends Phaser.Scene {
                     });
 
 
-
                     // After 6 seconds play anim
                     this.time.delayedCall(6000, () => {
                         // Tube video
                         this.music = this.sound.add('pipelineSound', {
-                                });
-                                    this.music.play();
-                                    this.time.delayedCall(4000, () => {
-                                    this.music.stop();
-                                });
+                        });
+                        this.music.play();
+                        this.time.delayedCall(4000, () => {
+                            this.music.stop();
+                        });
                         const video = this.add.video(width / 2, height / 2, 'tubeVideo');
                         video.setOrigin(0.5);
                         video.setDepth(15);
