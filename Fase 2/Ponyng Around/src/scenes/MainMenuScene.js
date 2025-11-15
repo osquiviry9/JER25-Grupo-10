@@ -7,6 +7,9 @@ export default class MainMenuScene extends Phaser.Scene {
 
     preload() {
 
+        //Click sound
+        this.load.audio('clickSound', 'assets/sound/click.mp3');
+
         // Background
         this.load.image('menuBackground', 'assets/Backgrounds/StartingMenu.JPG');
 
@@ -26,6 +29,9 @@ export default class MainMenuScene extends Phaser.Scene {
     }
 
     create() {
+
+        this.music = this.sound.add('clickSound', {
+            });
 
         const { width, height } = this.scale;
 
@@ -58,8 +64,12 @@ export default class MainMenuScene extends Phaser.Scene {
                 button.setScale(btn.scale);
             });
 
-            // Click
-            button.on('pointerdown', btn.action);
+            // Click + sound
+            button.on('pointerdown', () => {
+                btn.action();     
+                this.music.play(); 
+            });
+            
         });
 
 

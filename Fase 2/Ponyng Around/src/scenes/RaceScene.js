@@ -50,6 +50,9 @@ export default class RaceScene extends Phaser.Scene {
 
         const g = this.make.graphics({ x: 0, y: 0, add: false });
 
+        //Click sound
+        this.load.audio('clickSound', 'assets/sound/click.mp3');
+
         // Jumping sound
         this.load.audio('boingSound', 'assets/sound/boing.mp3');
 
@@ -141,6 +144,10 @@ export default class RaceScene extends Phaser.Scene {
     }
 
     create() {
+
+        this.music = this.sound.add('clickSound', {
+            });
+            
         const { width, height } = this.scale;
 
         this.cameras.main.setBackgroundColor('#000');
@@ -228,7 +235,10 @@ export default class RaceScene extends Phaser.Scene {
             });
 
             // Click
-            button.on('pointerdown', btn.action);
+            button.on('pointerdown', () => {
+                btn.action();     
+                this.music.play(); 
+            });
         });
 
         // PONIS RUN ANIMATION

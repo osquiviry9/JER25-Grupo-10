@@ -32,10 +32,10 @@ export default class CharacterSelectScene extends Phaser.Scene {
 
     preload() {
 
+
+        //Click sound
         this.load.audio('clickSound', 'assets/sound/click.mp3');
 
-        
-        
         // Frame
         this.load.image('Frame', 'assets/Elements/GreenFrame.PNG');
 

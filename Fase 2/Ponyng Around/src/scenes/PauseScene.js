@@ -7,6 +7,9 @@ export default class PauseScene extends Phaser.Scene {
 
     preload() {
 
+        //Click sound
+        this.load.audio('clickSound', 'assets/sound/click.mp3');
+
         // Blood
         this.load.image('BloodPause', 'assets/Backgrounds/Pause.PNG');
 
@@ -27,6 +30,10 @@ export default class PauseScene extends Phaser.Scene {
     }
 
     create() {
+
+        this.music = this.sound.add('clickSound', {
+            });
+
         const { width, height } = this.scale;
 
         // Traer esta escena al frente por si acaso se pilla con el depth
@@ -60,6 +67,8 @@ export default class PauseScene extends Phaser.Scene {
             resumeBtn.setScale(1);
         });
         resumeBtn.on('pointerdown', () => {
+               
+            this.music.play(); 
             this.scene.stop();               
             this.scene.resume('RaceScene');  // resume race
         });
@@ -81,6 +90,7 @@ export default class PauseScene extends Phaser.Scene {
         });
         menuBtn.on('pointerdown', () => {
             // Stops everything and goes back to the main menu
+            this.music.play();
             this.scene.stop('PauseScene');     
             this.scene.stop('RaceScene');      
             this.scene.start('MainMenuScene'); 
@@ -102,6 +112,7 @@ export default class PauseScene extends Phaser.Scene {
             optionsBtn.setScale(1);
         });
         optionsBtn.on('pointerdown', () => {
+            this.music.play();
             this.scene.pause('PauseScene');              // pauses PauseScene
             this.scene.start('SettingsScene', { previousScene: this.scene.key });
             this.scene.bringToTop('SettingsScene');

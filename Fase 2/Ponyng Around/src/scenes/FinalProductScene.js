@@ -7,6 +7,9 @@ export default class FinalProductScene extends Phaser.Scene {
 
     preload() {
 
+        //Click sound
+        this.load.audio('tadaSound', 'assets/sound/tada.mp3');
+
         // ============ Videos ============
 
         // INTRO VIDEO
@@ -48,6 +51,9 @@ export default class FinalProductScene extends Phaser.Scene {
 
     create() {
 
+        this.music = this.sound.add('tadaSound', {
+            });
+
         const { width, height } = this.scale;
 
         this.cameras.main.setBackgroundColor('#000000');
@@ -63,12 +69,15 @@ export default class FinalProductScene extends Phaser.Scene {
 
         // Wait some time to play de video
         this.time.delayedCall(5000, () => {
+            this.music.play(); 
+            
             const video = this.add.video(width / 2, height / 2, videoKey)
                 .setScale(0.8).setDepth(2);
 
             video.play(false);
 
             this.time.delayedCall(4000, () => {
+                
                 const pic = this.add.image(width / 2, height / 2, picKey)
                     .setScale(0.8).setDepth(3);
             });

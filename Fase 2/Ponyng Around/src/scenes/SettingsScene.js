@@ -7,6 +7,9 @@ export default class SettingsScene extends Phaser.Scene {
 
     preload() {
 
+        //Click sound
+        this.load.audio('clickSound', 'assets/sound/click.mp3');
+
         // Background color
         this.load.image('ColorBackground', 'assets/Backgrounds/fondoPlano.jpeg');
 
@@ -22,6 +25,9 @@ export default class SettingsScene extends Phaser.Scene {
     }
 
     create() {
+
+        this.music = this.sound.add('clickSound', {
+            });
 
         const { width, height } = this.scale;
 
@@ -65,6 +71,7 @@ export default class SettingsScene extends Phaser.Scene {
         // volver a la escena anterior
         backBtn.on('pointerdown', () => {
             
+            this.music.play(); 
             this.scene.start(this.previousScene);
 
             
@@ -95,7 +102,10 @@ export default class SettingsScene extends Phaser.Scene {
             });
 
             // Click
-            button.on('pointerdown', btn.action);
+            button.on('pointerdown', () => {
+                btn.action();     
+                this.music.play(); 
+            });
         });
 
         // Posición base de la barra
@@ -123,9 +133,16 @@ export default class SettingsScene extends Phaser.Scene {
         }).setInteractive({ useHandCursor: true }).setOrigin(0.5);
 
         // Eventos
-        minusButton.on('pointerdown', () => this.changeVolume(-1));
-        plusButton.on('pointerdown', () => this.changeVolume(1));
+        minusButton.on('pointerdown', () => {
+            this.changeVolume(-1);
+            this.music.play();
+        });
 
+
+        plusButton.on('pointerdown', () => {
+            this.changeVolume(1);
+            this.music.play();
+        });
 
         // Zoom camera
         const margin = 0.8;

@@ -7,6 +7,9 @@ export default class CreditsScene extends Phaser.Scene {
 
     preload() {
 
+        //Click sound
+        this.load.audio('clickSound', 'assets/sound/click.mp3');
+
         // Background color
         this.load.image('ColorBackground', 'assets/Backgrounds/fondoPlano.jpeg');
 
@@ -17,6 +20,10 @@ export default class CreditsScene extends Phaser.Scene {
     }
 
     create() {
+
+        this.music = this.sound.add('clickSound', {
+            });
+
 
         const { width, height } = this.scale;
 
@@ -86,7 +93,10 @@ export default class CreditsScene extends Phaser.Scene {
             });
 
             // Click
-            button.on('pointerdown', btn.action);
+            button.on('pointerdown', () => {
+                btn.action();     
+                this.music.play(); 
+            });
         });
 
         // Zoom camera
