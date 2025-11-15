@@ -505,7 +505,7 @@ export default class RaceScene extends Phaser.Scene {
         }
     }
 
-    // ---------- Countdown ----------
+    // ---------- Countdown -----------
     startCountdown() {
         const steps = ['3', '2', '1', '¡YA!'];
         let i = 0;
