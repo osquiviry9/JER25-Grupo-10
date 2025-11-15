@@ -222,7 +222,7 @@ export default class FinalScene extends Phaser.Scene {
                                 // Stop wheels
                                 this.wheels.stop('wheels');
 
-                                // Shake camera
+                                // Shake camera and start crushing sound
                                 this.cameras.main.shake(1000, 0.01);
                                 this.music = this.sound.add('crushSound', {
                                     });

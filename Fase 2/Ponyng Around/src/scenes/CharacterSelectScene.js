@@ -3,7 +3,7 @@ import Phaser from 'phaser';
 export default class CharacterSelectScene extends Phaser.Scene {
     constructor() {
         super('CharacterSelectScene');
-
+        
         this.currentPlayer = 1;
         this.selectedPonies = {
             p1: null,
@@ -26,10 +26,16 @@ export default class CharacterSelectScene extends Phaser.Scene {
             { key: 'Kamil', path: 'assets/ponis/Kamil/Kamil_Complete.png' },
             { key: 'Beersquiviry', path: 'assets/ponis/Beersquiviri/Beer_Complete.png' },
         ];
+
+        
     }
 
     preload() {
 
+        this.load.audio('clickSound', 'assets/sound/click.mp3');
+
+        
+        
         // Frame
         this.load.image('Frame', 'assets/Elements/GreenFrame.PNG');
 
@@ -59,6 +65,13 @@ export default class CharacterSelectScene extends Phaser.Scene {
 
 
     create() {
+
+
+        this.music = this.sound.add('clickSound', {
+            });
+           
+        
+
         this.backButton = this.add.text(60, 50, '⬅', {
             fontSize: '32px',
             fontFamily: 'Arial Black',
@@ -78,6 +91,7 @@ export default class CharacterSelectScene extends Phaser.Scene {
         });
 
         this.backButton.on('pointerdown', () => {
+            this.music.play();
             this.cameras.main.fadeOut(400, 0, 0, 0);
             this.cameras.main.once('camerafadeoutcomplete', () => {
                 this.scene.start('MainMenuScene');
@@ -153,8 +167,10 @@ export default class CharacterSelectScene extends Phaser.Scene {
         });
 
         this.startButton.on('pointerdown', () => {
+            this.music.play();
             this.registry.set('player1Character', this.selectedPonies.p1);
             this.registry.set('player2Character', this.selectedPonies.p2);
+           
 
             this.cameras.main.fadeOut(600, 0, 0, 0);
             this.cameras.main.once('camerafadeoutcomplete', () => {
@@ -201,9 +217,11 @@ export default class CharacterSelectScene extends Phaser.Scene {
             if (!this.selected.p1) {
 
                 this[`readyButton_p1`].emit('pointerdown');
+                this.music.play();
             } else {
 
                 this[`cancelButton_p1`].emit('pointerdown');
+                this.music.play();
             }
         });
 
@@ -224,9 +242,11 @@ export default class CharacterSelectScene extends Phaser.Scene {
             if (!this.selected.p2) {
                
                 this[`readyButton_p2`].emit('pointerdown');
+                this.music.play();
             } else {
 
                 this[`cancelButton_p2`].emit('pointerdown');
+                this.music.play();
             }
         });
 
@@ -311,6 +331,7 @@ export default class CharacterSelectScene extends Phaser.Scene {
 
             // Click
             button.on('pointerdown', () => {
+                this.music.play();
             if (!this.selected[player]) {
                 this.changePony(player, -1, image, nameText, readyButton);
             }
@@ -329,6 +350,7 @@ export default class CharacterSelectScene extends Phaser.Scene {
         }).setOrigin(0.5).setInteractive({ useHandCursor: true });
 
         readyButton.on('pointerdown', () => {
+            this.music.play();
             if (readyButton.alpha < 1) return;      
 
             this.selected[player] = true;
@@ -352,7 +374,7 @@ export default class CharacterSelectScene extends Phaser.Scene {
         }).setOrigin(0.5).setVisible(false).setInteractive({ useHandCursor: true });
 
         cancelButton.on('pointerdown', () => {
-
+            this.music.play();
             this.selected[player] = false;
 
             cancelButton.setVisible(false);
@@ -412,6 +434,8 @@ export default class CharacterSelectScene extends Phaser.Scene {
             });
         }
     }
+
+    
 }
 
 

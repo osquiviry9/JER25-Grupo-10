@@ -44,8 +44,9 @@ export default class CreditsScene extends Phaser.Scene {
         "Special Thanks: ",
         "Motor: Phaser 3"
         ];
+        
 
-        let startY = height;
+        let startY = height; 
 
         this.creditTexts = credits.map((line, index) => {
             return this.add.text(width / 2, startY + index * 80, line, {
