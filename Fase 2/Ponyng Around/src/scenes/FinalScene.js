@@ -14,6 +14,9 @@ export default class FinalScene extends Phaser.Scene {
         //Pipeline
         this.load.audio('pipelineSound', 'assets/sound/pipeline.mp3');
 
+        //crush
+        this.load.audio('crushSound', 'assets/sound/crush.mp3');
+
 
         // Background
         this.load.image('finalBackground', 'assets/Backgrounds/FinalScene_Background.JPG');
@@ -221,6 +224,9 @@ export default class FinalScene extends Phaser.Scene {
 
                                 // Shake camera
                                 this.cameras.main.shake(1000, 0.01);
+                                this.music = this.sound.add('crushSound', {
+                                    });
+                                    this.music.play();
 
                             });
 
@@ -231,9 +237,11 @@ export default class FinalScene extends Phaser.Scene {
                                         .setDepth(1);
 
                                     meat.play('meat');
+                                    
 
                                     meat.once('animationcomplete', () => {
                                         meat.setVisible(false);
+                                        this.music.stop();
                                     });
                                 });
                             });
