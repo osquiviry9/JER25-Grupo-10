@@ -7,23 +7,24 @@ export default class CreditsScene extends Phaser.Scene {
 
     preload() {
 
-        //Click sound
+        // Click sound
         this.load.audio('clickSound', 'assets/sound/click.mp3');
 
-        // Background color
-        this.load.image('ColorBackground', 'assets/Backgrounds/fondoPlano.jpeg');
+        // Background
+        this.load.image('creditsBg', 'assets/Backgrounds/CreditsBg.JPG');
 
-        // Buttons
+        // Melgarga head
+        this.load.image('head', 'assets/Elements/Head.PNG');
+
         // Back button
-        this.load.image('bttnBack', 'assets/Buttons/BackTemp.png');
-        this.load.image('bttnBackHover', 'assets//Buttons/BackTemp.png');
+        this.load.image('bttnBack', 'assets/Buttons/backBttn.PNG');
+        this.load.image('bttnBackHover', 'assets/Buttons/backBttn_hover.PNG');
     }
 
     create() {
 
         this.music = this.sound.add('clickSound', {
-            });
-
+        });
 
         const { width, height } = this.scale;
 
@@ -31,39 +32,34 @@ export default class CreditsScene extends Phaser.Scene {
 
         this.cameras.main.fadeIn(5000, 0, 0, 0);
 
-        // General color background
-        this.add.image(width / 2, height / 2, 'ColorBackground');
+        // Background
+        this.add.image(width / 2, height / 2, 'creditsBg');
 
-        this.title = this.add.text(width / 2, height / 2, 'Credits (Completar)', {
-            fontFamily: 'Arial',
-            fontSize: '64px',
-            fontStyle: 'bold',
-            color: '#ff69b4',
-            stroke: '#000000',
-            strokeThickness: 6
-        }).setOrigin(0.5);
+        // Melgarga head
+        this.head = this.add.image(width / 2, height / 2 + 200, 'head').setScale(0.6);
 
         const credits = [
-        "Game Designer: ETC Studio",
-        "Programming: ",
-        "Art: ",
-        "Music: ",
-        "Special Thanks: ",
-        "Motor: Phaser 3"
+            "Game Designer: ETC Studio",
+            "Programming: ",
+            "Art: ",
+            "Music: ",
+            "Special Thanks: ",
+            "Motor: Phaser 3"
         ];
-        
 
-        let startY = height; 
+
+        let startY = height + 10;
 
         this.creditTexts = credits.map((line, index) => {
             return this.add.text(width / 2, startY + index * 80, line, {
                 fontFamily: 'Arial',
                 fontSize: '32px',
-                color: '#ffffff'
+                color: '#000000ff',
+                align: 'center'
             }).setOrigin(0.5);
         });
 
-        this.allScrollableTexts = [this.title, ...this.creditTexts];
+        this.allScrollableTexts = [this.head, ...this.creditTexts];
 
         this.scrollActive = false;
 
@@ -94,8 +90,8 @@ export default class CreditsScene extends Phaser.Scene {
 
             // Click
             button.on('pointerdown', () => {
-                btn.action();     
-                this.music.play(); 
+                btn.action();
+                this.music.play();
             });
         });
 

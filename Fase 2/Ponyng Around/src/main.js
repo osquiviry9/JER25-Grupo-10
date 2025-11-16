@@ -8,6 +8,7 @@ import SettingsScene from './scenes/SettingsScene.js';
 import CreditsScene from './scenes/CreditsScene.js';
 import PauseScene from './scenes/PauseScene.js';
 import FinalProductScene from './scenes/FinalProductScene.js';
+import HelpScene from './scenes/HelpScene.js';
 
 
 const config = {
@@ -22,7 +23,7 @@ const config = {
             debug: false
         }
     },
-    scene: [MainMenuScene, SettingsScene, CreditsScene, CharacterSelectScene, RaceScene, PauseScene, FinalScene, FinalProductScene]
+    scene: [MainMenuScene, SettingsScene, HelpScene, CreditsScene, CharacterSelectScene, RaceScene, PauseScene, FinalScene, FinalProductScene]
     // scene: [PauseScene]
     // scene: [MainMenuScene, CharacterSelectScene, RaceScene, FinalScene]
     //scene: [IntroScene,IntroAnimScene,MainMenuScene, CharacterSelectScene, RaceScene, FinalScene, FinalProductScene] <- LA BUENA

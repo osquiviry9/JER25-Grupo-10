@@ -56,8 +56,11 @@ export default class RaceScene extends Phaser.Scene {
         // Jumping sound
         this.load.audio('boingSound', 'assets/sound/boing.mp3');
 
-        // Background color
+        // Background (blue)
         this.load.image('ColorBackground', 'assets/Backgrounds/fondoPlano.jpeg');
+
+        // Middle line
+        this.load.image('MiddleLine', 'assets/Elements/MiddleLine.PNG');
 
         // Floor tile
         this.load.image('TileFloor', 'assets/Backgrounds/TileableBackground1.png');
@@ -146,8 +149,8 @@ export default class RaceScene extends Phaser.Scene {
     create() {
 
         this.music = this.sound.add('clickSound', {
-            });
-            
+        });
+
         const { width, height } = this.scale;
 
         this.cameras.main.setBackgroundColor('#000');
@@ -157,9 +160,14 @@ export default class RaceScene extends Phaser.Scene {
             .setOrigin(0.5)
             .setDepth(-1);
 
+        // Middle Line
+        this.add.image(width / 2, height / 2, 'MiddleLine')
+            .setOrigin(0.5)
+            .setDepth(19);
+
         // Frame
         this.add.image(width / 2, height / 2, 'redFrame')
-            .setDepth(10);
+            .setDepth(25);
 
         // Sun TOP
         this.add.image((width / 2) + 600, (height / 2) - 430, 'Sun')
@@ -183,13 +191,13 @@ export default class RaceScene extends Phaser.Scene {
             .setDepth(10);
 
         // Lives BOTTOM
-        this.live1Bottom = this.add.image((width / 2) - 860, (height / 2) + 60, 'Lives')
+        this.live1Bottom = this.add.image((width / 2) - 860, (height / 2) + 90, 'Lives')
             .setScale(0.15)
             .setDepth(10);
-        this.live2Bottom = this.add.image((width / 2) - 760, (height / 2) + 60, 'Lives')
+        this.live2Bottom = this.add.image((width / 2) - 760, (height / 2) + 90, 'Lives')
             .setScale(0.15)
             .setDepth(10);
-        this.live3Bottom = this.add.image((width / 2) - 660, (height / 2) + 60, 'Lives')
+        this.live3Bottom = this.add.image((width / 2) - 660, (height / 2) + 90, 'Lives')
             .setScale(0.15)
             .setDepth(10);
 
@@ -236,8 +244,8 @@ export default class RaceScene extends Phaser.Scene {
 
             // Click
             button.on('pointerdown', () => {
-                btn.action();     
-                this.music.play(); 
+                btn.action();
+                this.music.play();
             });
         });
 
@@ -350,9 +358,9 @@ export default class RaceScene extends Phaser.Scene {
         this.playerBottom = makePony(300, redBotY, p2).setDepth(3);
 
         // Fix player hitbox
-        this.playerTop.body.setSize(this.playerTop.width * 0.6, this.playerTop.height * 0.8);
+        this.playerTop.body.setSize(this.playerTop.width * 0.4, this.playerTop.height * 0.8);
         this.playerTop.body.setOffset(this.playerTop.width * 0.2, this.playerTop.height * 0.2);
-        this.playerBottom.body.setSize(this.playerTop.width * 0.6, this.playerTop.height * 0.8);
+        this.playerBottom.body.setSize(this.playerTop.width * 0.4, this.playerTop.height * 0.8);
         this.playerBottom.body.setOffset(this.playerTop.width * 0.2, this.playerTop.height * 0.2);
 
         this.groundTop = makeGroundAtRed(redTopY + 200);  //control the invisible ground coorinates
@@ -420,6 +428,7 @@ export default class RaceScene extends Phaser.Scene {
         const centerX = this.scale.width / 2;
         const centerY = this.scale.height / 2;
 
+
         // Player 1 up
         this.uiP1Label = this.add.text(centerX, this.laneYTop - 150, 'Progress:',
             {
@@ -456,9 +465,9 @@ export default class RaceScene extends Phaser.Scene {
 
 
         // Horizontal bar
-        this.progressBar = this.add.rectangle(centerX, centerY, 800, 20, 0x666666)
+        this.progressBar = this.add.rectangle(centerX, centerY, 800, 5, 0x4ca149)
             .setOrigin(0.5)
-            .setDepth(5);
+            .setDepth(20);
 
         // Get the selected ponis
         const p1 = this.registry.get('player1Character');
@@ -471,7 +480,7 @@ export default class RaceScene extends Phaser.Scene {
             `${p1.key}Run1`
         )
             .setScale(0.12)
-            .setDepth(6);
+            .setDepth(21);
 
         // Icon of the score of the poni 2
         this.iconP2 = this.add.image(
@@ -480,7 +489,7 @@ export default class RaceScene extends Phaser.Scene {
             `${p2.key}Run1`
         )
             .setScale(0.12)
-            .setDepth(6);
+            .setDepth(21);
 
     }
 
@@ -507,7 +516,7 @@ export default class RaceScene extends Phaser.Scene {
 
     // ---------- Countdown -----------
     startCountdown() {
-        const steps = ['3', '2', '1', '¡YA!'];
+        const steps = ['3', '2', '1', '¡GO!'];
         let i = 0;
 
         const label = this.add.text(this.scale.width / 2, this.scale.height / 2, '', {
@@ -516,7 +525,7 @@ export default class RaceScene extends Phaser.Scene {
             color: '#ffffff',
             stroke: '#ff69b4',
             strokeThickness: 8
-        }).setOrigin(0.5).setAlpha(0).setDepth(6);
+        }).setOrigin(0.5).setAlpha(0).setDepth(22);
 
         const showNext = () => {
             if (i >= steps.length) {
@@ -613,6 +622,7 @@ export default class RaceScene extends Phaser.Scene {
 
 
     hitObstacle(laneKey, obstacle) {
+        
         const lane = this.state.lanes[laneKey];
 
         if (lane.immune) {
@@ -720,6 +730,11 @@ export default class RaceScene extends Phaser.Scene {
         return pct >= 0.90; // Not genrating anything more when the ponie hit 90%
     }
 
+    checkFinishLine(player, finishLine, laneKey) {
+        if (this.state.finished) return; // No hacer nada si ya terminó
+        this.finishRace(laneKey);
+    }
+
 
     spawnFinishLine() {
         const yTop = this.laneYTop + CONFIG.RED_OFFSET_FROM_CENTER + 250;
@@ -730,18 +745,29 @@ export default class RaceScene extends Phaser.Scene {
             .setOrigin(0.5, 1)
             .setDepth(3)
             .setScale(0.45)
-            .setImmovable(true);
+            .setImmovable(true)
+            .setVelocityX(-(this.state.lanes.top.speed * 150));
 
         this.finishTop.body.setAllowGravity(false);
         ;
 
+        // Colision with TOP player
+        this.physics.add.overlap(this.playerTop, this.finishTop, () => {
+            this.finishRace('top');
+
+        });
         // BOTTOM
         this.finishBottom = this.physics.add.sprite(CONFIG.WIDTH + 50, yBot, 'FinishLine')
             .setOrigin(0.5, 1)
             .setDepth(4)
             .setScale(0.45)
             .setImmovable(true)
-            .setVelocityX(-(this.state.lanes.bottom.speed * 100));
+            .setVelocityX(-(this.state.lanes.bottom.speed * 150));
+
+        // Colision with BOTTOM player
+        this.physics.add.overlap(this.playerBottom, this.finishBottom, () => {
+            this.finishRace('bottom');
+        });
     }
 
     startSpawner() {
@@ -809,7 +835,7 @@ export default class RaceScene extends Phaser.Scene {
             this.scale.height,
             0x000000,
             0.55
-        ).setDepth(50).setScrollFactor(0);
+        ).setDepth(24).setScrollFactor(0);
 
         // Stop EVERYTHINHG!
         const stopGroup = g => g.children.each(o => {
@@ -855,7 +881,7 @@ export default class RaceScene extends Phaser.Scene {
         }).setOrigin(0.5)
             .setScale(0.5)
             .setAlpha(0)
-            .setDepth(51);
+            .setDepth(26);
 
         this.tweens.add({
             targets: label,

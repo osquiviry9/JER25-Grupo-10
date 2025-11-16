@@ -63,14 +63,12 @@ export default class CharacterSelectScene extends Phaser.Scene {
         }
     }
 
-
     create() {
 
 
         this.music = this.sound.add('clickSound', {
             });
            
-        
 
         this.backButton = this.add.text(60, 50, '⬅', {
             fontSize: '32px',
@@ -288,7 +286,7 @@ export default class CharacterSelectScene extends Phaser.Scene {
 
 
         // ----------- JUMPING TEXT  -----------
-        const jumpKeyText = (player === 'p1') ? '¡Salta con  W!' : '¡Salta con  ↑!'; //texto controles
+        const jumpKeyText = (player === 'p1') ? 'Jump with  W!' : 'Jump with  ↑!'; 
         const jumpKeyColor = (player === 'p1') ? '#ff69b4' : '#67b7ff';
 
         this.add.text(centerX, centerY + 390, jumpKeyText, {

@@ -10,50 +10,61 @@ export default class SettingsScene extends Phaser.Scene {
         //Click sound
         this.load.audio('clickSound', 'assets/sound/click.mp3');
 
-        // Background color
-        this.load.image('ColorBackground', 'assets/Backgrounds/fondoPlano.jpeg');
+        // Background
+        this.load.image('BackgroundSet', 'assets/Backgrounds/SettingsBg.JPG');
 
-        // Buttons
+        // Frame
+        this.load.image('Frame', 'assets/Elements/GreenFrame.PNG');
+
+        // Music icon
+        this.load.image('Music', 'assets/Buttons/soundbttn.png');
+
+        // Sound icon
+        this.load.image('Sound', 'assets/Buttons/soundLvl.png');
+
+        // =========== Buttons ===========
         // Back button
-        this.load.image('bttnBack', 'assets/Buttons/BackTemp.png');
-        this.load.image('bttnBackHover', 'assets/Buttons/BackTemp.png');
+        this.load.image('bttnBack', 'assets/Buttons/backBttn.png');
+        this.load.image('bttnBackHover', 'assets/Buttons/backBttn_hover.png');
 
-        // Music button
-        this.load.image('bttnMusic', 'assets/Buttons/soundbttn.png');
-        this.load.image('bttnMusicHover', 'assets/Buttons/soundbttn_hover.png');
-        
+        // Help button
+        this.load.image('bttnHelp', 'assets/Buttons/helpBttn.PNG');
+        this.load.image('bttnHelpHover', 'assets/Buttons/helpBttn_hover.PNG');
+
     }
 
     create() {
 
         this.music = this.sound.add('clickSound', {
-            });
+        });
 
         const { width, height } = this.scale;
 
-        // Volumen inicial (de 0 a 10)
+        // Volume inicial (from 0 to 10)
         this.volumeLevel = this.game.volumeLevel ?? 5;
         this.maxVolume = 10;
 
-        this.cameras.main.setBackgroundColor('#000000ff'); 
+        // Music inicial
+        this.musicLevel = this.game.musicLevel ?? 5;
 
-        // General color background
-        this.add.image(width / 2, height / 2, 'ColorBackground');
+        this.cameras.main.setBackgroundColor('#000000ff');
 
-        const title = this.add.text(width / 2, height * 0.25, 'SETTINGS (completar)', {
-            fontFamily: 'Arial',
-            fontSize: '64px',
-            fontStyle: 'bold',
-            color: '#ff69b4',
-            stroke: '#000000',
-            strokeThickness: 6
-        }).setOrigin(0.5);
+        // Background
+        this.add.image(width / 2, height / 2, 'BackgroundSet');
 
-        // Guardamos la escena anterior
+        // Frame
+        this.add.image(width / 2, height / 2, 'Frame').setDepth(3);
+
+        // Sound and music icons:
+        this.add.image((width / 2) + 150, (height / 2) - 200, 'Music');
+        this.add.image((width / 4) - 100, (height / 2) - 200, 'Sound');
+
+        // Save last scene
         this.previousScene = this.scene.settings.data.previousScene;
 
-        // ----------- BOTÓN BACK -----------
-        const backBtn = this.add.image((width / 2) - 800, (height / 2) - 300, 'bttnBack')
+        // ============== BUTTONS ==============
+        // BACK button
+        const backBtn = this.add.image((width / 2) - 800, (height / 2) - 400, 'bttnBack')
             .setInteractive({ useHandCursor: true })
             .setScale(1);
 
@@ -68,83 +79,82 @@ export default class SettingsScene extends Phaser.Scene {
             backBtn.setScale(1);
         });
 
-        // volver a la escena anterior
+        // Back to previous scene
         backBtn.on('pointerdown', () => {
-            
-            this.music.play(); 
+
+            this.music.play();
             this.scene.start(this.previousScene);
 
-            
+
             //this.scene.stop('SettingsScene');                 // cierra la escena de opciones
             //this.scene.resume(this.previousScene); // vuelve a la escena que la abrió
         });
 
+        // HELP button
+        const helpBtn = this.add.image((width / 2), (height / 2) + 300, 'bttnHelp')
+            .setInteractive({ useHandCursor: true })
+            .setScale(1);
 
-        //Button list
-        const buttons = [
-            { x: width * 0.5, y: height * 0.5, key: 'bttnMusic', hover: 'bttnMusicHover', action: () => console.log('On/off music'), scale: 1},
-        ];
-
-        buttons.forEach(btn => {
-            const button = this.add.image(btn.x, btn.y, btn.key)
-                .setInteractive({ useHandCursor: true })
-                .setScale(btn.scale);
-            // Hover
-            button.on('pointerover', () => {
-                button.setTexture(btn.hover);
-                button.setScale(btn.scale * 1.05);
-            });
-
-            // Salir hover
-            button.on('pointerout', () => {
-                button.setTexture(btn.key);
-                button.setScale(btn.scale);
-            });
-
-            // Click
-            button.on('pointerdown', () => {
-                btn.action();     
-                this.music.play(); 
-            });
+        // Hover
+        helpBtn.on('pointerover', () => {
+            helpBtn.setTexture('bttnHelpHover');
+            helpBtn.setScale(1.05);
         });
 
-        // Posición base de la barra
-        const barX = width * 0.5 - 150;
-        const barY = height * 0.65;
+        helpBtn.on('pointerout', () => {
+            helpBtn.setTexture('bttnHelp');
+            helpBtn.setScale(1);
+        });
 
-        // Dibujar la barra inicial
-        this.volumeBars = [];
-        for (let i = 0; i < this.maxVolume; i++) {
-          const bar = this.add.rectangle(barX + i * 30, barY, 20, 40, i < this.volumeLevel ? 0xff69b4 : 0x808080);
-            this.volumeBars.push(bar);
-        }
-        
-        // Botones de volumen
-        const minusButton = this.add.text(barX - 60, barY, '–', {
-            fontFamily: 'Arial',
-         fontSize: '64px',
-         color: '#ffffff'
-        }).setInteractive({ useHandCursor: true }).setOrigin(0.5);
+        // Go to HELP scene
+        helpBtn.on('pointerdown', () => {
 
-        const plusButton = this.add.text(barX + this.maxVolume * 30 + 40, barY, '+', {
-          fontFamily: 'Arial',
-           fontSize: '64px',
-           color: '#ffffff'
-        }).setInteractive({ useHandCursor: true }).setOrigin(0.5);
-
-        // Eventos
-        minusButton.on('pointerdown', () => {
-            this.changeVolume(-1);
             this.music.play();
+            this.scene.start('HelpScene');
+
         });
 
+        // BARS POSITION
+        const barXS = width * 0.5 - 370; // x sound bar
+        const barXM = width * 0.5 + 300; // x music bar
+        const barY = (height / 2) - 200;
 
-        plusButton.on('pointerdown', () => {
-            this.changeVolume(1);
-            this.music.play();
-        });
+        // Change lvl buttons (+ and -)
+        this.soundButtons = this.createVolumeButtons(
+            barXS,
+            barY,
+            () => { this.changeVolume(-1); this.music.play(); }, // al presionar -
+            () => { this.changeVolume(1); this.music.play(); }  // al presionar +
+        );
 
-        // Zoom camera
+        this.musicButtons = this.createVolumeButtons(
+            barXM,
+            barY,
+            () => { this.changeMusicVolume(-1); this.music.play(); },
+            () => { this.changeMusicVolume(1); this.music.play(); }
+        );
+
+        // SOUND BAR
+        this.soundBars = this.createBars(
+            barXS,
+            barY,
+            this.volumeLevel,
+            this.maxVolume,
+            0x2b6b29,   // dark green -> active
+            0xbfe9bd    // light green -> inactive
+        );
+
+        // MUSIC BAR (no hace nada d momento -> no hay musica)
+        this.musicBars = this.createBars(
+            barXM,
+            barY,
+            this.musicLevel,
+            this.maxVolume,
+            0x2b6b29,
+            0xbfe9bd
+        );
+
+        // Zoom
         const margin = 0.8;
         const zoomX = (width * margin) / width;
         const zoomY = (height * margin) / height;
@@ -154,21 +164,84 @@ export default class SettingsScene extends Phaser.Scene {
         this.cameras.main.centerOn(width / 2, height / 2);
     }
 
+    // CREATE BAR FUNC
+    createBars(x, y, currentLevel, maxLevel, activeColor, inactiveColor, spacing = 30) {
+        const bars = [];
+
+        for (let i = 0; i < maxLevel; i++) {
+            const bar = this.add.rectangle(
+                x + i * spacing,
+                y,
+                20,
+                40,
+                i < currentLevel ? activeColor : inactiveColor
+            );
+            bars.push(bar);
+        }
+
+        return bars;
+    }
+
+    createVolumeButtons(x, y, onMinus, onPlus, color = '#4ca149ff') {
+        const minusButton = this.add.text(x - 60, y, '–', {
+            fontFamily: 'Arial',
+            fontSize: '64px',
+            color: color,
+            stroke: '#000000',
+            strokeThickness: 6
+        }).setInteractive({ useHandCursor: true })
+            .setOrigin(0.5);
+
+        const plusButton = this.add.text(x + this.maxVolume * 30 + 40, y, '+', {
+            fontFamily: 'Arial',
+            fontSize: '64px',
+            color: color,
+            stroke: '#000000',
+            strokeThickness: 6
+        }).setInteractive({ useHandCursor: true })
+            .setOrigin(0.5);
+
+        minusButton.on('pointerdown', onMinus);
+        plusButton.on('pointerdown', onPlus);
+
+        return { minusButton, plusButton };
+    }
+
+    // Update volume
     changeVolume(delta) {
-    this.volumeLevel = Phaser.Math.Clamp(this.volumeLevel + delta, 0, this.maxVolume);
+        this.volumeLevel = Phaser.Math.Clamp(this.volumeLevel + delta, 0, this.maxVolume);
 
-    // Actualiza visualmente la barra
-    for (let i = 0; i < this.maxVolume; i++) {
-        this.volumeBars[i].setFillStyle(i < this.volumeLevel ? 0xff69b4 : 0x808080);
+        for (let i = 0; i < this.maxVolume; i++) {
+            this.soundBars[i].setFillStyle(i < this.volumeLevel ? 0x2b6b29 : 0xbfe9bd);
+        }
+
+        this.sound.volume = this.volumeLevel / this.maxVolume;
+        this.game.volumeLevel = this.volumeLevel;
     }
 
-    // Ajusta volumen global del juego (si usas música o sonidos)
-    this.sound.volume = this.volumeLevel / this.maxVolume;
-    this.game.volumeLevel = this.volumeLevel;
+    // Update music
+    changeMusicVolume(delta) {
+        this.musicLevel = Phaser.Math.Clamp(this.musicLevel + delta, 0, this.maxVolume);
+
+        // Actualiza visualmente las barras de música
+        for (let i = 0; i < this.maxVolume; i++) {
+            this.musicBars[i].setFillStyle(
+                i < this.musicLevel ? 0x2b6b29 : 0xbfe9bd
+            );
+        }
+
+        // Cambiar volumen de la música global (si tienes música)
+        if (this.game.backgroundMusic) {
+            this.game.backgroundMusic.setVolume(this.musicLevel / this.maxVolume);
+        }
+
+        // Guarda nivel para otras escenas
+        this.game.musicLevel = this.musicLevel;
     }
+
 
 }
 
-//PARA CAMBIAR ACCEDER AL VOLUMEN EN CUALQUIER ESCENA USAD ESTA LINEA DE CÓDIGO 
+//PARA CAMBIAR ACCEDER AL VOLUMEN EN CUALQUIER ESCENA USAD ESTA LINEA DE CÓDIGO
 // this.sound.volume = (this.game.volumeLevel ?? 5) / 10; Inicializa todo el sonido que se reproduzca en la escena a los valores en predeterminados de los ajustes.
 //Ponedlo junto con el código que useis para poner la música en cada escena, antes o después eso ya no sé no he probado :o

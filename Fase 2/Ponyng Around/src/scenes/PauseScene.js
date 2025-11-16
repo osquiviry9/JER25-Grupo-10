@@ -17,8 +17,8 @@ export default class PauseScene extends Phaser.Scene {
         this.load.image('redFrame', 'assets/Elements/RedFrame.PNG');
 
         // Resume button
-        this.load.image('bttnBack', 'assets/Buttons/PauseBlood.PNG');
-        this.load.image('bttnBackHover', 'assets/Buttons/PauseBlood_hover.PNG');
+        this.load.image('bttnBackB', 'assets/Buttons/PauseBlood.PNG');
+        this.load.image('bttnBackHoverB', 'assets/Buttons/PauseBlood_hover.PNG');
 
         // Main menu button
         this.load.image('bttnExit', 'assets/Buttons/MainMenuBlood.PNG');
@@ -52,18 +52,18 @@ export default class PauseScene extends Phaser.Scene {
             .setDepth(10);
 
         // ----------- Resume button -----------
-        const resumeBtn = this.add.image(width / 2 - 510, height / 2 - 10, 'bttnBack')
+        const resumeBtn = this.add.image(width / 2 - 510, height / 2 - 10, 'bttnBackB')
             .setInteractive({ useHandCursor: true })
             .setScale(1)
             .setDepth(11);
 
         // Resume hover
         resumeBtn.on('pointerover', () => {
-            resumeBtn.setTexture('bttnBackHover');
+            resumeBtn.setTexture('bttnBackHoverB');
             resumeBtn.setScale(1.05);
         });
         resumeBtn.on('pointerout', () => {
-            resumeBtn.setTexture('bttnBack');
+            resumeBtn.setTexture('bttnBackB');
             resumeBtn.setScale(1);
         });
         resumeBtn.on('pointerdown', () => {
