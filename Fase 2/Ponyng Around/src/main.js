@@ -22,13 +22,8 @@ const config = {
             debug: false
         }
     },
-    //scene: [MainMenuScene, SettingsScene, CreditsScene, CharacterSelectScene, RaceScene, PauseScene, FinalScene, FinalProductScene]
+    scene: [MainMenuScene, SettingsScene, CreditsScene, CharacterSelectScene, RaceScene, PauseScene, FinalScene, FinalProductScene]
     // scene: [PauseScene]
-<<<<<<< Updated upstream
-    scene: [MainMenuScene, CharacterSelectScene, RaceScene, PauseScene, FinalScene, FinalProductScene, SettingsScene, CreditsScene]
-=======
-    scene: [IntroScene,IntroAnimScene,MainMenuScene, CharacterSelectScene, RaceScene, PauseScene, FinalScene, FinalProductScene]
->>>>>>> Stashed changes
     // scene: [MainMenuScene, CharacterSelectScene, RaceScene, FinalScene]
     //scene: [IntroScene,IntroAnimScene,MainMenuScene, CharacterSelectScene, RaceScene, FinalScene, FinalProductScene] <- LA BUENA
 };

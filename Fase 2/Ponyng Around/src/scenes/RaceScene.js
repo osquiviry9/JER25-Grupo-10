@@ -934,17 +934,6 @@ export default class RaceScene extends Phaser.Scene {
             this.finishRace('bottom');
         }
 
-        /* // Show finish line 
-        if (!this.finishSpawned) {
-            const pctTop = this.state.progress.top / CONFIG.TOTAL_DISTANCE_PX;
-            const pctBot = this.state.progress.bottom / CONFIG.TOTAL_DISTANCE_PX;
-
-            if (pctTop >= CONFIG.SHOW_FINISH_AT || pctBot >= CONFIG.SHOW_FINISH_AT) {
-                this.finishSpawned = true;
-                this.spawnFinishLine();
-            }
-        }*/
-
         // CLEAN
         const off = -50;
         const clean = g => g.children.each(o => { if (o && o.x < off) o.destroy(); });
