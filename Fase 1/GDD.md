@@ -257,7 +257,7 @@ Imágenes de inspiración de Melgarga
 - **Haiire**: Se comió una fruta, llamada *cuernocuerno fruit*, esto provocó que brotase un cuerno de su lóbulo frontal, pudiendo tirar rayos desde ahí y provocando una oleada de bulliyng por parte de los secuaces de Melgarga. Ahora busca venganza salvando a los ponis de sus malvadas garras.
 - **Domdimadon** : Se comió la fruta después de Haiire, pero a diferencia de ella, es la mascota de Melgarga y por lo tanto no quiere salvar a los ponis.
 - **Ache**: Es un poni hipnotizador en aprendizaje que quiere usar sus poderes para vencer a Melgarga.
-- **Clepvia:** Amante de lo ajeno, corre soltando fanzines por los ojos y patatas de sal y vinagre del ponydona, es acompañada por Mayo, una entidad que a través de la lobotomía que se hizo Clepvia se coló en su cuerpo y la controla.
+- **Kamil:** Amante de lo ajeno, corre soltando fanzines por los ojos y patatas de sal y vinagre del ponydona, es acompañada por Mayo, una entidad que a través de la lobotomía que se hizo Kamil se coló en su cuerpo y la controla.
 - **Beersquiviry:** Un día, después de una larga fiesta se despertó en la villa de los ponis, corre en cada carrera con la esperanza de salir de la villa y poder volver a su casa a tomarse una cerveza.
 
 ## 6. **Comunicación<a name="_page18_x82.00_y377.00"></a>**
