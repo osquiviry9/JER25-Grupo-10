@@ -13,6 +13,8 @@ export default class MainMenuScene extends Phaser.Scene {
         // Background
         this.load.image('menuBackground', 'assets/Backgrounds/StartingMenu.JPG');
 
+        
+
         // Buttons
         // Play button
         this.load.image('bttnPlay', 'assets/Buttons/playbttn.png');
@@ -25,28 +27,36 @@ export default class MainMenuScene extends Phaser.Scene {
         // Credit button
         this.load.image('bttnCredits', 'assets/Buttons/creditsbttn.png');
         this.load.image('bttnCreditsHover', 'assets/Buttons/creditsbttn_hover.png');
-        
+
+        // Story button MUST CHANGE!!!
+        this.load.image('bttnStory', 'assets/Buttons/storybttn.png');
+        this.load.image('bttnStoryHover', 'assets/Buttons/storybttn_hover.png');
+
+
     }
 
     create() {
 
         this.music = this.sound.add('clickSound', {
-            });
+        });
 
         const { width, height } = this.scale;
 
-        this.cameras.main.setBackgroundColor('#000000'); 
+        this.cameras.main.setBackgroundColor('#000000');
 
         const bg = this.add.image(width / 2, height / 2, 'menuBackground');
         bg.setOrigin(0.5);
-        bg.setScale(0.8); 
+        bg.setScale(0.8);
+
 
         //Lista de botones
         const buttons = [
             { x: width * 0.5, y: height * 0.2, key: 'bttnPlay', hover: 'bttnPlayHover', action: () => this.scene.start('CharacterSelectScene'), scale: 0.9 },
-            { x: width * 0.84, y: height * 0.8, key: 'bttnSettings', hover: 'bttnSettingsHover', action: () => this.scene.start('SettingsScene', { previousScene: this.scene.key }), scale: 1},
-            { x: width * 0.24, y: height * 0.35, key: 'bttnCredits', hover: 'bttnCreditsHover', action: () => this.scene.start('CreditsScene'), scale: 0.7},
+            { x: width * 0.84, y: height * 0.8, key: 'bttnSettings', hover: 'bttnSettingsHover', action: () => this.scene.start('SettingsScene', { previousScene: this.scene.key }), scale: 1 },
+            { x: width * 0.24, y: height * 0.35, key: 'bttnCredits', hover: 'bttnCreditsHover', action: () => this.scene.start('CreditsScene'), scale: 0.7 },
+            { x: width * 0.16, y: height * 0.82, key: 'bttnStory', hover: 'bttnStoryHover', action: () => this.scene.start('StoryScene'), scale: 0.9},
         ];
+
 
         buttons.forEach(btn => {
             const button = this.add.image(btn.x, btn.y, btn.key)
@@ -66,10 +76,10 @@ export default class MainMenuScene extends Phaser.Scene {
 
             // Click + sound
             button.on('pointerdown', () => {
-                btn.action();     
-                this.music.play(); 
+                btn.action();
+                this.music.play();
             });
-            
+
         });
 
 

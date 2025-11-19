@@ -44,7 +44,9 @@ export default class CreditsScene extends Phaser.Scene {
             "Art: ",
             "Music: ",
             "Special Thanks: ",
-            "Motor: Phaser 3"
+            "Motor: Phaser3: Arcade Pyshics",
+            "No ponies were harmed in the making of this video game"
+            
         ];
 
 

@@ -622,7 +622,7 @@ export default class RaceScene extends Phaser.Scene {
 
 
     hitObstacle(laneKey, obstacle) {
-        
+
         const lane = this.state.lanes[laneKey];
 
         if (lane.immune) {
@@ -768,31 +768,31 @@ export default class RaceScene extends Phaser.Scene {
         this.physics.add.overlap(this.playerBottom, this.finishBottom, () => {
             this.finishRace('bottom');
         });
+        
     }
 
     startSpawner() {
 
         const createRandomSequence = () => {
 
-            // Sequence , 4 fences 1 booster
+            // 4 fences and one booster
             let seq = ["fence", "fence", "fence", "fence", "booster"];
 
-            // Shuffle to have differnt order
+            // Mix without restrictions
             Phaser.Utils.Array.Shuffle(seq);
 
-            // Make sure booster is not the first or the last
-            if (seq[0] === "booster" || seq[4] === "booster") {
-                Phaser.Utils.Array.Shuffle(seq);
-            }
+            // Its makes sure the shuffle is differnt
+            Phaser.Utils.Array.Shuffle(seq);
 
-            // Delays for distance
+            // Times between spawn and spawn
             let t = 1500;
             return seq.map(type => {
                 const delay = t;
-                t += Phaser.Math.Between(1800, 2800); // separation
+                t += Phaser.Math.Between(1800, 2800);
                 return { type, delay };
             });
         };
+
 
         // Sequence for each lane
         this.spawnQueue = {
