@@ -32,7 +32,7 @@ export default class PauseScene extends Phaser.Scene {
     create() {
 
         this.music = this.sound.add('clickSound', {
-            });
+        });
 
         const { width, height } = this.scale;
 
@@ -67,9 +67,9 @@ export default class PauseScene extends Phaser.Scene {
             resumeBtn.setScale(1);
         });
         resumeBtn.on('pointerdown', () => {
-               
-            this.music.play(); 
-            this.scene.stop();               
+
+            this.music.play();
+            this.scene.stop();
             this.scene.resume('RaceScene');  // resume race
         });
 
@@ -91,9 +91,9 @@ export default class PauseScene extends Phaser.Scene {
         menuBtn.on('pointerdown', () => {
             // Stops everything and goes back to the main menu
             this.music.play();
-            this.scene.stop('PauseScene');     
-            this.scene.stop('RaceScene');      
-            this.scene.start('MainMenuScene'); 
+            this.scene.stop('PauseScene');
+            this.scene.stop('RaceScene');
+            this.scene.start('MainMenuScene');
         });
 
         // ----------- Settings Button -----------
@@ -120,8 +120,8 @@ export default class PauseScene extends Phaser.Scene {
 
 
         // Resume also with esc
-        this.input.keyboard.on('keydown-ESCAPE', () => { 
-            this.scene.stop(); 
+        this.input.keyboard.on('keydown-ESCAPE', () => {
+            this.scene.stop();
             this.scene.resume('RaceScene');
         });
 

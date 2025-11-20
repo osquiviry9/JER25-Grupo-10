@@ -9,27 +9,27 @@ export default class StoryScene extends Phaser.Scene {
             {
                 key: 'Ache',
                 path: 'assets/ponis/Ache/Ache_Complete.png',
-                story: "Es un poni hipnotizador en aprendizaje que quiere usar sus poderes para vencer a Melgarga."
+                story: "A learning hypnotist pony who will use her powers to defeat Melgarga."
             },
             {
                 key: 'Haiire',
                 path: 'assets/ponis/Haire/Haire_Complete.png',
-                story: "Se comió una fruta, llamada cuernocuerno fruit, esto provocó que brotase un cuerno de su lóbulo frontal, pudiendo tirar rayos desde ahí y provocando una oleada de bulliyng por parte de los secuaces de Melgarga. Ahora busca venganza salvando a los ponis de sus malvadas garras."
+                story: "She ate a fruit called the Horn-Horn Fruit, which caused a horn to appear from her frontal lobe, allowing her to shoot lightning bolts and triggering a wave of bullying to Melgarga's henchmen. Now she seeks revenge by saving the ponies from his evil clutches."
             },
             {
                 key: 'Domdomdadom',
                 path: 'assets/ponis/Dod/Dom_Complete.png',
-                story: "Se comió la fruta después de Haiire, pero a diferencia de ella, es la mascota de Melgarga y por lo tanto no quiere salvar a los ponis."
+                story: "He ate the fruit after Haiire, but unlike her, he is Melgarga's pet and therefore does not want to save the other ponies."
             },
             {
                 key: 'Kamil',
                 path: 'assets/ponis/Kamil/Kamil_Complete.png',
-                story: "Amante de lo ajeno, corre soltando fanzines por los ojos y patatas de sal y vinagre del ponydona, es acompañada por Mayo, una entidad que a través de la lobotomía que se hizo Kamil se coló en su cuerpo y la controla."
+                story: "A lover of other ponies's belongings, she runs around spitting out fanzines and salt & vinegar potato chips from the ponydona, controled by Mayo, a tiny pony that, through the lobotomy Kamil underwent, controls her."
             },
             {
                 key: 'Beersquiviry',
                 path: 'assets/ponis/Beersquiviri/Beer_Complete.png',
-                story: "Un día, después de una larga fiesta se despertó en la villa de los ponis, corre en cada carrera con la esperanza de salir de la villa y poder volver a su casa a tomarse una cerveza."
+                story: "One day, after a long party, he woke up in the evil Melgarga pony village, running in every race hoping to leave the village and beeing able to go back home for a beer."
             }
         ];
 
@@ -50,7 +50,13 @@ export default class StoryScene extends Phaser.Scene {
 
         // Arrows
         this.load.image('arrowIzq', 'assets/UI/ArrowIzq_Selector.png');
+        this.load.image('arrowIzq_hover', 'assets/UI/ArrowIzqOn_Selector.png');
         this.load.image('arrowDer', 'assets/UI/ArrowDer_Selector.png');
+        this.load.image('arrowDer_hover', 'assets/UI/ArrowDerOn_Selector.png');
+
+        // Back button
+        this.load.image('bttnBack', 'assets/Buttons/backBttn.png');
+        this.load.image('bttnBackHover', 'assets/Buttons/backBttn_hover.png');
 
         // Poni pic
         this.ponies.forEach(p => {
@@ -62,40 +68,47 @@ export default class StoryScene extends Phaser.Scene {
 
         this.music = this.sound.add('clickSound');
 
+        this.cameras.main.setBackgroundColor('#000000ff');
+
+        this.cameras.main.fadeIn(3000, 0, 0, 0);
+
         const { width, height } = this.scale;
 
         this.add.image(width / 2, height / 2, 'background').setDepth(0);
-        this.add.image(width / 2, height / 2, 'Frame').setDepth(1);
+        this.add.image(width / 2, height / 2, 'Frame').setDepth(3);
 
-        // Fit into the frame
-        const margin = 0.8;
-        const zoomX = (width * margin) / width;
-        const zoomY = (height * margin) / height;
-        const zoom = Math.min(zoomX, zoomY);
+        // Buttons
+        const buttons = [
+            { x: (width / 2) - 800, y: (height / 2) - 400, key: 'bttnBack', hover: 'bttnBackHover', action: () => this.scene.start('MainMenuScene'), scale: 1 },
+        ];
 
-        this.cameras.main.setZoom(zoom);
-        this.cameras.main.centerOn(width / 2, height / 2);
+        buttons.forEach(btn => {
+            const button = this.add.image(btn.x, btn.y, btn.key)
+                .setInteractive({ useHandCursor: true })
+                .setScale(btn.scale);
 
+            // Hover
+            button.on('pointerover', () => {
+                button.setTexture(btn.hover);
+                button.setScale(btn.scale * 1.05);
+            });
 
-        // Back button
-        this.backButton = this.add.text(70, 50, '⬅', {
-            fontSize: '32px',
-            fontFamily: 'Arial Black',
-            color: '#ffffff',
-            backgroundColor: '#ff69b4',
-            padding: { left: 10, right: 10, top: 6, bottom: 6 }
-        })
-            .setOrigin(0.5)
-            .setInteractive({ useHandCursor: true })
-            .setDepth(50);
+            // Exit hover
+            button.on('pointerout', () => {
+                button.setTexture(btn.key);
+                button.setScale(btn.scale);
+            });
 
-        this.backButton.on('pointerdown', () => {
-            this.music.play();
-            this.scene.start('MainMenuScene');
+            // Click + sound
+            button.on('pointerdown', () => {
+                btn.action();
+                this.music.play();
+            });
+
         });
 
         // Title
-        this.title = this.add.text(width / 2, 150, 'Nuestra Historia', {
+        this.title = this.add.text(width / 2, 150, 'The missing ponies', {
             fontSize: '46px',
             fontFamily: 'Arial Black',
             color: '#ff69b4',
@@ -118,7 +131,14 @@ export default class StoryScene extends Phaser.Scene {
         this.keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         this.keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
 
+        // Fit into the frame
+        const margin = 0.8;
+        const zoomX = (width * margin) / width;
+        const zoomY = (height * margin) / height;
+        const zoom = Math.min(zoomX, zoomY);
 
+        this.cameras.main.setZoom(zoom);
+        this.cameras.main.centerOn(width / 2, height / 2);
 
     }
 
@@ -131,40 +151,65 @@ export default class StoryScene extends Phaser.Scene {
 
         // Frame
         this.ponyBorder = this.add.image(centerX, centerY, 'border1')
+            .setDepth(10)
             .setOrigin(0.5)
             .setDisplaySize(635, 700)
-            .setScale(0.5)
-            .setDepth(10);
+            .setScale(0.5);
+
 
         // Poni pic inside the frame
         this.ponyImage = this.add.image(centerX, centerY, `${this.ponies[0].key}_static`)
+            .setDepth(5)
             .setOrigin(0.5)
             .setDisplaySize(580, 600)
-            .setScale(0.5)
-            .setDepth(20);
+            .setScale(0.5);
 
         // Arrows
+        // LEFT ONE
         this.arrowLeft = this.add.image(centerX - 360, centerY, 'arrowIzq')
             .setInteractive({ useHandCursor: true })
             .setScale(0.40)
             .setDepth(30);
+
+        // Hover
+        this.arrowLeft.on('pointerover', () => {
+            this.arrowLeft.setTexture('arrowIzq_hover');
+            this.arrowLeft.setScale(0.45);
+        });
+
+        this.arrowLeft.on('pointerout', () => {
+            this.arrowLeft.setTexture('arrowIzq');
+            this.arrowLeft.setScale(0.40);
+        });
 
         this.arrowLeft.on('pointerdown', () => {
             this.music.play();
             this.changePony(-1);
         });
 
+        // RIGHT ONE
         this.arrowRight = this.add.image(centerX + 360, centerY, 'arrowDer')
             .setInteractive({ useHandCursor: true })
             .setScale(0.40)
             .setDepth(30);
+
+        // Hover
+        this.arrowRight.on('pointerover', () => {
+            this.arrowRight.setTexture('arrowDer_hover');
+            this.arrowRight.setScale(0.45);
+        });
+
+        this.arrowRight.on('pointerout', () => {
+            this.arrowRight.setTexture('arrowDer');
+            this.arrowRight.setScale(0.40);
+        });
 
         this.arrowRight.on('pointerdown', () => {
             this.music.play();
             this.changePony(1);
         });
 
-        //Name of the poni
+        // Pony name
         this.ponyName = this.add.text(centerX, centerY + 350, this.ponies[0].key, {
             fontSize: '40px',
             fontFamily: 'Arial Black',
@@ -187,7 +232,7 @@ export default class StoryScene extends Phaser.Scene {
             .setOrigin(0.5)
             .setDepth(4);
 
-        //  PANEL  
+        // PANEL  
         this.storyBg = this.add.rectangle(panelX, panelY, 700, 500, 0xffffff, 0.98)
             .setOrigin(0.5)
             .setDepth(5)
@@ -250,13 +295,14 @@ export default class StoryScene extends Phaser.Scene {
     }
 
     updateStory() {
+
         const pony = this.ponies[this.currentIndex];
 
         // Principal text
         this.storyText.setText(pony.story);
 
         // Dinamic title
-        let titleString = `Historia de ${pony.key}`;
+        let titleString = `${pony.key}'s story`;
 
         this.storyTitle.setText(titleString);
 
@@ -270,7 +316,7 @@ export default class StoryScene extends Phaser.Scene {
 
         // 2) Is is either longer, we put another line
         if (this.storyTitle.width > 500) {
-            const parts = pony.key.match(/.{1,8}/g); 
+            const parts = pony.key.match(/.{1,8}/g);
             const namePart1 = parts[0];
             const namePart2 = parts.slice(1).join('');
             titleString = `Historia de ${namePart1}\n${namePart2}`;

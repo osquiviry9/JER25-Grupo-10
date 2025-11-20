@@ -3,7 +3,7 @@ import Phaser from 'phaser';
 export default class CharacterSelectScene extends Phaser.Scene {
     constructor() {
         super('CharacterSelectScene');
-        
+
         this.currentPlayer = 1;
         this.selectedPonies = {
             p1: null,
@@ -27,7 +27,7 @@ export default class CharacterSelectScene extends Phaser.Scene {
             { key: 'Beersquiviry', path: 'assets/ponis/Beersquiviri/Beer_Complete.png' },
         ];
 
-        
+
     }
 
     preload() {
@@ -43,13 +43,23 @@ export default class CharacterSelectScene extends Phaser.Scene {
             this.load.image(`${pony.key}_static`, pony.path);
 
         });
+
+        // Bg
         this.load.image('background', 'assets/Backgrounds/backgroundColor3.png');
+
+        // Character frames
         this.load.image('border1', 'assets/UI/Border1_Selector.png');
         this.load.image('border2', 'assets/UI/Border2_Selector.png');
+
+        // Arrows buttons
         this.load.image('arrowIzq', 'assets/UI/ArrowIzq_Selector.png');
         this.load.image('arrowDer', 'assets/UI/ArrowDer_Selector.png');
         this.load.image('arrowIzqOn', 'assets/UI/ArrowIzqOn_Selector.png');
         this.load.image('arrowDerOn', 'assets/UI/ArrowDerOn_Selector.png');
+
+        // Back button
+        this.load.image('bttnBack', 'assets/Buttons/backBttn.png');
+        this.load.image('bttnBackHover', 'assets/Buttons/backBttn_hover.png');
     }
 
     showStartButton() {
@@ -65,39 +75,32 @@ export default class CharacterSelectScene extends Phaser.Scene {
 
     create() {
 
+        const { width, height } = this.scale;
 
         this.music = this.sound.add('clickSound', {
-            });
-           
+        });
 
-        this.backButton = this.add.text(60, 50, '⬅', {
-            fontSize: '32px',
-            fontFamily: 'Arial Black',
-            color: '#ffffff',
-            backgroundColor: '#ff69b4',
-            padding: { left: 10, right: 10, top: 6, bottom: 6 }
-        })
-            .setOrigin(0.5)
+        // BACK button
+        const backBtn = this.add.image((width / 2) - 800, (height / 2) - 400, 'bttnBack')
             .setInteractive({ useHandCursor: true })
-            .setDepth(10);
+            .setScale(1).setDepth(20);
 
-        this.backButton.on('pointerover', () => {
-            this.backButton.setStyle({ backgroundColor: '#ff8ac7' });
-        });
-        this.backButton.on('pointerout', () => {
-            this.backButton.setStyle({ backgroundColor: '#ff69b4' });
+        // Hover
+        backBtn.on('pointerover', () => {
+            backBtn.setTexture('bttnBackHover');
+            backBtn.setScale(1.05);
         });
 
-        this.backButton.on('pointerdown', () => {
+        backBtn.on('pointerout', () => {
+            backBtn.setTexture('bttnBack');
+            backBtn.setScale(1);
+        });
+
+        // Back to main menu
+        backBtn.on('pointerdown', () => {
             this.music.play();
-            this.cameras.main.fadeOut(400, 0, 0, 0);
-            this.cameras.main.once('camerafadeoutcomplete', () => {
-                this.scene.start('MainMenuScene');
-            });
+            this.scene.start('MainMenuScene');
         });
-
-
-        const { width, height } = this.scale;
 
         this.cameras.main.setBackgroundColor('#000000');
         // this.cameras.main.fadeIn(600, 255, 198, 224);
@@ -168,7 +171,7 @@ export default class CharacterSelectScene extends Phaser.Scene {
             this.music.play();
             this.registry.set('player1Character', this.selectedPonies.p1);
             this.registry.set('player2Character', this.selectedPonies.p2);
-           
+
 
             this.cameras.main.fadeOut(600, 0, 0, 0);
             this.cameras.main.once('camerafadeoutcomplete', () => {
@@ -195,7 +198,7 @@ export default class CharacterSelectScene extends Phaser.Scene {
         this.keysP2 = this.input.keyboard.addKeys({
             left: Phaser.Input.Keyboard.KeyCodes.LEFT,
             right: Phaser.Input.Keyboard.KeyCodes.RIGHT,
-            jump: Phaser.Input.Keyboard.KeyCodes.UP 
+            jump: Phaser.Input.Keyboard.KeyCodes.UP
         });
 
         // --- PLAYER 1 ---
@@ -238,7 +241,7 @@ export default class CharacterSelectScene extends Phaser.Scene {
 
         this.keysP2.jump.on('down', () => {
             if (!this.selected.p2) {
-               
+
                 this[`readyButton_p2`].emit('pointerdown');
                 this.music.play();
             } else {
@@ -286,7 +289,7 @@ export default class CharacterSelectScene extends Phaser.Scene {
 
 
         // ----------- JUMPING TEXT  -----------
-        const jumpKeyText = (player === 'p1') ? 'Jump with  W!' : 'Jump with  ↑!'; 
+        const jumpKeyText = (player === 'p1') ? 'Jump with  W!' : 'Jump with  ↑!';
         const jumpKeyColor = (player === 'p1') ? '#ff69b4' : '#67b7ff';
 
         this.add.text(centerX, centerY + 390, jumpKeyText, {
@@ -307,7 +310,7 @@ export default class CharacterSelectScene extends Phaser.Scene {
         // ----------- ARROWS  -----------
         const arrows = [
             { x: centerX - 337, y: centerY - 30, key: 'arrowIzq', hover: 'arrowIzqOn', scale: 0.43 },
-            { x: centerX + 332, y: centerY - 30, key: 'arrowDer', hover: 'arrowDerOn', scale: 0.41},
+            { x: centerX + 332, y: centerY - 30, key: 'arrowDer', hover: 'arrowDerOn', scale: 0.41 },
         ];
 
         arrows.forEach(btn => {
@@ -330,12 +333,12 @@ export default class CharacterSelectScene extends Phaser.Scene {
             // Click
             button.on('pointerdown', () => {
                 this.music.play();
-            if (!this.selected[player]) {
-                this.changePony(player, -1, image, nameText, readyButton);
-            }
+                if (!this.selected[player]) {
+                    this.changePony(player, -1, image, nameText, readyButton);
+                }
             });
         })
-        
+
         const keyLabel = (player === 'p1') ? 'W' : '↑';
 
         // ----------- DONE BUTTON -----------
@@ -349,7 +352,7 @@ export default class CharacterSelectScene extends Phaser.Scene {
 
         readyButton.on('pointerdown', () => {
             this.music.play();
-            if (readyButton.alpha < 1) return;      
+            if (readyButton.alpha < 1) return;
 
             this.selected[player] = true;
             readyButton.setStyle({ backgroundColor: '#242121ff' });
@@ -433,7 +436,7 @@ export default class CharacterSelectScene extends Phaser.Scene {
         }
     }
 
-    
+
 }
 
 

@@ -142,7 +142,7 @@ export default class RaceScene extends Phaser.Scene {
         }
 
         // PowerUps
-        //this.load.image('LimeLemon', 'assets/Elements/LimeLemon_PowerUp.png');
+        this.load.image('LimeLemon', 'assets/Elements/LimeLemon_PowerUp.png');
         this.load.image('Apple', 'assets/Elements/Apple_PowerUp.png');
     }
 
@@ -179,7 +179,7 @@ export default class RaceScene extends Phaser.Scene {
             .setScale(0.4)
             .setDepth(0);
 
-        // Lives TOP
+        // Lifes TOP
         this.live1Top = this.add.image((width / 2) - 860, (height / 2) - 465, 'Lives')
             .setScale(0.15)
             .setDepth(10);
@@ -190,7 +190,7 @@ export default class RaceScene extends Phaser.Scene {
             .setScale(0.15)
             .setDepth(10);
 
-        // Lives BOTTOM
+        // Lifes BOTTOM
         this.live1Bottom = this.add.image((width / 2) - 860, (height / 2) + 90, 'Lives')
             .setScale(0.15)
             .setDepth(10);
@@ -261,7 +261,7 @@ export default class RaceScene extends Phaser.Scene {
             this.anims.create({
                 key: `${p}_run`,   // dinamic name
                 frames,
-                frameRate: 9,
+                frameRate: 11,
                 repeat: -1
             });
         });
@@ -369,33 +369,35 @@ export default class RaceScene extends Phaser.Scene {
         this.physics.add.collider(this.playerTop, this.groundTop);
         this.physics.add.collider(this.playerBottom, this.groundBot);
 
+        // Fences:
         this.obstaclesTop = this.physics.add.group();
         this.obstaclesBot = this.physics.add.group();
+
+        // Apples:
         this.boostersTop = this.physics.add.group();
         this.boostersBot = this.physics.add.group();
 
+        // LimeLemon:
+        this.lifeBoostersTop = this.physics.add.group();
+        this.lifeBoostersBot = this.physics.add.group();
 
         const overlapBooster = (player, booster, laneKey) => {
             this.getBooster(laneKey, booster);
         };
 
-        this.physics.add.overlap(
-            this.playerTop,
-            this.obstaclesTop,
-            (player, obstacle) => this.handleObstacleCollision(player, obstacle, 'top')
-        );
+        // Fences overlap:
+        this.physics.add.overlap(this.playerTop, this.obstaclesTop, (player, obstacle) => this.handleObstacleCollision(player, obstacle, 'top'));
+        this.physics.add.overlap(this.playerBottom, this.obstaclesBot, (player, obstacle) => this.handleObstacleCollision(player, obstacle, 'bottom'));
 
-        this.physics.add.overlap(
-            this.playerBottom,
-            this.obstaclesBot,
-            (player, obstacle) => this.handleObstacleCollision(player, obstacle, 'bottom')
-        );
-
-
-
+        // Apples overlap:
         this.physics.add.overlap(this.playerTop, this.boostersTop, (p, b) => overlapBooster(p, b, 'top'));
         this.physics.add.overlap(this.playerBottom, this.boostersBot, (p, b) => overlapBooster(p, b, 'bottom'));
 
+        // Limelemon overlap:
+        this.physics.add.overlap(this.playerTop, this.lifeBoostersTop, (player, booster) => this.getLifeBooster('top', booster));
+        this.physics.add.overlap(this.playerBottom, this.lifeBoostersBot, (player, booster) => this.getLifeBooster('bottom', booster));
+
+        // Keys:
         this.keys = this.input.keyboard.addKeys({
             jumpTop: 'W',
             jumpBottom: 'UP',
@@ -672,45 +674,52 @@ export default class RaceScene extends Phaser.Scene {
         this.applyAlteration(laneKey, CONFIG.ACCEL_FACTOR);
     }
 
-    spawnOne(laneKey) {
-        const isBooster = Math.random() < CONFIG.BOOSTER_PROB;
-        const group = (laneKey === 'top')
-            ? (isBooster ? this.boostersTop : this.obstaclesTop)
-            : (isBooster ? this.boostersBot : this.obstaclesBot);
+    getLifeBooster(laneKey, booster) {
 
-        const redY = (laneKey === 'top')
-            ? (this.laneYTop + CONFIG.RED_OFFSET_FROM_CENTER + 200)
-            : (this.laneYBottom + CONFIG.RED_OFFSET_FROM_CENTER + 200);
-
-        const key = isBooster ? 'Apple' : 'WoodFence';
-
-        const obj = group.create(CONFIG.WIDTH + 30, redY, key)
-            .setOrigin(0.5, 1)
-            .setDepth(3);
-
-        if (isBooster) obj.setScale(0.4)
-        else obj.setScale(0.4);
-
-        obj.body.setAllowGravity(false);
-        obj.body.setImmovable(true);
-
+        const player = (laneKey === 'top') ? this.playerTop : this.playerBottom;
         const lane = this.state.lanes[laneKey];
-        obj.body.setVelocityX(-(lane.speed * 100));
+
+        // Small animation
+        this.tweens.add({
+            targets: player,
+            alpha: 0.4,
+            duration: 120,
+            yoyo: true
+        });
+
+        booster.destroy();
+
+        // --- +1 life ---
+        if (lane.lives < 3) {
+            lane.lives++;
+
+            if (laneKey === 'top') {
+                if (lane.lives === 1) this.live1Top.setTexture('Lives');
+                else if (lane.lives === 2) this.live2Top.setTexture('Lives');
+                else if (lane.lives === 3) this.live3Top.setTexture('Lives');
+
+            } else {
+                if (lane.lives === 1) this.live1Bottom.setTexture('Lives');
+                else if (lane.lives === 2) this.live2Bottom.setTexture('Lives');
+                else if (lane.lives === 3) this.live3Bottom.setTexture('Lives');
+            }
+        }
     }
 
     spawnFixed(laneKey, type) {
 
         const isBooster = type === "booster";
+        const isLifeBooster = (type === "life");
 
         const group = (laneKey === "top")
-            ? (isBooster ? this.boostersTop : this.obstaclesTop)
-            : (isBooster ? this.boostersBot : this.obstaclesBot);
+            ? (isBooster ? this.boostersTop : isLifeBooster ? this.lifeBoostersTop : this.obstaclesTop)
+            : (isBooster ? this.boostersBot : isLifeBooster ? this.lifeBoostersBot : this.obstaclesBot);
 
         const redY = (laneKey === "top")
             ? (this.laneYTop + CONFIG.RED_OFFSET_FROM_CENTER + 200)
             : (this.laneYBottom + CONFIG.RED_OFFSET_FROM_CENTER + 200);
 
-        const key = isBooster ? "Apple" : "WoodFence";
+        const key = isBooster ? "Apple" : isLifeBooster ? "LimeLemon" : "WoodFence";
 
         const obj = group.create(CONFIG.WIDTH - 40, redY, key)
             .setOrigin(0.5, 1)
@@ -727,7 +736,7 @@ export default class RaceScene extends Phaser.Scene {
     closeToFinish(laneKey) {
         const progress = this.state.progress[laneKey];
         const pct = progress / CONFIG.TOTAL_DISTANCE_PX;
-        return pct >= 0.90; // Not genrating anything more when the ponie hit 90%
+        return pct >= 0.90; // Not genrating anything more when the pony hit 90%
     }
 
     checkFinishLine(player, finishLine, laneKey) {
@@ -768,15 +777,15 @@ export default class RaceScene extends Phaser.Scene {
         this.physics.add.overlap(this.playerBottom, this.finishBottom, () => {
             this.finishRace('bottom');
         });
-        
+
     }
 
     startSpawner() {
 
         const createRandomSequence = () => {
 
-            // 4 fences and one booster
-            let seq = ["fence", "fence", "fence", "fence", "booster"];
+            // 4 fences and one booster 
+            let seq = ["fence", "fence", "fence", "fence", "fence", "booster", "booster", "life"];
 
             // Mix without restrictions
             Phaser.Utils.Array.Shuffle(seq);
@@ -841,10 +850,14 @@ export default class RaceScene extends Phaser.Scene {
         const stopGroup = g => g.children.each(o => {
             if (o && o.body) o.body.setVelocity(0, 0);
         });
+
         stopGroup(this.obstaclesTop);
         stopGroup(this.boostersTop);
+        stopGroup(this.lifeBoostersTop);
+
         stopGroup(this.obstaclesBot);
         stopGroup(this.boostersBot);
+        stopGroup(this.lifeBoostersBot); 
 
         // Stop ponis
         if (this.playerTop && this.playerTop.anims) this.playerTop.anims.pause();
@@ -938,13 +951,19 @@ export default class RaceScene extends Phaser.Scene {
         if (Phaser.Input.Keyboard.JustDown(this.keys.slowBottom) && !this.state.lanes.bottom.altered)
             this.applyAlteration('bottom', CONFIG.SLOW_FACTOR);
 
+        // ==== ELEMENTS VELOCITY ====
         const vxTop = -(this.state.lanes.top.speed * 150); // do NOT touch this, ITS PERFECT!
         const vxBot = -(this.state.lanes.bottom.speed * 150);
 
+        // TOP lane
         this.obstaclesTop.children.iterate(o => o && o.body && o.body.setVelocityX(vxTop));
         this.boostersTop.children.iterate(o => o && o.body && o.body.setVelocityX(vxTop));
+        this.lifeBoostersTop.children.iterate(o => o && o.body && o.body.setVelocityX(vxTop));
+
+        // BOTTOM lane
         this.obstaclesBot.children.iterate(o => o && o.body && o.body.setVelocityX(vxBot));
         this.boostersBot.children.iterate(o => o && o.body && o.body.setVelocityX(vxBot));
+        this.lifeBoostersBot.children.iterate(o => o && o.body && o.body.setVelocityX(vxBot));
 
         // Move finish line
         if (this.finishTop) this.finishTop.body.setVelocityX(vxTop);

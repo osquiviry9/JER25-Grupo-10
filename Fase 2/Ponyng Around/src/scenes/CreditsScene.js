@@ -40,13 +40,29 @@ export default class CreditsScene extends Phaser.Scene {
 
         const credits = [
             "Game Designer: ETC Studio",
-            "Programming: ",
-            "Art: ",
-            "Music: ",
+            " ",
+            "Programming",
+            "OSCAR PINADERO",
+            "HENAR SAN ROMÁN",
+            "SILVIA ÁLVARO",
+            "IÑIGO GARCÍA",
+            "JULIA MOYA",
+            " ",
+            "Art",
+            "SILVIA ÁLVARO",
+            "HENAR SAN ROMAN",
+            "JULIA MOYA",
+            " ",
+            "Music",
+            "JULIA MOYA",
+            " ",
             "Special Thanks: ",
             "Motor: Phaser3: Arcade Pyshics",
-            "No ponies were harmed in the making of this video game"
-            
+            " ",
+            "No ponies were harmed in the making of this video game",
+            " ",
+            " :) "
+
         ];
 
 
@@ -55,8 +71,10 @@ export default class CreditsScene extends Phaser.Scene {
         this.creditTexts = credits.map((line, index) => {
             return this.add.text(width / 2, startY + index * 80, line, {
                 fontFamily: 'Arial',
-                fontSize: '32px',
-                color: '#000000ff',
+                fontSize: '40px',
+                color: '#a01f1fff',
+                stroke: '#000000ff', 
+                strokeThickness: 2, 
                 align: 'center'
             }).setOrigin(0.5);
         });
@@ -84,7 +102,7 @@ export default class CreditsScene extends Phaser.Scene {
                 button.setScale(btn.scale * 1.05);
             });
 
-            // Salir hover
+            // Exit hover
             button.on('pointerout', () => {
                 button.setTexture(btn.key);
                 button.setScale(btn.scale);

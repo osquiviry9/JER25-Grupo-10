@@ -39,7 +39,7 @@ export default class HelpScene extends Phaser.Scene {
         // Frame
         this.add.image(width / 2, height / 2, 'Frame').setDepth(3);
 
-        //Lista de botones
+        // Buttons
         const buttons = [
             { x: (width / 2) - 800, y: (height / 2) - 400, key: 'bttnBack', hover: 'bttnBackHover', action: () => this.scene.start('SettingsScene'), scale: 1 },
         ];
