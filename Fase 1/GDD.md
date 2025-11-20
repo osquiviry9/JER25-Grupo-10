@@ -271,5 +271,5 @@ Además, la semana de antes, dos desarrolladores, aparecerá por las calles cén
 Se publicarán tres trailers del juego, uno siendo un trailer-gameplay y adicionalmente se publicará un tráiler por cada personaje explorando al mismo.
 
 El objetivo de la campaña es llegar al máximo de personas posibles en el periodo de tiempo que dure la campaña.
-19
+
 
