@@ -83,6 +83,10 @@ export default class FinalProductScene extends Phaser.Scene {
             });
         });
 
+        //Press any key to return to menu
+        this.input.keyboard.once('keydown', () => {
+            this.scene.start('MainMenuScene');
+        });
 
     }
 }
