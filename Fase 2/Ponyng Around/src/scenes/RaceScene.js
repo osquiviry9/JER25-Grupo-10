@@ -56,6 +56,12 @@ export default class RaceScene extends Phaser.Scene {
         // Jumping sound
         this.load.audio('boingSound', 'assets/sound/boing.mp3');
 
+        // Apple sound
+        this.load.audio('appleSound', 'assets/sound/Bit.mp3');
+
+        // Crash sound
+        this.load.audio('bonkSound', 'assets/sound/WoodBonk.mp3');
+
         // Background (blue)
         this.load.image('ColorBackground', 'assets/Backgrounds/fondoPlano.jpeg');
 
@@ -149,6 +155,12 @@ export default class RaceScene extends Phaser.Scene {
     create() {
 
         this.music = this.sound.add('clickSound', {
+        });
+        
+        this.crashSound = this.sound.add('bonkSound', {   
+        });
+
+        this.appleSound = this.sound.add('appleSound', {   
         });
 
         const { width, height } = this.scale;
@@ -625,6 +637,8 @@ export default class RaceScene extends Phaser.Scene {
 
     hitObstacle(laneKey, obstacle) {
 
+        this.crashSound.play();
+
         const lane = this.state.lanes[laneKey];
 
         if (lane.immune) {
@@ -659,6 +673,8 @@ export default class RaceScene extends Phaser.Scene {
     }
 
     getBooster(laneKey, booster) {
+
+        this.appleSound.play();
 
         const player = (laneKey === 'top') ? this.playerTop : this.playerBottom;
 
