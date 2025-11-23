@@ -7,45 +7,29 @@ module.exports = {
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist'),
-    clean: true,
-    publicPath: ''
+    clean: true
   },
   mode: 'development',
   devtool: 'inline-source-map',
   devServer: {
-    static: [
-      {
-        directory: path.join(__dirname, 'dist')
-      },
-      {
-        directory: path.join(__dirname, 'src/assets'),
-        publicPath: '/assets'
-      }
-    ],
+    static: './dist',
     hot: true,
     port: 8080
   },
-  module: {
-    rules: [
-      {
-        test: /\.(png|jpe?g|gif)$/i,
-        type: 'asset/resource',
-        generator: {
-          filename: 'assets/[name][ext]'
-        }
-      }
-    ]
+  externals: {
+    phaser: 'Phaser'
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: './public/index.html'
+      template: './public/index.html',
+      inject: false
     }),
-
     new CopyWebpackPlugin({
       patterns: [
         {
           from: 'public/assets',
-          to: 'assets'
+          to: 'assets',
+          noErrorOnMissing: true
         }
       ]
     })
