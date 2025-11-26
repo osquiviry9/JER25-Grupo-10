@@ -10,6 +10,7 @@ import PauseScene from './scenes/PauseScene.js';
 import FinalProductScene from './scenes/FinalProductScene.js';
 import HelpScene from './scenes/HelpScene.js';
 import StoryScene from './scenes/storyScene.js';
+import StableScene from './scenes/StableScene.js';
 
 
 const config = {
@@ -29,7 +30,7 @@ const config = {
     //scene: [CharacterSelectScene, RaceScene, FinalScene]
    //scene : [StoryScene, MainMenuScene]
     //: [MainMenuScene, CharacterSelectScene, RaceScene, FinalScene]
-    scene: [MainMenuScene, CharacterSelectScene,HelpScene,CreditsScene,SettingsScene,StoryScene, RaceScene, FinalScene, FinalProductScene] //<- LA BUENA
+    scene: [MainMenuScene, CharacterSelectScene,HelpScene,CreditsScene,SettingsScene,StoryScene, RaceScene, StableScene, FinalScene, FinalProductScene] //<- LA BUENA
 };
 
 new Phaser.Game(config);

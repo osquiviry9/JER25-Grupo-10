@@ -80,6 +80,7 @@ export default class FinalScene extends Phaser.Scene {
         const { width, height } = this.scale;
 
         this.cameras.main.setBackgroundColor('#000000');
+        this.cameras.main.fadeIn(500, 0, 0, 0);
 
         // Background room:
         const bg = this.add.image(width / 2, height / 2, 'finalBackground')

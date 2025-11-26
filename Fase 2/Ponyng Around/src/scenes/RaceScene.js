@@ -922,7 +922,7 @@ export default class RaceScene extends Phaser.Scene {
 
         // START FINAL SCENE (after 3 secs): 
         this.time.delayedCall(3000, () => {
-            this.scene.start('FinalScene');
+            this.scene.start('StableScene');
         });
 
     }
