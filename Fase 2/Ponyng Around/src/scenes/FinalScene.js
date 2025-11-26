@@ -21,6 +21,9 @@ export default class FinalScene extends Phaser.Scene {
         // Background
         this.load.image('finalBackground', 'assets/Backgrounds/FinalScene_Background.JPG');
 
+        // Frame
+        this.load.image('redFrame', 'assets/Elements/RedFrame.PNG');
+
         // Crusher
         this.load.image('crusher', 'assets/Elements/Trituradora.PNG');
 
@@ -96,6 +99,9 @@ export default class FinalScene extends Phaser.Scene {
             .setOrigin(0.5)
             .setDepth(3);
 
+        // Frame
+        this.add.image(width / 2, height / 2, 'redFrame')
+            .setDepth(25);
         // TUBE:
         const frontTube = this.add.image(width / 2, height / 2, 'frontTube')
             .setOrigin(0.5)

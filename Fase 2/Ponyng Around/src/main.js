@@ -30,7 +30,7 @@ const config = {
     //scene: [CharacterSelectScene, RaceScene, FinalScene]
    //scene : [StoryScene, MainMenuScene]
     //: [MainMenuScene, CharacterSelectScene, RaceScene, FinalScene]
-    scene: [MainMenuScene, CharacterSelectScene,HelpScene,CreditsScene,SettingsScene,StoryScene, RaceScene, StableScene, FinalScene, FinalProductScene] //<- LA BUENA
+    scene: [MainMenuScene, CharacterSelectScene,HelpScene,CreditsScene,SettingsScene,StoryScene,PauseScene, RaceScene, StableScene, FinalScene, FinalProductScene] //<- LA BUENA
 };
 
 new Phaser.Game(config);

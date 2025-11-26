@@ -46,6 +46,13 @@ export default class FinalProductScene extends Phaser.Scene {
         // Kamil and mayo
         this.load.image('KamilFinal', 'assets/Backgrounds/KamilFinal.jpg');
 
+
+        // Frame
+        this.load.image('redFrame', 'assets/Elements/RedFrame.PNG');
+
+        // Back button
+        this.load.image('bttnBack', 'assets/Buttons/backBttn.png');
+        this.load.image('bttnBackHover', 'assets/Buttons/backBttn_hover.png');
     }
 
 
@@ -57,7 +64,11 @@ export default class FinalProductScene extends Phaser.Scene {
         const { width, height } = this.scale;
 
         this.cameras.main.setBackgroundColor('#000000');
-
+        
+        // Frame
+        this.add.image(width / 2, height / 2, 'redFrame')
+            .setDepth(25).setScale(0.8);
+        
         const looserName = this.registry.get('looser'); // Registry created end of Racescene
         const videoKey = `${looserName}Final_A`;
         const picKey = `${looserName}Final`;
@@ -80,14 +91,25 @@ export default class FinalProductScene extends Phaser.Scene {
                 
                 const pic = this.add.image(width / 2, height / 2, picKey)
                     .setScale(0.8).setDepth(3);
+                this.time.delayedCall(1000, () =>{
+                    //Press any key to return to menu
+                    this.add.text(width / 2, height / 2 + 300, 'PRESS ANY BUTTON TO GO BACK TO THE MAIN MENU', {
+                        fontSize: '40px',
+                        fontFamily: 'Arial Black',
+                        color: '#ff69b4',
+                        stroke: '#ffffff',
+                        strokeThickness: 6,
+                        align: 'center'
+                    })
+                    .setOrigin(0.5).setDepth(5);
+                    this.input.keyboard.once('keydown', () => {
+                    this.scene.start('MainMenuScene');
+                })
             });
-        });
-
-        //Press any key to return to menu
-        this.input.keyboard.once('keydown', () => {
-            this.scene.start('MainMenuScene');
-        });
-
+        });      
+    });
+            //this.scene.stop('SettingsScene');                 // cierra la escena de opciones
+            //this.scene.resume(this.previousScene); // vuelve a la escena que la abrió
     }
 }
 

@@ -17,6 +17,9 @@ export default class StableScene extends Phaser.Scene {
         // Straw Ball Animation
         this.load.video('strawBall', 'assets/Animations/StableAnim.mp4', 'loadeddata', false, true);
 
+        // Frame
+        this.load.image('redFrame', 'assets/Elements/RedFrame.PNG');
+
         // Names
         this.load.image('Ache', 'assets/Elements/NamesStable/AcheName.png');
         this.load.image('Beersquiviry', 'assets/Elements/NamesStable/BeerName.png');
@@ -43,6 +46,10 @@ export default class StableScene extends Phaser.Scene {
             fb.setScale(0.8)
             fb.setDepth(10);
 
+        // Frame
+        this.add.image(width / 2, height / 2, 'redFrame')
+            .setDepth(25).setScale(0.8);
+        
         // Name of defeated poni
         const looserName = this.registry.get('looser'); // Registry created end of Racescene
         const deathKey = `${looserName}`;

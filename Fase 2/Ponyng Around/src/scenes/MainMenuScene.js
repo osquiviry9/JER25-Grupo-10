@@ -12,8 +12,9 @@ export default class MainMenuScene extends Phaser.Scene {
 
         // Background
         this.load.image('menuBackground', 'assets/Backgrounds/StartingMenu.JPG');
-
         
+        // Frame
+        this.load.image('Frame', 'assets/Elements/GreenFrame.PNG');
 
         // Buttons
         // Play button
@@ -48,6 +49,8 @@ export default class MainMenuScene extends Phaser.Scene {
         bg.setOrigin(0.5);
         bg.setScale(0.8);
 
+        // Frame
+        this.add.image(width / 2, height / 2, 'Frame').setDepth(3).setScale(0.8);
 
         //Lista de botones
         const buttons = [

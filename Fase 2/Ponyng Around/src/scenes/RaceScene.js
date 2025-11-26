@@ -456,7 +456,7 @@ export default class RaceScene extends Phaser.Scene {
             {
                 fontFamily: 'Arial Black',
                 fontSize: '26px',
-                color: '#ffff66'
+                color: '#b36729ff'
             }).setOrigin(0.5)
             .setDepth(5);
 

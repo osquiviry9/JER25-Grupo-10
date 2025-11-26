@@ -19,6 +19,9 @@ export default class CreditsScene extends Phaser.Scene {
         // Back button
         this.load.image('bttnBack', 'assets/Buttons/backBttn.PNG');
         this.load.image('bttnBackHover', 'assets/Buttons/backBttn_hover.PNG');
+
+        // Frame
+        this.load.image('Frame', 'assets/Elements/GreenFrame.PNG');
     }
 
     create() {
@@ -35,6 +38,9 @@ export default class CreditsScene extends Phaser.Scene {
         // Background
         this.add.image(width / 2, height / 2, 'creditsBg');
 
+        // Frame
+        this.add.image(width / 2, height / 2, 'Frame').setDepth(3);
+        
         // Melgarga head
         this.head = this.add.image(width / 2, height / 2 + 200, 'head').setScale(0.6);
 
