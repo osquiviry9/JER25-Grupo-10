@@ -42,7 +42,7 @@ export default class StoryScene extends Phaser.Scene {
         this.load.audio('clickSound', 'assets/sound/click.mp3');
 
         // Background and general frame
-        this.load.image('background', 'assets/Backgrounds/backgroundColor3.png');
+        this.load.image('pinkBackground', 'assets/Backgrounds/pinkBackground.png');
         this.load.image('Frame', 'assets/Elements/GreenFrame.PNG'); // <-- el marco correcto
 
         // Selector frame
@@ -74,7 +74,7 @@ export default class StoryScene extends Phaser.Scene {
 
         const { width, height } = this.scale;
 
-        this.add.image(width / 2, height / 2, 'background').setDepth(0);
+        this.add.image(width / 2, height / 2, 'pinkBackground').setDepth(0);
         this.add.image(width / 2, height / 2, 'Frame').setDepth(3);
 
         // Buttons

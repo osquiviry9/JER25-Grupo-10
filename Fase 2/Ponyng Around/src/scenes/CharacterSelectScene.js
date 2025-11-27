@@ -45,7 +45,7 @@ export default class CharacterSelectScene extends Phaser.Scene {
         });
 
         // Bg
-        this.load.image('background', 'assets/Backgrounds/backgroundColor3.png');
+        this.load.image('pinkBackground', 'assets/Backgrounds/pinkBackground.png');
 
         // Character frames
         this.load.image('border1', 'assets/UI/Border1_Selector.png');
@@ -105,7 +105,7 @@ export default class CharacterSelectScene extends Phaser.Scene {
         this.cameras.main.setBackgroundColor('#000000');
         // this.cameras.main.fadeIn(600, 255, 198, 224);
 
-        const bg = this.add.image(width / 2, height / 2, 'background');
+        const bg = this.add.image(width / 2, height / 2, 'pinkBackground');
         bg.setOrigin(0.5);
 
         // Frame

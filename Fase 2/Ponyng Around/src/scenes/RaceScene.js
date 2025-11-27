@@ -691,7 +691,7 @@ export default class RaceScene extends Phaser.Scene {
     }
 
     getLifeBooster(laneKey, booster) {
-
+        this.appleSound.play();
         const player = (laneKey === 'top') ? this.playerTop : this.playerBottom;
         const lane = this.state.lanes[laneKey];
 
