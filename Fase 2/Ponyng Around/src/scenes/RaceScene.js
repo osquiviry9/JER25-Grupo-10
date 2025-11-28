@@ -150,6 +150,7 @@ export default class RaceScene extends Phaser.Scene {
         // PowerUps
         this.load.image('LimeLemon', 'assets/Elements/LimeLemon_PowerUp.png');
         this.load.image('Apple', 'assets/Elements/Apple_PowerUp.png');
+        this.load.image('Kakiwi', 'assets/Elements/Kakiwi_PowerUp.png');
     }
 
     create() {

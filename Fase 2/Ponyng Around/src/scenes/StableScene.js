@@ -11,9 +11,6 @@ export default class StableScene extends Phaser.Scene {
         // Background
         this.load.image('Stable', 'assets/Backgrounds/stable.png');
 
-        // Front bushes
-        this.load.image('Bushes', 'assets/Backgrounds/frontBushesStable.png');
-
         // Straw Ball Animation
         this.load.video('strawBall', 'assets/Animations/StableAnim.mp4', 'loadeddata', false, true);
 
@@ -39,12 +36,6 @@ export default class StableScene extends Phaser.Scene {
             bg.setOrigin(0.5)
             bg.setScale(0.8)
             bg.setDepth(-1);
-
-        // Front bushes
-        const fb = this.add.image(width / 2, height / 2, 'Bushes')
-            fb.setOrigin(0.5)
-            fb.setScale(0.8)
-            fb.setDepth(10);
 
         // Frame
         this.add.image(width / 2, height / 2, 'redFrame')
