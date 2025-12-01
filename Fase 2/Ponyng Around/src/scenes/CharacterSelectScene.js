@@ -27,11 +27,15 @@ export default class CharacterSelectScene extends Phaser.Scene {
             { key: 'Beersquiviry', path: 'assets/ponis/Beersquiviri/Beer_Complete.png' },
         ];
 
+        
 
     }
 
     preload() {
 
+
+        //Background music
+        this.load.audio('selectionSong', 'assets/sound/selectionsong.mp3');
 
         //Click sound
         this.load.audio('clickSound', 'assets/sound/click.mp3');
@@ -75,6 +79,23 @@ export default class CharacterSelectScene extends Phaser.Scene {
 
     create() {
 
+        //When the game restarts, no pony is selected
+        this.selected = {
+            p1: false,
+            p2: false
+        };
+
+
+        //BACKGROUND MUSIC
+
+        this.game.bgchMusic = this.sound.add('selectionSong', {
+            loop: true,
+            volume: (this.game.musicLevel ?? 5) / 10
+        });
+        this.game.bgchMusic.play();
+
+
+
         const { width, height } = this.scale;
 
         this.music = this.sound.add('clickSound', {
@@ -99,6 +120,7 @@ export default class CharacterSelectScene extends Phaser.Scene {
         // Back to main menu
         backBtn.on('pointerdown', () => {
             this.music.play();
+            this.game.bgchMusic.stop();
             this.scene.start('MainMenuScene');
         });
 
@@ -175,6 +197,7 @@ export default class CharacterSelectScene extends Phaser.Scene {
 
             this.cameras.main.fadeOut(600, 0, 0, 0);
             this.cameras.main.once('camerafadeoutcomplete', () => {
+                this.game.bgchMusic.stop();
                 this.scene.start('RaceScene');
             });
         });
