@@ -27,7 +27,7 @@ export default class CharacterSelectScene extends Phaser.Scene {
             { key: 'Beersquiviry', path: 'assets/ponis/Beersquiviri/Beer_Complete.png' },
         ];
 
-        
+
 
     }
 
@@ -79,12 +79,14 @@ export default class CharacterSelectScene extends Phaser.Scene {
 
     create() {
 
+        this.cameras.main.setBackgroundColor('#000000ff');
+        this.cameras.main.fadeIn(3000, 0, 0, 0);
+
         //When the game restarts, no pony is selected
         this.selected = {
             p1: false,
             p2: false
         };
-
 
         //BACKGROUND MUSIC
 

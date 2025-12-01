@@ -29,7 +29,7 @@ export default class StableScene extends Phaser.Scene {
         const { width, height } = this.scale;
 
         this.cameras.main.setBackgroundColor('#000000');
-        this.cameras.main.fadeIn(400, 0, 0, 0);
+        this.cameras.main.fadeIn(2000, 0, 0, 0);
 
         // Background room:
         const bg = this.add.image(width/2 , height /2, 'Stable')

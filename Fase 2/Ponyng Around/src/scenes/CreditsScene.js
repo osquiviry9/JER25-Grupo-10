@@ -95,7 +95,7 @@ export default class CreditsScene extends Phaser.Scene {
 
         //Button list
         const buttons = [
-            { x: (width / 2) - 800, y: (height / 2) - 300, key: 'bttnBack', hover: 'bttnBackHover', action: () => this.scene.start('MainMenuScene'), scale: 1 },
+            { x: (width / 2) - 800, y: (height / 2) - 400, key: 'bttnBack', hover: 'bttnBackHover', action: () => this.scene.start('MainMenuScene'), scale: 1 },
         ];
 
         buttons.forEach(btn => {

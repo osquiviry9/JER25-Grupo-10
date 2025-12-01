@@ -50,17 +50,19 @@ export default class RaceScene extends Phaser.Scene {
 
         const g = this.make.graphics({ x: 0, y: 0, add: false });
 
+        // --------------------- SOUNDS ---------------------
         //Click sound
         this.load.audio('clickSound', 'assets/sound/click.mp3');
 
         // Jumping sound
-        this.load.audio('boingSound', 'assets/sound/boing.mp3');
+        this.load.audio('boingSound', 'assets/sound/jump.mp3');
 
         // Apple sound
         this.load.audio('appleSound', 'assets/sound/Bit.mp3');
 
         // Crash sound
         this.load.audio('bonkSound', 'assets/sound/WoodBonk.mp3');
+        // ------------------------------------------
 
         // Background (blue)
         this.load.image('ColorBackground', 'assets/Backgrounds/fondoPlano.jpeg');
@@ -93,14 +95,19 @@ export default class RaceScene extends Phaser.Scene {
         this.load.image('iconP1', 'assets/ponis/Ache/Ache_Run1.png');
         this.load.image('iconP2', 'assets/ponis/Haire/Haire_Run1.png');
 
-        // Lives 
+        // Lifes 
         this.load.image('Lives', 'assets/Elements/Lives_Full.png');
         this.load.image('LivesEmpty', 'assets/Elements/Lives_Empty.png');
+
+        // Visibility reducer animation (poop)
+        for (let i = 1; i <= 4; i++) {
+            this.load.image(`poop${i}`, `assets/Elements/poopAnim/poop${i}.PNG`);
+        }
 
         // =========== BUTTONS =============
         // Pause button
         this.load.image('bttnPause', 'assets/Buttons/pausebttn.png');
-        this.load.image('bttnPauseHover', 'assets//Buttons/pausebttn_hover.png');
+        this.load.image('bttnPauseHover', 'assets/Buttons/pausebttn_hover.png');
 
         // =========== PONIES =============
         // RUN ANIMATIONS:
@@ -150,18 +157,18 @@ export default class RaceScene extends Phaser.Scene {
         // PowerUps
         this.load.image('LimeLemon', 'assets/Elements/LimeLemon_PowerUp.png');
         this.load.image('Apple', 'assets/Elements/Apple_PowerUp.png');
-        this.load.image('Kakiwi', 'assets/Elements/Kakiwi_PowerUp.png');
+        this.load.image('Kawiki', 'assets/Elements/Kakiwi_PowerUp.png');
     }
 
     create() {
 
         this.music = this.sound.add('clickSound', {
         });
-        
-        this.crashSound = this.sound.add('bonkSound', {   
+
+        this.crashSound = this.sound.add('bonkSound', {
         });
 
-        this.appleSound = this.sound.add('appleSound', {   
+        this.appleSound = this.sound.add('appleSound', {
         });
 
         const { width, height } = this.scale;
@@ -176,7 +183,7 @@ export default class RaceScene extends Phaser.Scene {
         // Middle Line
         this.add.image(width / 2, height / 2, 'MiddleLine')
             .setOrigin(0.5)
-            .setDepth(19);
+            .setDepth(20);
 
         // Frame
         this.add.image(width / 2, height / 2, 'redFrame')
@@ -222,7 +229,7 @@ export default class RaceScene extends Phaser.Scene {
                 key: 'bttnPause',
                 hover: 'bttnPauseHover',
                 scale: 0.6,
-                depth: 9,
+                depth: 24,
                 action: () => {
                     this.scene.launch('PauseScene'); // Opens
                     this.scene.pause();
@@ -255,7 +262,7 @@ export default class RaceScene extends Phaser.Scene {
                 button.setScale(btn.scale);
             });
 
-            // Click
+            // Click sound
             button.on('pointerdown', () => {
                 btn.action();
                 this.music.play();
@@ -294,6 +301,17 @@ export default class RaceScene extends Phaser.Scene {
                 frameRate: 4,
                 repeat: -1
             });
+        });
+
+        // POOP ANIMATION
+        const poopAnim = [];
+        for (let i = 1; i <= 8; i++) poopAnim.push({ key: `poop${i}` });
+
+        this.anims.create({
+            key: 'poop',
+            frames: poopAnim,
+            frameRate: 17,
+            repeat: 0 // Just once
         });
 
         // Floors coords
@@ -394,6 +412,10 @@ export default class RaceScene extends Phaser.Scene {
         this.lifeBoostersTop = this.physics.add.group();
         this.lifeBoostersBot = this.physics.add.group();
 
+        // Kawikis:
+        this.kawikiTop = this.physics.add.group();
+        this.kawikiBot = this.physics.add.group();
+
         const overlapBooster = (player, booster, laneKey) => {
             this.getBooster(laneKey, booster);
         };
@@ -409,6 +431,10 @@ export default class RaceScene extends Phaser.Scene {
         // Limelemon overlap:
         this.physics.add.overlap(this.playerTop, this.lifeBoostersTop, (player, booster) => this.getLifeBooster('top', booster));
         this.physics.add.overlap(this.playerBottom, this.lifeBoostersBot, (player, booster) => this.getLifeBooster('bottom', booster));
+
+        // Kawiki overlap:
+        this.physics.add.overlap(this.playerTop, this.kawikiTop, (player, booster) => this.getKawiki('top', booster));
+        this.physics.add.overlap(this.playerBottom, this.kawikiBot, (player, booster) => this.getKawiki('bottom', booster));
 
         // Keys:
         this.keys = this.input.keyboard.addKeys({
@@ -673,6 +699,7 @@ export default class RaceScene extends Phaser.Scene {
         this.applyAlteration(laneKey, CONFIG.SLOW_FACTOR);
     }
 
+    // Apple
     getBooster(laneKey, booster) {
 
         this.appleSound.play();
@@ -691,6 +718,7 @@ export default class RaceScene extends Phaser.Scene {
         this.applyAlteration(laneKey, CONFIG.ACCEL_FACTOR);
     }
 
+    // Limelemon
     getLifeBooster(laneKey, booster) {
         this.appleSound.play();
         const player = (laneKey === 'top') ? this.playerTop : this.playerBottom;
@@ -723,25 +751,99 @@ export default class RaceScene extends Phaser.Scene {
         }
     }
 
+    // Kawiki
+    getKawiki(laneKey, booster) {
+
+        const WIDTH = this.game.config.width;
+        const HEIGHT = this.game.config.height;
+
+        const spriteHeight = HEIGHT / 2;
+
+        let posX = WIDTH / 2;
+        let posY;
+
+        this.appleSound.play();
+        const player = (laneKey === 'top') ? this.playerTop : this.playerBottom;
+        const lane = this.state.lanes[laneKey];
+
+        // Small animation on pony
+        this.tweens.add({
+            targets: player,
+            alpha: 0.4,
+            duration: 120,
+            yoyo: true
+        });
+
+        booster.destroy();
+
+        // Reduce visibility
+
+        if (laneKey === 'top') {
+            posY = HEIGHT - (spriteHeight / 2);
+        } else if (laneKey === 'bottom') {
+            posY = spriteHeight / 2;
+        }
+
+        const poop = this.add.sprite(posX, posY, 'poop1')
+            .setOrigin(0.5)
+            .setDepth(19);
+
+        poop.play('poop');
+
+        poop.on('animationcomplete', () => {
+
+            // Frame 4 stays
+            poop.setTexture('poop4');
+
+            // On screen for a while
+            this.time.delayedCall(4000, () => {
+                poop.destroy();
+            });
+
+        });
+    }
+
     spawnFixed(laneKey, type) {
 
         const isBooster = type === "booster";
         const isLifeBooster = (type === "life");
+        const isKawiki = type === "kawiki";
 
         const group = (laneKey === "top")
-            ? (isBooster ? this.boostersTop : isLifeBooster ? this.lifeBoostersTop : this.obstaclesTop)
-            : (isBooster ? this.boostersBot : isLifeBooster ? this.lifeBoostersBot : this.obstaclesBot);
+            ? (isBooster ? this.boostersTop
+                : isLifeBooster ? this.lifeBoostersTop
+                    : isKawiki ? this.kawikiTop
+                        : this.obstaclesTop)
+            : (isBooster ? this.boostersBot
+                : isLifeBooster ? this.lifeBoostersBot
+                    : isKawiki ? this.kawikiBot
+                        : this.obstaclesBot);
 
         const redY = (laneKey === "top")
             ? (this.laneYTop + CONFIG.RED_OFFSET_FROM_CENTER + 200)
             : (this.laneYBottom + CONFIG.RED_OFFSET_FROM_CENTER + 200);
 
-        const key = isBooster ? "Apple" : isLifeBooster ? "LimeLemon" : "WoodFence";
+        const key =
+            isBooster ? "Apple"
+                : isLifeBooster ? "LimeLemon"
+                    : isKawiki ? "Kawiki"
+                        : "WoodFence"
 
-        const obj = group.create(CONFIG.WIDTH - 40, redY, key)
+        const spawnY = (key === "WoodFence") ? redY : redY - 50; // ups 100px
+
+        const obj = group.create(CONFIG.WIDTH - 40, spawnY, key)
             .setOrigin(0.5, 1)
-            .setScale(0.4)
             .setDepth(3);
+
+        // Scale depending on type
+        if (key === "WoodFence") {
+            obj.setScale(0.4);
+            
+        } else {
+            obj.setScale(0.3);
+            obj.body.setSize(obj.width * 0.3, obj.height * 0.3); //fix hitbox
+        }
+
 
         obj.body.setAllowGravity(false);
         obj.body.setImmovable(true);
@@ -753,11 +855,11 @@ export default class RaceScene extends Phaser.Scene {
     closeToFinish(laneKey) {
         const progress = this.state.progress[laneKey];
         const pct = progress / CONFIG.TOTAL_DISTANCE_PX;
-        return pct >= 0.90; // Not genrating anything more when the pony hit 90%
+        return pct >= 0.90; // Not generating anything more when the pony hit 90%
     }
 
     checkFinishLine(player, finishLine, laneKey) {
-        if (this.state.finished) return; // No hacer nada si ya terminó
+        if (this.state.finished) return; 
         this.finishRace(laneKey);
     }
 
@@ -782,6 +884,7 @@ export default class RaceScene extends Phaser.Scene {
             this.finishRace('top');
 
         });
+        
         // BOTTOM
         this.finishBottom = this.physics.add.sprite(CONFIG.WIDTH + 50, yBot, 'FinishLine')
             .setOrigin(0.5, 1)
@@ -802,7 +905,7 @@ export default class RaceScene extends Phaser.Scene {
         const createRandomSequence = () => {
 
             // 4 fences and one booster 
-            let seq = ["fence", "fence", "fence", "fence", "fence", "booster", "booster", "life"];
+            let seq = ["fence", "fence", "fence", "fence", "fence", "booster", "booster", "life", "kawiki", "kawiki"];
 
             // Mix without restrictions
             Phaser.Utils.Array.Shuffle(seq);
@@ -818,7 +921,6 @@ export default class RaceScene extends Phaser.Scene {
                 return { type, delay };
             });
         };
-
 
         // Sequence for each lane
         this.spawnQueue = {
@@ -871,10 +973,12 @@ export default class RaceScene extends Phaser.Scene {
         stopGroup(this.obstaclesTop);
         stopGroup(this.boostersTop);
         stopGroup(this.lifeBoostersTop);
+        stopGroup(this.kawikiTop);
 
         stopGroup(this.obstaclesBot);
         stopGroup(this.boostersBot);
-        stopGroup(this.lifeBoostersBot); 
+        stopGroup(this.lifeBoostersBot);
+        stopGroup(this.kawikiBot);
 
         // Stop ponis
         if (this.playerTop && this.playerTop.anims) this.playerTop.anims.pause();
@@ -917,7 +1021,7 @@ export default class RaceScene extends Phaser.Scene {
             targets: label,
             alpha: 1,
             scale: 1,
-            duration: 400,
+            duration: 2000,
             ease: 'Back.Out'
         });
 
@@ -976,11 +1080,13 @@ export default class RaceScene extends Phaser.Scene {
         this.obstaclesTop.children.iterate(o => o && o.body && o.body.setVelocityX(vxTop));
         this.boostersTop.children.iterate(o => o && o.body && o.body.setVelocityX(vxTop));
         this.lifeBoostersTop.children.iterate(o => o && o.body && o.body.setVelocityX(vxTop));
+        this.kawikiTop.children.iterate(o => o && o.body && o.body.setVelocityX(vxTop));
 
         // BOTTOM lane
         this.obstaclesBot.children.iterate(o => o && o.body && o.body.setVelocityX(vxBot));
         this.boostersBot.children.iterate(o => o && o.body && o.body.setVelocityX(vxBot));
         this.lifeBoostersBot.children.iterate(o => o && o.body && o.body.setVelocityX(vxBot));
+        this.kawikiBot.children.iterate(o => o && o.body && o.body.setVelocityX(vxBot));
 
         // Move finish line
         if (this.finishTop) this.finishTop.body.setVelocityX(vxTop);
@@ -999,8 +1105,15 @@ export default class RaceScene extends Phaser.Scene {
         // CLEAN
         const off = -50;
         const clean = g => g.children.each(o => { if (o && o.x < off) o.destroy(); });
-        clean(this.obstaclesTop); clean(this.boostersTop);
-        clean(this.obstaclesBot); clean(this.boostersBot);
+        clean(this.obstaclesTop);
+        clean(this.boostersTop);
+        clean(this.lifeBoostersTop);
+        clean(this.kawikiTop);
+
+        clean(this.obstaclesBot);
+        clean(this.boostersBot);
+        clean(this.lifeBoostersBot);
+        clean(this.kawikiBot);
 
         this.input.keyboard.on('keydown-ESCAPE', () => {
             this.scene.stop();
