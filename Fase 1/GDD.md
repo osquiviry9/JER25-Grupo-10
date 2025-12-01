@@ -1,4 +1,4 @@
-![](FotosGDD/cabecera.png)
+  <img src="FotosGDD/cabecera.png" width="800"/>
 
 # 
 
@@ -22,98 +22,81 @@ Grado en Diseño y Desarrollo de Videojuegos 2025-2026
 
 # **Índice** {#índice}
 
-[Índice	](#índice)
+[Índice](#índice)
+[Introducción](#introduccion)
+[Información General](#informacion-general)
+- [1.1 Nombre del juego](#11-nombre-del-juego)
+- [1.2 Género y dimensión](#12-genero-y-dimension)
+- [1.3 Plataforma](#13-plataforma)
+- [1.4 Audiencia Objetivo](#14-audiencia-objetivo)
 
-[Introducción	](#introducción)
+[2. Mecánicas y Jugabilidad](#2-mecanicas-y-jugabilidad)
 
-[Información General	](#información-general)
+- [2.1 Jugabilidad](#21-jugabilidad)
+- [2.2 Mecánicas Principales](#22-mecanicas-principales)
+- [2.3 Controles](#23-controles)
+- [2.4 Diagrama de flujo](#24-diagrama-de-flujo)
 
-* [1.1 Nombre del juego	](#1.1-nombre-del-juego)
+[3. Arte y Diseño Visual](#3-arte-y-diseno-visual-bocetos-y-modelados)
 
-* [1.2 Género y dimensión	](#1.2-género-y-dimensión)
+- [3.1 Interfaces](#31-interfaces)
+- [3.2 Entornos](#32-entornos)
+- [3.3 Recolectables](#33-recolectables)
+- [3.4 Personajes](#34-personajes)
 
-* [1.3 Plataforma	](#1.3-plataforma)
+  - [3.4.1 Beersquiviry](#341-beersquiviry)
+  - [3.4.2 Ache](#342-ache)
+  - [3.4.3 Kamil & Mayo](#343-kamil--mayo)
+  - [3.4.4 Haiire](#344-haiire)
+  - [3.4.5 Domdimadon](#345-domdimadon)
 
-* [1.4 Audiencia Objetivo	](#1.4-audiencia-objetivo)
+- [3.5 Logo del juego](#35-logo-del-juego)
 
-[2\. Mecánicas y Jugabilidad	](#2.-mecánicas-y-jugabilidad)
+[4. Sonidos y efectos sonoros](#4-sonidos-y-efectos-sonoros)
 
-* [2.1 Jugabilidad	](#2.1-jugabilidad)
+- [4.1 Música](#41-musica)
+- [4.2 Efectos de sonido](#42-efectos-de-sonido)
 
-* [2.2 Mecánicas Principales	](#2.2-mecánicas-principales)
+[5. Narrativa](#5-narrativa)
 
-* [2.3 Controles	](#2.3-controles)
+- [5.1 Historia](#51-historia)
+- [5.2 Personajes](#52-personajes)
 
-* [2.4 Diagrama de flujo	](#2.4-diagrama-de-flujo)
+[6. Comunicación](#6-comunicacion)
 
-[3\. Arte y Diseño Visual (Bocetos y Modelados)	](#3.-arte-y-diseño-visual-\(bocetos-y-modelados\))
+- [6.1 Marketing](#61-marketing)
 
-* [3.1 Interfaces	](#3.1-interfaces)
 
-* [3.2 Entornos	](#3.2-entornos)
-
-* [3.3 Recolectables](#3.3-recolectables)
-
-* [3.4 Personajes	](#3.4-personajes)
-
-* * [3.4.1 Beersquiviry	](#3.4.1-beersquiviry)
-
-* * [3.4.2 Ache	](#3.4.2-ache)
-
-* * [3.4.3 Kamil & Mayo	](#3.4.3-kamil-&-mayo)
-
-* * [3.4.4 Haiire	](#3.4.4-haiire)
-
-* * [3.4.5 Domdimadon	](#3.4.5-domdimadon)
-
-* [3.5 Logo del juego	](#3.5-logo-del-juego)
-
-[4\. Sonidos y efectos sonoros	](#4.-sonidos-y-efectos-sonoros)
-
-* [4.1 Música	](#4.1-música)
-
-* [4.2 Efectos de sonido	](#4.2-efectos-de-sonido)
-
-[5\. Narrativa	](#5.-narrativa)
-
-* [5.1 Historia	](#5.1-historia)
-
-* [5.2 Personajes	](#5.2-personajes)
-
-[6\. Comunicación	](#6.-comunicación)
-
-* [6.1 Marketing	](#6.1-marketing)
-
-## **Introducción** {#introducción}
+## **Introducción** 
 
 El juego consistirá en una carrera entre dos jugadores, que manejan a dos ponis, su objetivo será llegar a la meta antes que el contrincante evitando los obstáculos e intentando coger los potenciadores.
 
 Se usará el motor de videojuegos unity y los conocimientos adquiridos en la asignatura para poder lograr un videojuego multijugador.
 
-## **Información General** {#información-general}
+## **Información General** 
 
-### **1.1 Nombre del juego** {#1.1-nombre-del-juego}
+### **1.1 Nombre del juego** 
 
 “Ponying around\!”
 
-### **1.2 Género y dimensión** {#1.2-género-y-dimensión}
+### **1.2 Género y dimensión** 
 
 El juego será un videojuego de carreras, concretamente de ponis.
 
 Será en un 2D con una estética de dibujos animados. Contará con un entorno ambientado en el campo, con colores verdes, amarillentos y marrones predominantemente. Además, cada personaje contará con su paleta de colores particular para que se distingan perfectamente y se muestre su estilo único.
 
-### **1.3 Plataforma** {#1.3-plataforma}
+### **1.3 Plataforma** 
 
 El juego estará disponible para PC.
 
-### **1.4 Audiencia Objetivo** {#1.4-audiencia-objetivo}
+### **1.4 Audiencia Objetivo** 
 
 El juego tendrá una orientación para el público general, pero más concretamente a un público infantil y forofos de “My Little Pony”, ya que este es la principal inspiración artística para el juego.
 
 
-## **2\. Mecánicas y Jugabilidad** {#2.-mecánicas-y-jugabilidad}
+## **2\. Mecánicas y Jugabilidad** 
 
-### **2.1 Jugabilidad** {#2.1-jugabilidad}
+### **2.1 Jugabilidad** 
 
 El jugador podrá escoger entre cinco diferentes ponis, cada uno tematizado por un integrante del equipo, cada uno tendrá una descripción distinta.
 
@@ -123,7 +106,7 @@ A nivel técnico los ponis estarán quietos y será el entorno el que se mueva. 
 
 Contará con físicas de salto y al tirar las vallas en caso de choque.  
 
-### **2.2 Mecánicas Principales** {#2.2-mecánicas-principales}
+### **2.2 Mecánicas Principales** 
 
 * Salto de vallas: Los jugadores (ponis) deberán esquivar las vallas, de lo contrario, al chocar con ellas serán ralentizados perdiendo la oportunidad de poder ganar y perdiendo vida.  
     
@@ -135,263 +118,354 @@ Contará con físicas de salto y al tirar las vallas en caso de choque.
 
 * Kakiwii: Fruta que hace que el poni que se lo coma se vaya de vientre y ensucie temporalmente la pantalla del poni contrario
 
-### **2.3 Controles** {#2.3-controles}
+### **2.3 Controles** 
 
 El jugador usará el teclado y el ratón para moverse por los menús del juego y la tecla W o la flecha de dirección hacia arriba para saltar.
 
 De manera adicional se ilustra en este gráfico.
 
-![](FotosGDD/raton.png)![](FotosGDD/teclado.jpeg)
+<p align="center">
+  <img src="FotosGDD/raton.png" width="300"/>
+  <img src="FotosGDD/teclado.jpeg" width="300"/>
+</p>
 
-### **2.4 Diagrama de flujo** {#2.4-diagrama-de-flujo}
 
-![](FotosGDD/diagramaflujo.png)
+### **2.4 Diagrama de flujo** 
 
-## **3\. Arte y Diseño Visual (Bocetos y Modelados)** {#3.-arte-y-diseño-visual-(bocetos-y-modelados)}
+ <img src="FotosGDD/diagramaflujo.png" width="600"/>
 
-## **3.1 Interfaces**![](FotosGDD/bocetosLogo.png) {#3.1-interfaces}
+
+## **3\. Arte y Diseño Visual (Bocetos y Modelados)** 
+
+## **3.1 Interfaces**
+
+ <img src="FotosGDD/bocetosLogo.png" width="400"/>
+
 
 Boceto de pantalla de inicio, pantalla de selección y menú de opciones
 
-![](FotosGDD/menu.png)
+ <img src="FotosGDD/menu.png" width="600"/>
+
 
 Menú de Inicio
 
-![](FotosGDD/selector.png)
+ <img src="FotosGDD/selector.png" width="600"/>
+
 
 Pantalla  de selector de personajes
 
-![](FotosGDD/carrera.png)
+ <img src="FotosGDD/carrera.png" width="600"/>
+
 
 Pantalla de carrera
 
-![](FotosGDD/tutorial.jpeg)
+ <img src="FotosGDD/tutorial.jpeg" width="600"/>
+
 
 Pantalla de ayuda/tutorial
 
-![](FotosGDD/ajustes.png)
+ <img src="FotosGDD/ajustes.png" width="600"/>
+
 
 Pantalla de ajustes
 
-![](FotosGDD/pausa.png)
+ <img src="FotosGDD/pausa.png" width="600"/>
+
 
 Pantalla de pausa
 
-![](FotosGDD/historia.png)
+ <img src="FotosGDD/historia.png" width="600"/>
+
 
 Pantalla de la historia de los ponis
 
-![](FotosGDD/creditos.png)
+ <img src="FotosGDD/creditos.png" width="600"/>
+
 
 Pantalla de créditos
 
-### **3.2 Entornos** {#3.2-entornos}
+### **3.2 Entornos** 
 
-![](FotosGDD/bocetoCarrera.png)
+ <img src="FotosGDD/bocetoCarrera.png" width="400"/>
+
 
 Boceto Inicial de la pista de carreras
 
-![](FotosGDD/bocetoCarrera2.png)
+ <img src="FotosGDD/bocetoCarrera2.png" width="400"/>
+
 
 Boceto inicial de la pista de carreras con las frutas “manzana” y “limalimón”
 
-![](FotosGDD/bocetoCarrera3.png)
+ <img src="FotosGDD/bocetoCarrera3.png" width="400"/>
+
 
 Boceto más visual de la pista de carreras con las frutas “manzana” y “limalimón”
 
-![](FotosGDD/bocetocarrera4.png)
+ <img src="FotosGDD/bocetocarrera4.png" width="600"/>
+
 
 Boceto final de la pista de carreras con las frutas y el contador de vidas.
 
-![](FotosGDD/matadero.jpeg)
+ <img src="FotosGDD/matadero.jpeg" width="600"/>
+
 
 Entorno del sótano donde nuestros ponis son brutalmente asesinados
 
-![](FotosGDD/tuberia.png)
+ <img src="FotosGDD/tuberia.png" width="600"/>
+
 
 Tubería que transporta los desechos de los ponis
 
-![](FotosGDD/Establo.png)
+ <img src="FotosGDD/Establo.png" width="600"/>
+
 
 Establo vacío de los ponis
 
-### **3.3 Recolectables** {#3.3-recolectables}
+### **3.3 Recolectables** 
 
-![](FotosGDD/frutaBocetos.png)
+ <img src="FotosGDD/frutaBocetos.png" width="300"/>
+
+
 
 Bocetos de manzana y limalimón
 
 Iconos finales manzana, limalimón y kakiwi
 
-![](FotosGDD/Herradura.png)
+ <img src="FotosGDD/Herradura.png" width="200"/>
+
 
 Icono final de la vida de los ponis
 
-### **3.4 Personajes** {#3.4-personajes}
+### **3.4 Personajes** 
 
-### **3.4.1 Beersquiviry** {#3.4.1-beersquiviry}
+### **3.4.1 Beersquiviry** 
 
-![](FotosGDD/beerBoceto.png)![](FotosGDD/BeerBoceto2.png) ![](FotosGDD/BeerRun1.png)
+<p align="center">
+ <img src="FotosGDD/beerBoceto.png" width="200"/>
+ <img src="FotosGDD/beerBoceto2.png" width="200"/>
+ <img src="FotosGDD/beerRun1.png" width="200"/>
+</p>
+
 
 Bocetos personaje número 1: Beersquiviry
 
-![](FotosGDD/BeerRunComplete.png)
+  <img src="FotosGDD/BeerRunComplete.png" width="600"/>
+
 
 Diseño final personaje número 1 corriendo: Beersquiviry
 
-![](FotosGDD/BeerComplete.png)
+
+  <img src="FotosGDD/BeerComplete.png" width="300"/>
+
 
 Imagen final del personaje 1: Beersquiviry
 
-![](FotosGDD/BeerJump1.png) ![](FotosGDD/BeerJump2.png) ![](FotosGDD/BeerJump3.png)
+<p align="center">
+  <img src="FotosGDD/BeerJump1.png" width="200"/>
+  <img src="FotosGDD/BeerJump2.png" width="200"/>
+  <img src="FotosGDD/BeerJump3.png" width="200"/>
+</p>
 
 Secuencia de salto del personaje 1: Beersquiviry
 
-![](FotosGDD/BeerDead.png)
+  <img src="FotosGDD/BeerDead.png" width="300"/>
 
 Personaje 1, Beersquiviry, previo a morir
 
-![](FotosGDD/BeerFinal.jpeg)
+  <img src="FotosGDD/BeerFinal.jpeg" width="600"/>
+
 
 Objeto final del personaje Beersquiviry
 
-### **3.4.2 Ache** {#3.4.2-ache}
+### **3.4.2 Ache** 
 
-![](FotosGDD/AcheBocetos.png) ![](FotosGDD/AcheRun.png)
+
+  <img src="FotosGDD/AcheBocetos.png" width="300"/>
+  <img src="FotosGDD/AcheRun.png" width="350"/>
+
 
 Bocetos personaje número 2: Ache
 
-![](FotosGDD/AcheRunComplet.png)
+  <img src="FotosGDD/AcheRunComplet.png" width="600"/>
+
 
 Diseño final del personaje 2 corriendo: Ache
 
-![](FotosGDD/AcheComplete.png)
+  <img src="FotosGDD/AcheComplete.png" width="300"/>
+
 
 Imagen final del personaje 2, Ache
 
-![][image37]![][image38]![][image39]
+
+<p align="center">
+  <img src="FotosGDD/AcheJump1.png" width="200"/>
+  <img src="FotosGDD/AcheJump2.png" width="200"/>
+  <img src="FotosGDD/AcheJump3.png" width="200"/>
+</p>
+
 
 Secuencia de salto del personaje 2, Ache
 
-![][image40]
+  <img src="FotosGDD/AcheDead.png" width="300"/>
 
 Personaje 2, Ache, previa a morir
 
-![][image41]
+  <img src="FotosGDD/AchFinal.jpeg" width="600"/>
+
 
 Objeto final del personaje Ache
 
-### **3.4.3 Kamil & Mayo** {#3.4.3-kamil-&-mayo}
+### **3.4.3 Kamil & Mayo** 
 
-![][image42]![][image43]
+<p align="center">
+  <img src="FotosGDD/KamilBoceto.png" width="300"/>
+  <img src="FotosGDD/KamilBoceto2.png" width="300"/>
+</p>
 
 Bocetos personaje número 3: Kamil
 
-![][image44]
+  <img src="FotosGDD/MayoBoceto.png" width="300"/>
 
-Diseño final personaje número 3: Kamil
-
-![][image45]
 
 Boceto personaje número 4: Mayo
 
-![][image46]
+  <img src="FotosGDD/MyoRun.png" width="800"/>
 
-Boceto final personaje número 4: Mayo
 
-![][image47]![][image48]![][image49]![][image50]
+Diseño final del personaje 4 corriendo: Mayo
+
+  <img src="FotosGDD/KamilComplete.png" width="300"/>
+
 
 Diseño final del personaje 3 y 4: Kamil & Mayo
 
-![][image51]![][image52]![][image53]
+<p align="center">
+  <img src="FotosGDD/KamilRun1.png" width="150"/>
+  <img src="FotosGDD/KamilRun2.png" width="150"/>
+  <img src="FotosGDD/KamilRun3.png" width="150"/>
+  <img src="FotosGDD/KamilRun4.png" width="150"/>
+</p>
+
+
+Diseño final de los personajes 3 y 5 corriendo: Kamil & Mayo
+
+<p align="center">
+  <img src="FotosGDD/KamilJump1.png" width="200"/>
+  <img src="FotosGDD/KamilJump2.png" width="200"/>
+  <img src="FotosGDD/KamilJump3.png" width="200"/>
+</p>
 
 Secuencia de salto del personaje número 3 y 4: Kamil & Mayo
 
-![][image54]
+  <img src="FotosGDD/KamilDead.png" width="300"/>
 
-Imagen final de los personajes Kamil y Mayo
-
-![][image55]
 
 Personajes 3 y 4, Kamil y Mayo, previas a morir
 
-![][image56]
+<img src="FotosGDD/KamilEnd.jpeg" width="600"/>
 
 Objeto final de los personajes 3 y 4
 
-### **3.4.4 Haiire** {#3.4.4-haiire}
+### **3.4.4 Haiire** 
 
-![][image57]
+  <img src="FotosGDD/HaireBocetos.png" width="300"/>
+
 
 Bocetos personaje número 5: Haiire
 
-![][image58]
+  <img src="FotosGDD/HaireComplete.png" width="300"/>
+
 
 Diseño final personaje número 5: Haiire
 
-![][image59]![][image60]![][image61]
+  <img src="FotosGDD/HaireRun.png" width="600"/>
+
+
+Diseño final del personaje 5 corriendo: Haiire
+
+<p align="center">
+  <img src="FotosGDD/HaireJump1.png" width="200"/>
+  <img src="FotosGDD/HaireJump2.png" width="200"/>
+  <img src="FotosGDD/HaireJump3.png" width="200"/>
+</p>
+
 
 Secuencia de salto del personaje 5, Haiire
 
-![][image62]
+  <img src="FotosGDD/HaireDead.png" width="300"/>
 
-Diseño final del personaje 5, Haiire
-
-![][image63]
 
 Personaje 5, Haiire, previa a morir
 
-![][image64]
+  <img src="FotosGDD/HaireFinal.jpeg" width="600"/>
+
 
 Objeto final del personaje 5, Haiire
 
-### **3.4.5 Domdimadon** {#3.4.5-domdimadon}
+### **3.4.5 Domdimadon** 
 
-![][image65]![][image66]![][image67]
+
+<p align="center">
+  <img src="FotosGDD/DomBoceto.png" width="200"/>
+  <img src="FotosGDD/DomComplete2.png" width="150"/>
+  <img src="FotosGDD/DomBocetoColor.png" width="200"/>
+</p>
 
 Bocetos personaje número 6: Domdimadon
 
-![][image68]
 
-Diseño final personaje número 6: Domdimadon
+<img src="FotosGDD/DomRun.png" width="600"/>
 
-![][image69]![][image70]![][image71]
+
+Diseño final del personaje 6 corriendo: Domdimadon 
+
+<p align="center">
+  <img src="FotosGDD/DomJump1.png" width="200"/>
+  <img src="FotosGDD/DomJump3.png" width="200"/>
+  <img src="FotosGDD/DomJump2.png" width="200"/>
+</p>
+
+
 
 Secuencia de salto del personaje 6, Domdimadon
 
-![][image72]
+  <img src="FotosGDD/DomComplete.png" width="300"/>
+
 
 Diseño final del personaje 6, Domdimadon
 
-![][image73]
+  <img src="FotosGDD/DomDead.png" width="300"/>
+
 
 Personaje 6, Domdimadon previo a morir
 
-![][image74]
+  <img src="FotosGDD/DomFinal.jpeg" width="600"/>
 
 Objeto final del personaje 6, Domdimadon
 
-### **3.5 Logo del juego** {#3.5-logo-del-juego}
+### **3.5 Logo del juego** 
 
-![][image75]
+  <img src="FotosGDD/bocetoslogosJuego.png" width="300"/>
+
 
 Posibles bocetos
+  <img src="FotosGDD/LogoJuego.png" width="300"/>
 
-![][image76]
 
 Logo final del juego
 
-![][image77]
+  <img src="FotosGDD/Logo.png" width="200"/>
+
 
 Logo final del estudio
 
-## **4\. Sonidos y efectos sonoros** {#4.-sonidos-y-efectos-sonoros}
+## **4\. Sonidos y efectos sonoros** 
 
-### **4.1 Música** {#4.1-música}
+### **4.1 Música** 
 
 La banda sonora consta de música alegre y feliz que acompañe el espíritu de carreras.
 
-### **4.2 Efectos de sonido** {#4.2-efectos-de-sonido}
+### **4.2 Efectos de sonido** 
 
 Aparte de la música, el juego contará con diversos efectos de sonido que darán más ambiente:
 
@@ -401,9 +475,9 @@ Aparte de la música, el juego contará con diversos efectos de sonido que dará
 * Al estar en los efectos de limalimón sonará un sonido de potenciación.  
 * Dándole a los botones para desplazarse por los menús sonará un sonido de **‘*clic*’**.
 
-## **5\. Narrativa** {#5.-narrativa}
+## **5\. Narrativa** 
 
-### **5.1 Historia** {#5.1-historia}
+### **5.1 Historia** 
 
 La historia sigue de cerca a nuestros ponis, viviendo tranquilamente en Tohelloso, pero una vez al año, un señor obliga a los ponis a correr una carrera a muerte entre los mismos. Este señor, apodado “Melgarga” tiene como misión exterminar a los ponis de una macabra manera, el que pierda será exterminado de una manera horrible, macabra y perturbadora. Utilizando ... ¡Una trituradora\! ¿Sobrevivirás? 
 
@@ -413,17 +487,21 @@ La historia sigue de cerca a nuestros ponis, viviendo tranquilamente en Tohellos
 
 Esta historia se ilustra al principio del juego con una secuencia que explica de manera clara el contexto del juego.
 
-![][image78]![][image79]
+<p align="center">
+  <img src="FotosGDD/Inicio_1.jpeg" width="300"/>
+  <img src="FotosGDD/Inicio2.jpeg" width="300"/>
+</p>
+
 
 Secuencia contextual inicial
 
 Cuando un poni muere, se enseña su establo vacío para reforzar esta narrativa
 
-![][image80]
+  <img src="FotosGDD/Establo.png" width="600"/>
 
 Imagen del establo vacío
 
-### **5.2 Personajes** {#5.2-personajes}
+### **5.2 Personajes** 
 
 * [**Haiire**](#3.4.4-haiire): Se comió una fruta, llamada *cuernocuerno fruit*, esto provocó que brotase un cuerno de su lóbulo frontal, pudiendo tirar rayos desde ahí y provocando una oleada de bulliyng por parte de los secuaces de Melgarga. Ahora busca venganza salvando a los ponis de sus malvadas garras.  
 * [**Domdimadon**](#3.4.5-domdimadon) : Se comió la fruta después de Haiire, pero a diferencia de ella, es la mascota de Melgarga y por lo tanto no quiere salvar a los ponis.  
@@ -433,11 +511,10 @@ Imagen del establo vacío
 
 ## 
 
-## **6\. Comunicación** {#6.-comunicación}
+## **6\. Comunicación** 
 
-### **6.1 Marketing** {#6.1-marketing}
-
-Se decide empezar la fase de marketing en torno a seis (6) meses antes del lanzamiento del juego, con una campaña publicitaria agresiva en todos los medios (Televisión, Redes Sociales, Publicidad en la calle (Paradas de buses, paradas de metro, Buses y carteles en edificios).
+### **6.1 Marketing** 
+Se decide empezar la fase de marketing en torno a seis (6) meses antes del lanzamiento del juego, con una campaña publicitaria agresiva en todos los medios (Televisión, Redes Sociales, Publicidad en la calle (Paradas de buses, paradas de metro, Buses y carteles en edificios)).
 
 Además, la semana de antes, dos o más desarrolladores, aparecerán por las calles céntricas de ciudades clave de España haciendo cosplay de su personaje para llamar la atención de los transeúntes e informales acerca del juego. 
 
