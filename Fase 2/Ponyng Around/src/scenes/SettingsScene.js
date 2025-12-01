@@ -30,7 +30,6 @@ export default class SettingsScene extends Phaser.Scene {
         // Help button
         this.load.image('bttnHelp', 'assets/Buttons/helpBttn.PNG');
         this.load.image('bttnHelpHover', 'assets/Buttons/helpBttn_hover.PNG');
-
     }
 
     create() {
@@ -182,6 +181,7 @@ export default class SettingsScene extends Phaser.Scene {
         });
 
         changeKeyTop.on('pointerdown', ()=>{
+            this.music.play();
             if (this.waitingKey){
                 this.sound.play('clickSound');
                 return
@@ -215,6 +215,7 @@ export default class SettingsScene extends Phaser.Scene {
         });
 
         changeKeyBottom.on('pointerdown', ()=>{
+            this.music.play();
             if (this.waitingKey){
                 this.sound.play('clickSound');
                 return

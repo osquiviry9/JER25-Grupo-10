@@ -33,7 +33,9 @@ export default class MainMenuScene extends Phaser.Scene {
         this.load.image('bttnStory', 'assets/Buttons/loreBttn.PNG');
         this.load.image('bttnStoryHover', 'assets/Buttons/loreBttn_hover.PNG');
 
-
+        // Exit button
+        this.load.image('bttnExit', 'assets/Buttons/crossBttn.png')
+        this.load.image('bttnExitHover', 'assets/Buttons/crossBttn_hover.png')
     }
 
     create() {
@@ -58,6 +60,7 @@ export default class MainMenuScene extends Phaser.Scene {
             { x: width * 0.84, y: height * 0.8, key: 'bttnSettings', hover: 'bttnSettingsHover', action: () => this.scene.start('SettingsScene', { previousScene: this.scene.key }), scale: 1 },
             { x: width * 0.24, y: height * 0.35, key: 'bttnCredits', hover: 'bttnCreditsHover', action: () => this.scene.start('CreditsScene'), scale: 0.7 },
             { x: width * 0.17, y: height * 0.8, key: 'bttnStory', hover: 'bttnStoryHover', action: () => this.scene.start('StoryScene'), scale: 0.75},
+            { x: width * 0.85, y: height * 0.18, key: 'bttnExit', hover: 'bttnExitHover', action: () => this.time.delayedCall(50, () => {this.game.destroy(true);}), scale: 0.75},
         ];
 
 

@@ -1128,5 +1128,15 @@ export default class RaceScene extends Phaser.Scene {
             this.scene.stop();
             this.scene.resume('RaceScene');
         });
+
+        const controls = this.registry.get('controls');
+        this.keys = this.input.keyboard.addKeys({
+            jumpTop: controls.jumpTop,
+            jumpBottom: controls.jumpBottom,
+            accelTop: 'S',
+            accelBottom: 'I',
+            slowTop: 'NUMPAD_EIGHT',
+            slowBottom: 'NUMPAD_TWO'
+        });
     }
 }
