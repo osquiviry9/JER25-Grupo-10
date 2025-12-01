@@ -52,7 +52,7 @@ export default class MainMenuScene extends Phaser.Scene {
         // Frame
         this.add.image(width / 2, height / 2, 'Frame').setDepth(3).setScale(0.8);
 
-        //Lista de botones
+        // Button list
         const buttons = [
             { x: width * 0.5, y: height * 0.2, key: 'bttnPlay', hover: 'bttnPlayHover', action: () => this.scene.start('CharacterSelectScene'), scale: 0.9 },
             { x: width * 0.84, y: height * 0.8, key: 'bttnSettings', hover: 'bttnSettingsHover', action: () => this.scene.start('SettingsScene', { previousScene: this.scene.key }), scale: 1 },
@@ -71,7 +71,7 @@ export default class MainMenuScene extends Phaser.Scene {
                 button.setScale(btn.scale * 1.05);
             });
 
-            // Salir hover
+            //Exit hover
             button.on('pointerout', () => {
                 button.setTexture(btn.key);
                 button.setScale(btn.scale);
@@ -83,16 +83,29 @@ export default class MainMenuScene extends Phaser.Scene {
                 this.music.play();
             });
 
+
         });
 
 
-        //CAMBIAD ESTO A LA PRIMERA ESCENA QUE SE EJECUTE AL INICIAR EL JUEGO, siempre metido en el create() o el init(), lo que haya
+        // Defines starting volume
         if (this.game.volumeLevel === undefined) {
             const savedVolume = localStorage.getItem('gameVolume');
             this.game.volumeLevel = savedVolume ? parseInt(savedVolume) : 5;
         }
 
-        // Ajustar el volumen global de Phaser Sound
+        // Adjust total volume of Phaser Sound
         this.sound.volume = this.game.volumeLevel / 10;
+
+        // Defines starting controls, so they can be changed in Settings Menu
+        if (!this.registry.get('controls')) {
+        this.registry.set('controls', {
+            jumpTop: 'W',
+            jumpBottom: 'UP',
+            accelTop: 'S',
+            accelBottom: 'I',
+            slowTop: 'NUMPAD_EIGHT',
+            slowBottom: 'NUMPAD_TWO'
+    });
+}
     }
 }

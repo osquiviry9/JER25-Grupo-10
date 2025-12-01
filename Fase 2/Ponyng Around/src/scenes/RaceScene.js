@@ -437,9 +437,18 @@ export default class RaceScene extends Phaser.Scene {
         this.physics.add.overlap(this.playerBottom, this.kawikiBot, (player, booster) => this.getKawiki('bottom', booster));
 
         // Keys:
+        if (!this.registry.list.controls) {
+            this.registry.set('controls', {
+                jumpTop: 'W',
+                jumpBottom: 'UP',
+            });
+        }
+
+        const controls = this.registry.get('controls');
+
         this.keys = this.input.keyboard.addKeys({
-            jumpTop: 'W',
-            jumpBottom: 'UP',
+            jumpTop: controls.jumpTop,
+            jumpBottom: controls.jumpBottom,
             accelTop: 'S',
             accelBottom: 'I',
             slowTop: 'NUMPAD_EIGHT',

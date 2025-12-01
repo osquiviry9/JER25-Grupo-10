@@ -314,7 +314,8 @@ export default class CharacterSelectScene extends Phaser.Scene {
 
 
         // ----------- JUMPING TEXT  -----------
-        const jumpKeyText = (player === 'p1') ? 'Jump with  W!' : 'Jump with  ↑!';
+        let controls = this.registry.get('controls');
+        const jumpKeyText = (player === 'p1') ? `Jump with  ${controls.jumpTop}` : `Jump with  ${controls.jumpBottom}`;
         const jumpKeyColor = (player === 'p1') ? '#ff69b4' : '#67b7ff';
 
         this.add.text(centerX, centerY + 390, jumpKeyText, {
