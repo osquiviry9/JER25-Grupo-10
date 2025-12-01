@@ -30,7 +30,6 @@ export default class SettingsScene extends Phaser.Scene {
         // Help button
         this.load.image('bttnHelp', 'assets/Buttons/helpBttn.PNG');
         this.load.image('bttnHelpHover', 'assets/Buttons/helpBttn_hover.PNG');
-
     }
 
     create() {
@@ -41,11 +40,11 @@ export default class SettingsScene extends Phaser.Scene {
         const { width, height } = this.scale;
 
         // Volume inicial (from 0 to 10)
-        this.volumeLevel = this.game.volumeLevel ?? 5;
+        this.volumeLevel = this.game.volumeLevel ?? 6;
         this.maxVolume = 10;
 
         // Music inicial
-        this.musicLevel = this.game.musicLevel ?? 5;
+        this.musicLevel = this.game.musicLevel ?? 2;
 
         this.cameras.main.setBackgroundColor('#000000ff');
 
@@ -123,8 +122,8 @@ export default class SettingsScene extends Phaser.Scene {
         this.soundButtons = this.createVolumeButtons(
             barXS,
             barY,
-            () => { this.changeVolume(-1); this.music.play(); }, // al presionar -
-            () => { this.changeVolume(1); this.music.play(); }  // al presionar +
+            () => { this.changeVolume(-1); this.music.play(); }, // if pressed -
+            () => { this.changeVolume(1); this.music.play(); }  // if pressed +
         );
 
         this.musicButtons = this.createVolumeButtons(
@@ -153,6 +152,114 @@ export default class SettingsScene extends Phaser.Scene {
             0x2b6b29,
             0xbfe9bd
         );
+
+
+        // CHANGE CONTROLS
+        // Player 1
+        let controls = this.registry.get('controls');
+        const changeKeyTop = this.add.text(655, 500, `Player 1 Jump Key: ${controls.jumpTop}`, {
+            fontSize: '40px',
+            fontFamily: 'Arial Black',
+            color: '#6ccf68ff',
+            stroke: '#3f723dff',
+            strokeThickness: 6,
+            align: 'center'
+        })
+            .setScale(1.2)
+            .setInteractive({ useHandCursor: true });
+
+        changeKeyTop.on('pointerover', () => {
+            changeKeyTop.setScale(1.25);
+            changeKeyTop.setColor('#61b45eff');
+            changeKeyTop.setStroke('#345e33ff')
+        });
+
+        changeKeyTop.on('pointerout', () => {
+            changeKeyTop.setScale(1.2);
+            changeKeyTop.setColor('#6ccf68ff');
+            changeKeyTop.setStroke('#3f723dff');
+        });
+
+        changeKeyTop.on('pointerdown', () => {
+            this.music.play();
+            if (this.waitingKey) {
+                this.sound.play('clickSound');
+                return
+            }
+            this.waitingKey = 'jumpTop';
+            changeKeyTop.setText("Press a key...");
+        })
+
+        // Player 2
+        const changeKeyBottom = this.add.text(655, 600, `Player 1 Jump Key: ${controls.jumpBottom}`, {
+            fontSize: '40px',
+            fontFamily: 'Arial Black',
+            color: '#6ccf68ff',
+            stroke: '#3f723dff',
+            strokeThickness: 6,
+            align: 'center'
+        })
+            .setScale(1.2)
+            .setInteractive({ useHandCursor: true });
+
+        changeKeyBottom.on('pointerover', () => {
+            changeKeyBottom.setScale(1.25);
+            changeKeyBottom.setColor('#61b45eff');
+            changeKeyBottom.setStroke('#345e33ff')
+        });
+
+        changeKeyBottom.on('pointerout', () => {
+            changeKeyBottom.setScale(1.2);
+            changeKeyBottom.setColor('#6ccf68ff');
+            changeKeyBottom.setStroke('#3f723dff');
+        });
+
+        changeKeyBottom.on('pointerdown', () => {
+            this.music.play();
+            if (this.waitingKey) {
+                this.sound.play('clickSound');
+                return
+            }
+            this.waitingKey = 'jumpBottom';
+            changeKeyBottom.setText("Press a key...");
+        })
+
+        // Keyboard control
+        this.input.keyboard.on('keydown', event => {
+            if (!this.waitingKey) return;
+
+            const controls = this.registry.get('controls');
+            const newKey = event.code.replace('Key', '').replace('Arrow', '').toUpperCase();
+
+            // Player 1
+            if (this.waitingKey === "jumpTop") {
+                if (newKey === controls.jumpBottom) {
+                    console.log("No puedes usar la misma tecla que el jugador 2.");
+                    return;
+                }
+
+                controls.jumpTop = newKey;
+                this.registry.set('controls', controls);
+
+                changeKeyTop.setText(`Player 1 Jump Key: ${newKey}`);
+                this.waitingKey = null;
+                return;
+            }
+
+            // Player 2
+            if (this.waitingKey === "jumpBottom") {
+                if (newKey === controls.jumpTop) {
+                    console.log("No puedes usar la misma tecla que el jugador 1.");
+                    return;
+                }
+
+                controls.jumpBottom = newKey;
+                this.registry.set('controls', controls);
+
+                changeKeyBottom.setText(`Player 2 Jump Key: ${newKey}`);
+                this.waitingKey = null;
+            }
+        });
 
         // Zoom
         const margin = 0.8;
@@ -223,19 +330,19 @@ export default class SettingsScene extends Phaser.Scene {
     changeMusicVolume(delta) {
         this.musicLevel = Phaser.Math.Clamp(this.musicLevel + delta, 0, this.maxVolume);
 
-        // Actualiza visualmente las barras de música
+        // Updates visually the music bars
         for (let i = 0; i < this.maxVolume; i++) {
             this.musicBars[i].setFillStyle(
                 i < this.musicLevel ? 0x2b6b29 : 0xbfe9bd
             );
         }
 
-        // Cambiar volumen de la música global (si tienes música)
+        // Changes global music (if it is on)
         if (this.game.backgroundMusic) {
             this.game.backgroundMusic.setVolume(this.musicLevel / this.maxVolume);
         }
 
-        // Guarda nivel para otras escenas
+        // Saves music level for later scenes
         this.game.musicLevel = this.musicLevel;
     }
 

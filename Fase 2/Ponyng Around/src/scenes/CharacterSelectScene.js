@@ -27,7 +27,7 @@ export default class CharacterSelectScene extends Phaser.Scene {
             { key: 'Beersquiviry', path: 'assets/ponis/Beersquiviri/Beer_Complete.png' },
         ];
 
-        
+
 
     }
 
@@ -79,12 +79,14 @@ export default class CharacterSelectScene extends Phaser.Scene {
 
     create() {
 
+        this.cameras.main.setBackgroundColor('#000000ff');
+        this.cameras.main.fadeIn(3000, 0, 0, 0);
+
         //When the game restarts, no pony is selected
         this.selected = {
             p1: false,
             p2: false
         };
-
 
         //BACKGROUND MUSIC
 
@@ -312,7 +314,8 @@ export default class CharacterSelectScene extends Phaser.Scene {
 
 
         // ----------- JUMPING TEXT  -----------
-        const jumpKeyText = (player === 'p1') ? 'Jump with  W!' : 'Jump with  ↑!';
+        let controls = this.registry.get('controls');
+        const jumpKeyText = (player === 'p1') ? `Jump with  ${controls.jumpTop}` : `Jump with  ${controls.jumpBottom}`;
         const jumpKeyColor = (player === 'p1') ? '#ff69b4' : '#67b7ff';
 
         this.add.text(centerX, centerY + 390, jumpKeyText, {

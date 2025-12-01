@@ -21,12 +21,16 @@ export default class PauseScene extends Phaser.Scene {
         this.load.image('bttnBackHoverB', 'assets/Buttons/PauseBlood_hover.PNG');
 
         // Main menu button
-        this.load.image('bttnExit', 'assets/Buttons/MainMenuBlood.PNG');
-        this.load.image('bttnExitHover', 'assets/Buttons/MainMenuBlood_hover.PNG');
+        this.load.image('bttnMainMenu', 'assets/Buttons/MainMenuBlood.PNG');
+        this.load.image('bttnMainMenuHover', 'assets/Buttons/MainMenuBlood_hover.PNG');
 
         // Settings button
         this.load.image('bttnSettingsB', 'assets/Buttons/SettingsBlood.PNG');
         this.load.image('bttnSettingsHoverB', 'assets/Buttons/SettingsBlood_hover.PNG');
+
+        // Exit button
+        this.load.image('bttnExitB', 'assets/Buttons/crossBlood.PNG');
+        this.load.image('bttnExitHoverB', 'assets/Buttons/crossBlood_hover.PNG');
     }
 
     create() {
@@ -74,18 +78,18 @@ export default class PauseScene extends Phaser.Scene {
         });
 
         // ----------- Main menu button -----------
-        const menuBtn = this.add.image(width / 2 + 50, height / 2 - 200, 'bttnExit')
+        const menuBtn = this.add.image(width / 2 + 50, height / 2 - 200, 'bttnMainMenu')
             .setInteractive({ useHandCursor: true })
             .setScale(1)
             .setDepth(11);
 
         // Hover main menu
         menuBtn.on('pointerover', () => {
-            menuBtn.setTexture('bttnExitHover');
+            menuBtn.setTexture('bttnMainMenuHover');
             menuBtn.setScale(1.05);
         });
         menuBtn.on('pointerout', () => {
-            menuBtn.setTexture('bttnExit');
+            menuBtn.setTexture('bttnMainMenu');
             menuBtn.setScale(1);
         });
         menuBtn.on('pointerdown', () => {
@@ -118,6 +122,27 @@ export default class PauseScene extends Phaser.Scene {
             this.scene.bringToTop('SettingsScene');
         });
 
+        // ----------- Exit Button -----------
+        const exitBtn = this.add.image(width / 2 - 130, height / 2 + 100, 'bttnExitB')
+            .setInteractive({ useHandCursor: true })
+            .setScale(1)
+            .setDepth(11);
+        
+        exitBtn.on('pointerover', () => {
+            exitBtn.setTexture('bttnExitHoverB');
+            exitBtn.setScale(1.05);
+        });
+        exitBtn.on('pointerout', () => {
+            exitBtn.setTexture('bttnExitB');
+            exitBtn.setScale(1);
+        });
+         exitBtn.on('pointerdown', () => {
+            this.music.play();
+            this.time.delayedCall(50, () => {
+                this.game.destroy(true);
+            });
+            
+        });
 
         // Resume also with esc
         this.input.keyboard.on('keydown-ESCAPE', () => {
