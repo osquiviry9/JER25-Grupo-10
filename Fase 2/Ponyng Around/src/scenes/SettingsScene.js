@@ -40,11 +40,11 @@ export default class SettingsScene extends Phaser.Scene {
         const { width, height } = this.scale;
 
         // Volume inicial (from 0 to 10)
-        this.volumeLevel = this.game.volumeLevel ?? 5;
+        this.volumeLevel = this.game.volumeLevel ?? 6;
         this.maxVolume = 10;
 
         // Music inicial
-        this.musicLevel = this.game.musicLevel ?? 5;
+        this.musicLevel = this.game.musicLevel ?? 2;
 
         this.cameras.main.setBackgroundColor('#000000ff');
 
@@ -157,7 +157,7 @@ export default class SettingsScene extends Phaser.Scene {
         // CHANGE CONTROLS
         // Player 1
         let controls = this.registry.get('controls');
-        const changeKeyTop = this.add.text(655 ,500, `Player 1 Jump Key: ${controls.jumpTop}`, {
+        const changeKeyTop = this.add.text(655, 500, `Player 1 Jump Key: ${controls.jumpTop}`, {
             fontSize: '40px',
             fontFamily: 'Arial Black',
             color: '#6ccf68ff',
@@ -165,8 +165,8 @@ export default class SettingsScene extends Phaser.Scene {
             strokeThickness: 6,
             align: 'center'
         })
-        .setScale(1.2)
-        .setInteractive({ useHandCursor: true });
+            .setScale(1.2)
+            .setInteractive({ useHandCursor: true });
 
         changeKeyTop.on('pointerover', () => {
             changeKeyTop.setScale(1.25);
@@ -180,9 +180,9 @@ export default class SettingsScene extends Phaser.Scene {
             changeKeyTop.setStroke('#3f723dff');
         });
 
-        changeKeyTop.on('pointerdown', ()=>{
+        changeKeyTop.on('pointerdown', () => {
             this.music.play();
-            if (this.waitingKey){
+            if (this.waitingKey) {
                 this.sound.play('clickSound');
                 return
             }
@@ -191,7 +191,7 @@ export default class SettingsScene extends Phaser.Scene {
         })
 
         // Player 2
-        const changeKeyBottom = this.add.text(655 ,600, `Player 1 Jump Key: ${controls.jumpBottom}`, {
+        const changeKeyBottom = this.add.text(655, 600, `Player 1 Jump Key: ${controls.jumpBottom}`, {
             fontSize: '40px',
             fontFamily: 'Arial Black',
             color: '#6ccf68ff',
@@ -199,8 +199,8 @@ export default class SettingsScene extends Phaser.Scene {
             strokeThickness: 6,
             align: 'center'
         })
-        .setScale(1.2)
-        .setInteractive({ useHandCursor: true });
+            .setScale(1.2)
+            .setInteractive({ useHandCursor: true });
 
         changeKeyBottom.on('pointerover', () => {
             changeKeyBottom.setScale(1.25);
@@ -214,9 +214,9 @@ export default class SettingsScene extends Phaser.Scene {
             changeKeyBottom.setStroke('#3f723dff');
         });
 
-        changeKeyBottom.on('pointerdown', ()=>{
+        changeKeyBottom.on('pointerdown', () => {
             this.music.play();
-            if (this.waitingKey){
+            if (this.waitingKey) {
                 this.sound.play('clickSound');
                 return
             }
@@ -260,6 +260,7 @@ export default class SettingsScene extends Phaser.Scene {
                 this.waitingKey = null;
             }
         });
+
         // Zoom
         const margin = 0.8;
         const zoomX = (width * margin) / width;

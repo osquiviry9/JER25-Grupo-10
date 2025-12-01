@@ -25,7 +25,7 @@ const CONFIG = {
     RED_OFFSET_FROM_CENTER: 20,
     GROUND_HEIGHT: 16,
 
-    SHOW_FINISH_AT: 0.70, // 70% del recorrido
+    SHOW_FINISH_AT: 0.70, // 70% of the race
 
     // Total distance to finish line
     TOTAL_DISTANCE_PX: 7500
