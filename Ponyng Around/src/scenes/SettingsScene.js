@@ -39,7 +39,7 @@ export default class SettingsScene extends Phaser.Scene {
 
         const { width, height } = this.scale;
 
-        // Volume inicial (from 0 to 10)
+        // Inicial volume (from 0 to 10)
         this.volumeLevel = this.game.volumeLevel ?? 6;
         this.maxVolume = 10;
 
@@ -143,7 +143,7 @@ export default class SettingsScene extends Phaser.Scene {
             0xbfe9bd    // light green -> inactive
         );
 
-        // MUSIC BAR (no hace nada d momento -> no hay musica)
+        // MUSIC BAR 
         this.musicBars = this.createBars(
             barXM,
             barY,
@@ -349,6 +349,4 @@ export default class SettingsScene extends Phaser.Scene {
 
 }
 
-//PARA CAMBIAR ACCEDER AL VOLUMEN EN CUALQUIER ESCENA USAD ESTA LINEA DE CÓDIGO
-// this.sound.volume = (this.game.volumeLevel ?? 5) / 10; Inicializa todo el sonido que se reproduzca en la escena a los valores en predeterminados de los ajustes.
-//Ponedlo junto con el código que useis para poner la música en cada escena, antes o después eso ya no sé no he probado :o
+

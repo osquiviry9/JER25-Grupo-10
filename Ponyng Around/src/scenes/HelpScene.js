@@ -55,7 +55,7 @@ export default class HelpScene extends Phaser.Scene {
                 button.setScale(btn.scale * 1.05);
             });
 
-            // Salir hover
+            // Exit hover
             button.on('pointerout', () => {
                 button.setTexture(btn.key);
                 button.setScale(btn.scale);
@@ -69,7 +69,7 @@ export default class HelpScene extends Phaser.Scene {
             
         });
 
-        // Ajustar el volumen global de Phaser Sound
+        // Adjust general volume from Phaser Sound
         this.sound.volume = this.game.volumeLevel / 10;
 
         // Zoom
