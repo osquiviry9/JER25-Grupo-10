@@ -63,7 +63,7 @@ export default class IntroAnimScene extends Phaser.Scene {
                 video3.play(false);
 
                 video3.once('complete', () => {
-                    
+                    this.cameras.main.fadeOut(600, 0, 0, 0);
                     this.scene.start('MainMenuScene');
                 });
             });

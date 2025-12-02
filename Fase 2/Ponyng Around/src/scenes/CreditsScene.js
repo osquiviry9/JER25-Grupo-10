@@ -85,10 +85,10 @@ export default class CreditsScene extends Phaser.Scene {
         this.creditTexts = credits.map((line, index) => {
             return this.add.text(width / 2, startY + index * 80, line, {
                 fontFamily: 'Arial',
-                fontSize: '40px',
-                color: '#a01f1fff',
+                fontSize: '50px',
+                color: '#cc4e4eff',
                 stroke: '#000000ff', 
-                strokeThickness: 2, 
+                strokeThickness: 6, 
                 align: 'center'
             }).setOrigin(0.5);
         });

@@ -508,7 +508,7 @@ Imagen del establo vacío
 
 * [**Haiire**](#3.4.4-haiire): Se comió una fruta, llamada *cuernocuerno fruit*, esto provocó que brotase un cuerno de su lóbulo frontal, pudiendo tirar rayos desde ahí y provocando una oleada de bulliyng por parte de los secuaces de Melgarga. Ahora busca venganza salvando a los ponis de sus malvadas garras.  
 * [**Domdimadon**](#3.4.5-domdimadon) : Se comió la fruta después de Haiire, pero a diferencia de ella, es la mascota de Melgarga y por lo tanto no quiere salvar a los ponis.  
-* [**Ache**](#3.4.2-ache): Es un poni hipnotizador en aprendizaje que quiere usar sus poderes para vencer a Melgarga.  
+* [**Ache**](#3.4.2-ache): Antes era un pegaso pero Melgarga le arrancó las alas. Ahora es un poni que está aprendiendo el poder de la hipnotización para hipnotizar a Melgarga y controlarlo para que se terminen las carreras mortales. 
 * [**Kamil**](#3.4.3-kamil-&-mayo)**:** Amante de lo ajeno, corre soltando fanzines por los ojos y patatas de sal y vinagre del ponydona, es acompañada por Mayo, una entidad que a través de la lobotomía que se hizo Kamil se coló en su cuerpo y la controla.  
 * [**Beersquiviry**](#3.4.1-beersquiviry)**:** Un día, después de una larga fiesta se despertó en la villa de los ponis, corre en cada carrera con la esperanza de salir de la villa y poder volver a su casa a tomarse una cerveza.
 

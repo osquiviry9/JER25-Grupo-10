@@ -9,7 +9,7 @@ export default class StoryScene extends Phaser.Scene {
             {
                 key: 'Ache',
                 path: 'assets/ponis/Ache/Ache_Complete.png',
-                story: "A learning hypnotist pony who will use her powers to defeat Melgarga."
+                story: "She was a pegasus until Melgarga tearded her wings apart. Now she seeks revenge by learning the power of hypnotization and using it on Melgarga to finish these deadly races."
             },
             {
                 key: 'Haiire',

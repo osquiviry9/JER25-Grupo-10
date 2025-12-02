@@ -42,7 +42,7 @@ export default class MainMenuScene extends Phaser.Scene {
     }
 
     create() {
-
+        
         //BACKGROUND MUSIC
         this.game.windSound.stop();
 
@@ -59,6 +59,7 @@ export default class MainMenuScene extends Phaser.Scene {
         const { width, height } = this.scale;
 
         this.cameras.main.setBackgroundColor('#000000');
+        this.cameras.main.fadeIn(1000, 0, 0, 0);
 
         const bg = this.add.image(width / 2, height / 2, 'menuBackground');
         bg.setOrigin(0.5);
@@ -69,7 +70,7 @@ export default class MainMenuScene extends Phaser.Scene {
 
         // Button list
         const buttons = [
-            { x: width * 0.5, y: height * 0.2, key: 'bttnPlay', hover: 'bttnPlayHover', action: () => {this.scene.start('CharacterSelectScene');this.game.bgchMusic.stop()}, scale: 0.9 },
+            { x: width * 0.5, y: height * 0.2, key: 'bttnPlay', hover: 'bttnPlayHover', action: () => {this.scene.start('CharacterSelectScene');this.game.bgchMusic.stop();this.cameras.main.fadeOut(600, 0, 0, 0);}, scale: 0.9 },
             { x: width * 0.84, y: height * 0.8, key: 'bttnSettings', hover: 'bttnSettingsHover', action: () => {this.scene.start('SettingsScene', { previousScene: this.scene.key });this.game.bgchMusic.stop()}, scale: 1 },
             { x: width * 0.24, y: height * 0.35, key: 'bttnCredits', hover: 'bttnCreditsHover', action: () => {this.scene.start('CreditsScene');this.game.bgchMusic.stop()}, scale: 0.7 },
             { x: width * 0.17, y: height * 0.8, key: 'bttnStory', hover: 'bttnStoryHover', action: () => {this.scene.start('StoryScene');this.game.bgchMusic.stop()}, scale: 0.75},

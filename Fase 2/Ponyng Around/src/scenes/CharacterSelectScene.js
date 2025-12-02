@@ -80,7 +80,7 @@ export default class CharacterSelectScene extends Phaser.Scene {
     create() {
 
         this.cameras.main.setBackgroundColor('#000000ff');
-        this.cameras.main.fadeIn(3000, 0, 0, 0);
+        this.cameras.main.fadeIn(1000, 0, 0, 0);
 
         //When the game restarts, no pony is selected
         this.selected = {
