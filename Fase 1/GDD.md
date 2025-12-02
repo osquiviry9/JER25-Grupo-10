@@ -20,7 +20,7 @@ Grado en Diseño y Desarrollo de Videojuegos 2025-2026
 
 * Henar San Román Santamaría
 
-# **Índice** {#índice}
+# **Índice**
 
 [Índice](#índice)
 [Introducción](#introduccion)
