@@ -8,6 +8,9 @@ export default class StableScene extends Phaser.Scene {
 
     preload() {
 
+        //Sound effect
+        this.load.audio('windSound', 'assets/sound/wind.mp3');
+
         // Background
         this.load.image('Stable', 'assets/Backgrounds/stable.png');
 
@@ -30,6 +33,11 @@ export default class StableScene extends Phaser.Scene {
 
         this.cameras.main.setBackgroundColor('#000000');
         this.cameras.main.fadeIn(2000, 0, 0, 0);
+
+        //Sound
+        this.game.windSound = this.sound.add('windSound', {
+        });
+        this.game.windSound.play();
 
         // Background room:
         const bg = this.add.image(width/2 , height /2, 'Stable')
@@ -61,6 +69,7 @@ export default class StableScene extends Phaser.Scene {
 
         video.once('complete', () => {
             this.time.delayedCall(500, () => {
+            this.game.windSound.stop();
             this.scene.start('FinalScene');
         });
         });

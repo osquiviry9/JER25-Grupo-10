@@ -7,6 +7,12 @@ export default class IntroAnimScene extends Phaser.Scene {
 
     preload() {
 
+        //Wind Sound effect
+        this.load.audio('windSound', 'assets/sound/wind.mp3');
+
+        //Creaking wood sound
+        this.load.audio('creakSound', 'assets/sound/creaking.mp3');
+
         // Intro video
         this.load.video('introVideo', 'assets/Animations/Intro.mp4', 'loadeddata', false, true);
 
@@ -19,7 +25,17 @@ export default class IntroAnimScene extends Phaser.Scene {
 
 
     create() {
+
         const { width, height } = this.scale;
+
+        this.game.windSound = this.sound.add('windSound', {
+        });
+        this.game.windSound.play();
+
+        this.game.creakSound = this.sound.add('creakSound', {
+        });
+        this.game.creakSound.play();
+
 
         this.cameras.main.setBackgroundColor('#000000');
 
@@ -32,6 +48,7 @@ export default class IntroAnimScene extends Phaser.Scene {
 
         // Cambia de escena
         video1.once('complete', () => {
+            this.game.creakSound.stop();
             const video2 = this.add.video(width / 2, height / 2, 'newsVideo');
             video2.setOrigin(0.5);
             video2.setScale(0.8);
@@ -46,6 +63,7 @@ export default class IntroAnimScene extends Phaser.Scene {
                 video3.play(false);
 
                 video3.once('complete', () => {
+                    
                     this.scene.start('MainMenuScene');
                 });
             });

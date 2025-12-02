@@ -6,10 +6,19 @@ export default class IntroScene extends Phaser.Scene {
     }
 
     preload() {
+
+        //Pony Sound effect
+        this.load.audio('pinkieSound', 'assets/sound/pinkie.mp3');
+
+
         this.load.image('logo', 'assets/logo.png');
     }
 
     create() {
+
+        this.game.pinkieSound = this.sound.add('pinkieSound', {
+        });
+        this.game.pinkieSound.play();
 
         const { width, height } = this.scale;
 

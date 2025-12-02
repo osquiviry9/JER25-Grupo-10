@@ -95,6 +95,7 @@ export default class PauseScene extends Phaser.Scene {
         menuBtn.on('pointerdown', () => {
             // Stops everything and goes back to the main menu
             this.music.play();
+            this.game.bgrsMusic.stop();
             this.scene.stop('PauseScene');
             this.scene.stop('RaceScene');
             this.scene.start('MainMenuScene');

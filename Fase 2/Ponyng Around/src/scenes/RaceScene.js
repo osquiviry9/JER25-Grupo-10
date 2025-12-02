@@ -57,6 +57,7 @@ export default class RaceScene extends Phaser.Scene {
 
         //Click sound
         this.load.audio('clickSound', 'assets/sound/click.mp3');
+        
 
         // CountDown
         this.load.audio('CountSound', 'assets/sound/RaceCountdown.mp3');
@@ -385,7 +386,7 @@ export default class RaceScene extends Phaser.Scene {
 
             const key = (keyOrObj && keyOrObj.key) ? keyOrObj.key : keyOrObj;
 
-            // Thge first frame is used as the initial texture
+            // The first frame is used as the initial texture
             const sprite = this.physics.add.sprite(x, redLineY, `${key}Run4`)
                 .setOrigin(0.5, 0.8);
 
@@ -511,23 +512,23 @@ export default class RaceScene extends Phaser.Scene {
         const centerY = this.scale.height / 2;
 
 
-        // Player 1 up
+        /* Player 1 up
         this.uiP1Label = this.add.text(centerX, this.laneYTop - 150, 'Progress:',
             {
                 fontFamily: 'Arial Black',
                 fontSize: '20px',
                 color: '#070707ff'
-            }).setOrigin(0.5)
+           }).setOrigin(0.5)
             .setDepth(5);
 
-        this.uiP1Pct = this.add.text(centerX, this.laneYTop - 120, '0%',
+         this.uiP1Pct = this.add.text(centerX, this.laneYTop - 120, '0%',
             {
                 fontFamily: 'Arial Black',
                 fontSize: '26px',
                 color: '#b36729ff'
             }).setOrigin(0.5)
             .setDepth(5);
-
+        
         // Player 2 down
         this.uiP2Label = this.add.text(centerX, this.laneYBottom - 150, 'Progress:',
             {
@@ -544,7 +545,8 @@ export default class RaceScene extends Phaser.Scene {
                 color: '#067fffff'
             }).setOrigin(0.5)
             .setDepth(5);
-
+        
+        */
 
         // Horizontal bar
         this.progressBar = this.add.rectangle(centerX, centerY, 800, 5, 0x4ca149)
@@ -579,8 +581,8 @@ export default class RaceScene extends Phaser.Scene {
     updateProgressUI() {
         const pctTop = Math.min(100, Math.floor((this.state.progress.top / CONFIG.TOTAL_DISTANCE_PX) * 100));
         const pctBot = Math.min(100, Math.floor((this.state.progress.bottom / CONFIG.TOTAL_DISTANCE_PX) * 100));
-        this.uiP1Pct.setText(`${pctTop}%`);
-        this.uiP2Pct.setText(`${pctBot}%`);
+        //this.uiP1Pct.setText(`${pctTop}%`);
+        //this.uiP2Pct.setText(`${pctBot}%`);
 
         // Move icons across the bar
         const startX = this.progressBar.x - this.progressBar.width / 2;
