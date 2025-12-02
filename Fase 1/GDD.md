@@ -23,7 +23,9 @@ Grado en Diseño y Desarrollo de Videojuegos 2025-2026
 # **Índice**
 
 [Índice](#índice)
+
 [Introducción](#introduccion)
+
 [Información General](#informacion-general)
 - [1.1 Nombre del juego](#11-nombre-del-juego)
 - [1.2 Género y dimensión](#12-genero-y-dimension)
