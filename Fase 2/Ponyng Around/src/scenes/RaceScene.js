@@ -510,6 +510,13 @@ export default class RaceScene extends Phaser.Scene {
         this.cameras.main.setZoom(zoom);
         this.cameras.main.centerOn(width / 2, height / 2);
 
+        
+        this.input.keyboard.on('keydown-ESCAPE', () => {
+            this.scene.pause();
+            this.scene.launch('PauseScene');
+        });
+
+
     }
 
     // ---------- UI Progress ----------
@@ -1194,11 +1201,6 @@ export default class RaceScene extends Phaser.Scene {
         clean(this.boostersBot);
         clean(this.lifeBoostersBot);
         clean(this.kawikiBot);
-
-        this.input.keyboard.on('keydown-ESCAPE', () => {
-            this.scene.stop();
-            this.scene.resume('RaceScene');
-        });
 
         const controls = this.registry.get('controls');
         this.keys = this.input.keyboard.addKeys({
