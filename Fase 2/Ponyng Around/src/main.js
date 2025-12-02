@@ -25,12 +25,8 @@ const config = {
             debug: false
         }
     },
-    ///scene: [MainMenuScene, SettingsScene, HelpScene,StoryScene, CreditsScene, CharacterSelectScene, RaceScene, PauseScene, FinalScene, FinalProductScene]
-    // scene: [PauseScene]S
-    //scene: [CharacterSelectScene, RaceScene, FinalScene]
-   //scene : [StoryScene, MainMenuScene]
-    //: [MainMenuScene, CharacterSelectScene, RaceScene, FinalScene, ]
-    scene: [  IntroScene, IntroAnimScene, MainMenuScene, CharacterSelectScene, HelpScene, CreditsScene, SettingsScene, StoryScene, PauseScene, RaceScene, StableScene, FinalScene, FinalProductScene] 
+    
+    scene: [ IntroScene, IntroAnimScene, MainMenuScene, CharacterSelectScene, HelpScene, CreditsScene, SettingsScene, StoryScene, PauseScene, RaceScene, StableScene, FinalScene, FinalProductScene] 
 };
 
 new Phaser.Game(config);

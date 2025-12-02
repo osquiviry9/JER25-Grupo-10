@@ -124,7 +124,7 @@ export default class PauseScene extends Phaser.Scene {
         });
 
         // ----------- Exit Button -----------
-        const exitBtn = this.add.image(width / 2 - 130, height / 2 + 100, 'bttnExitB')
+        const exitBtn = this.add.image(width / 2 - 130, height / 2 + 90, 'bttnExitB')
             .setInteractive({ useHandCursor: true })
             .setScale(1)
             .setDepth(11);

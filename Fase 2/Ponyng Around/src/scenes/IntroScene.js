@@ -16,9 +16,9 @@ export default class IntroScene extends Phaser.Scene {
 
     create() {
 
-        this.game.pinkieSound = this.sound.add('pinkieSound', {
+        this.pinkieSound = this.sound.add('pinkieSound', {
         });
-        this.game.pinkieSound.play();
+        this.pinkieSound.play();
 
         const { width, height } = this.scale;
 

@@ -57,7 +57,6 @@ export default class RaceScene extends Phaser.Scene {
 
         //Click sound
         this.load.audio('clickSound', 'assets/sound/click.mp3');
-        
 
         // CountDown
         this.load.audio('CountSound', 'assets/sound/RaceCountdown.mp3');
@@ -76,6 +75,10 @@ export default class RaceScene extends Phaser.Scene {
 
         // Crash sound
         this.load.audio('bonkSound', 'assets/sound/WoodBonk.mp3');
+
+        // Winner sound
+        this.load.audio('winSound', 'assets/sound/winSound.mp3');
+
         // ------------------------------------------
 
         // Background (blue)
@@ -177,7 +180,7 @@ export default class RaceScene extends Phaser.Scene {
     create() {
 
 
-
+        // SOUNDS
         this.music = this.sound.add('clickSound', {
         });
 
@@ -196,8 +199,10 @@ export default class RaceScene extends Phaser.Scene {
         this.countSound = this.sound.add('CountSound', {
         });
 
-        //BACKGROUND MUSIC
+        this.winSound = this.sound.add('winSound', {
+        });
 
+        //BACKGROUND MUSIC
         this.game.bgrsMusic = this.sound.add('runningSong', {
             loop: true,
             volume: (this.game.musicLevel ?? 5) / 10
@@ -1051,6 +1056,7 @@ export default class RaceScene extends Phaser.Scene {
         this.registry.set('looser', looserName);
 
         // Shows who won
+        this.winSound.play();
         const msg = `¡${winnerName} WON!`;
 
         const label = this.add.text(this.scale.width / 2, this.scale.height / 2, msg, {
