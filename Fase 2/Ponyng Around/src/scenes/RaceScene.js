@@ -497,6 +497,8 @@ export default class RaceScene extends Phaser.Scene {
 
         this.createProgressUI();
 
+        this.resetRaceState();
+
         this.startCountdown();
 
         // Camera adjustment to frame everything without cropping
@@ -679,6 +681,27 @@ export default class RaceScene extends Phaser.Scene {
         });
     }
 
+    resetRaceState() {
+        this.state.running = false;
+        this.state.finished = false;
+
+        this.state.progress.top = 0;
+        this.state.progress.bottom = 0;
+
+        this.state.lanes.top = {
+            speed: CONFIG.BASE_SPEED,
+            altered: false,
+            immune: false,
+            lives: 3
+        };
+
+        this.state.lanes.bottom = {
+            speed: CONFIG.BASE_SPEED,
+            altered: false,
+            immune: false,
+            lives: 3
+        };
+    }
 
     applyAlteration(laneKey, factor) {
         const lane = this.state.lanes[laneKey];
@@ -914,7 +937,6 @@ export default class RaceScene extends Phaser.Scene {
         if (this.state.finished) return;
         this.finishRace(laneKey);
     }
-
 
     spawnFinishLine() {
         const yTop = this.laneYTop + CONFIG.RED_OFFSET_FROM_CENTER + 250;
