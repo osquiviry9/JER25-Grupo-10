@@ -20,10 +20,12 @@ Grado en Diseño y Desarrollo de Videojuegos 2025-2026
 
 * Henar San Román Santamaría
 
-# **Índice** {#índice}
+# **Índice**
 
 [Índice](#índice)
+
 [Introducción](#introduccion)
+
 [Información General](#informacion-general)
 - [1.1 Nombre del juego](#11-nombre-del-juego)
 - [1.2 Género y dimensión](#12-genero-y-dimension)
@@ -471,9 +473,10 @@ Aparte de la música, el juego contará con diversos efectos de sonido que dará
 
 * Al realizar un poni la acción de saltar sonará un sonido similar a la onomatopeya **‘*boing*’**.  
 * Cuando un poni se dé contra una valla sonará un golpe.  
-* Al coger una manzana o una limalimón sonará un sonido de comer.  
+* Al coger una manzana, una limalimón, o un kiwi sonará un efecto de feedback.  
 * Al estar en los efectos de limalimón sonará un sonido de potenciación.  
 * Dándole a los botones para desplazarse por los menús sonará un sonido de **‘*clic*’**.
+* La cuenta atrás para la carrera es visual y sonora.
 
 ## **5\. Narrativa** 
 
