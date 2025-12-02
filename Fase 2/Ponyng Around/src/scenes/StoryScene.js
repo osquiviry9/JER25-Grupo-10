@@ -306,7 +306,7 @@ export default class StoryScene extends Phaser.Scene {
 
         this.storyTitle.setText(titleString);
 
-        // 1) If the width is greater than 500, the font size lows
+        // If the width is greater than 500, the font size lows
         if (this.storyTitle.width > 500) {
             this.storyTitle.setFontSize(30);
         }
@@ -314,7 +314,7 @@ export default class StoryScene extends Phaser.Scene {
             this.storyTitle.setFontSize(26);
         }
 
-        // 2) Is is either longer, we put another line
+        // If is either longer, we put another line
         if (this.storyTitle.width > 500) {
             const parts = pony.key.match(/.{1,8}/g);
             const namePart1 = parts[0];

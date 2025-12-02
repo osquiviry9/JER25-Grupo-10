@@ -103,6 +103,7 @@ export default class FinalProductScene extends Phaser.Scene {
                     })
                     .setOrigin(0.5).setDepth(5);
                     this.input.keyboard.once('keydown', () => {
+                        
                     this.scene.start('MainMenuScene');
                 })
             });

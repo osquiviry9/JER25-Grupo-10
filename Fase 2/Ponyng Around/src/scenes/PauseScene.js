@@ -40,7 +40,7 @@ export default class PauseScene extends Phaser.Scene {
 
         const { width, height } = this.scale;
 
-        // Traer esta escena al frente por si acaso se pilla con el depth
+        // Bring this scene to the front
         this.scene.bringToTop();
 
         // Frame

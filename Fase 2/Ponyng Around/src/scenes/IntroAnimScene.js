@@ -43,10 +43,10 @@ export default class IntroAnimScene extends Phaser.Scene {
         video1.setOrigin(0.5);
         video1.setScale(0.8);
 
-        // Reproduccion del video
+        // Video reproduction
         video1.play(false);
 
-        // Cambia de escena
+        // change scene
         video1.once('complete', () => {
             this.game.creakSound.stop();
             const video2 = this.add.video(width / 2, height / 2, 'newsVideo');
