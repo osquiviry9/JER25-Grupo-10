@@ -510,7 +510,7 @@ export default class RaceScene extends Phaser.Scene {
         this.cameras.main.setZoom(zoom);
         this.cameras.main.centerOn(width / 2, height / 2);
 
-        
+
         this.input.keyboard.on('keydown-ESCAPE', () => {
             this.scene.pause();
             this.scene.launch('PauseScene');
@@ -1065,9 +1065,12 @@ export default class RaceScene extends Phaser.Scene {
         if (this.playerTop && this.playerTop.anims) this.playerTop.anims.pause();
         if (this.playerBottom && this.playerBottom.anims) this.playerBottom.anims.pause();
 
-        // Stop finish lines
-        if (this.finishTop) this.finishTop.body.setVelocityX(0);
-        if (this.finishBottom) this.finishBottom.body.setVelocityX(0);
+        if (this.finishTop && this.finishTop.body)
+            this.finishTop.body.setVelocityX(0);
+
+        if (this.finishBottom && this.finishBottom.body)
+            this.finishBottom.body.setVelocityX(0);
+
 
         // Recover the name of the ponis
         const p1 = this.registry.get('player1Character') || {};
