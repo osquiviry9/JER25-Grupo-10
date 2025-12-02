@@ -51,10 +51,10 @@ export default class RaceScene extends Phaser.Scene {
         const g = this.make.graphics({ x: 0, y: 0, add: false });
 
         // --------------------- SOUNDS ---------------------
-        
-         //Background music
+
+        //Background music
         this.load.audio('runningSong', 'assets/sound/runningsong.mp3');
-        
+
         //Click sound
         this.load.audio('clickSound', 'assets/sound/click.mp3');
 
@@ -174,6 +174,8 @@ export default class RaceScene extends Phaser.Scene {
     }
 
     create() {
+
+
 
         this.music = this.sound.add('clickSound', {
         });
@@ -881,7 +883,7 @@ export default class RaceScene extends Phaser.Scene {
         // Scale depending on type
         if (key === "WoodFence") {
             obj.setScale(0.4);
-            
+
         } else {
             obj.setScale(0.3);
             obj.body.setSize(obj.width * 0.3, obj.height * 0.3); //fix hitbox
@@ -902,7 +904,7 @@ export default class RaceScene extends Phaser.Scene {
     }
 
     checkFinishLine(player, finishLine, laneKey) {
-        if (this.state.finished) return; 
+        if (this.state.finished) return;
         this.finishRace(laneKey);
     }
 
@@ -927,7 +929,7 @@ export default class RaceScene extends Phaser.Scene {
             this.finishRace('top');
 
         });
-        
+
         // BOTTOM
         this.finishBottom = this.physics.add.sprite(CONFIG.WIDTH + 50, yBot, 'FinishLine')
             .setOrigin(0.5, 1)
@@ -1133,8 +1135,12 @@ export default class RaceScene extends Phaser.Scene {
         this.kawikiBot.children.iterate(o => o && o.body && o.body.setVelocityX(vxBot));
 
         // Move finish line
-        if (this.finishTop) this.finishTop.body.setVelocityX(vxTop);
-        if (this.finishBottom) this.finishBottom.body.setVelocityX(vxBot);
+        if (this.finishTop && this.finishTop.body)
+            this.finishTop.body.setVelocityX(vxTop);
+
+        if (this.finishBottom && this.finishBottom.body)
+            this.finishBottom.body.setVelocityX(vxBot);
+
 
         // PROGRESS
         this.state.progress.top += topScroll;
