@@ -51,6 +51,10 @@ export default class RaceScene extends Phaser.Scene {
         const g = this.make.graphics({ x: 0, y: 0, add: false });
 
         // --------------------- SOUNDS ---------------------
+        
+         //Background music
+        this.load.audio('runningSong', 'assets/sound/runningsong.mp3');
+        
         //Click sound
         this.load.audio('clickSound', 'assets/sound/click.mp3');
 
@@ -188,6 +192,14 @@ export default class RaceScene extends Phaser.Scene {
 
         this.countSound = this.sound.add('CountSound', {
         });
+
+        //BACKGROUND MUSIC
+
+        this.game.bgrsMusic = this.sound.add('runningSong', {
+            loop: true,
+            volume: (this.game.musicLevel ?? 5) / 10
+        });
+        this.game.bgrsMusic.play();
 
         const { width, height } = this.scale;
 
@@ -1058,6 +1070,7 @@ export default class RaceScene extends Phaser.Scene {
 
         // START FINAL SCENE (after 3 secs): 
         this.time.delayedCall(3000, () => {
+            this.game.bgrsMusic.stop();
             this.scene.start('StableScene');
         });
 
