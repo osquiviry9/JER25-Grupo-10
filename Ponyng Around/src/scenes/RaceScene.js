@@ -57,7 +57,6 @@ export default class RaceScene extends Phaser.Scene {
 
         //Click sound
         this.load.audio('clickSound', 'assets/sound/click.mp3');
-        
 
         // CountDown
         this.load.audio('CountSound', 'assets/sound/RaceCountdown.mp3');
@@ -76,6 +75,10 @@ export default class RaceScene extends Phaser.Scene {
 
         // Crash sound
         this.load.audio('bonkSound', 'assets/sound/WoodBonk.mp3');
+
+        // Winner sound
+        this.load.audio('winSound', 'assets/sound/winSound.mp3');
+
         // ------------------------------------------
 
         // Background (blue)
@@ -177,7 +180,7 @@ export default class RaceScene extends Phaser.Scene {
     create() {
 
 
-
+        // SOUNDS
         this.music = this.sound.add('clickSound', {
         });
 
@@ -196,8 +199,10 @@ export default class RaceScene extends Phaser.Scene {
         this.countSound = this.sound.add('CountSound', {
         });
 
-        //BACKGROUND MUSIC
+        this.winSound = this.sound.add('winSound', {
+        });
 
+        //BACKGROUND MUSIC
         this.game.bgrsMusic = this.sound.add('runningSong', {
             loop: true,
             volume: (this.game.musicLevel ?? 5) / 10
@@ -492,6 +497,8 @@ export default class RaceScene extends Phaser.Scene {
 
         this.createProgressUI();
 
+        this.resetRaceState();
+
         this.startCountdown();
 
         // Camera adjustment to frame everything without cropping
@@ -502,6 +509,13 @@ export default class RaceScene extends Phaser.Scene {
 
         this.cameras.main.setZoom(zoom);
         this.cameras.main.centerOn(width / 2, height / 2);
+
+        
+        this.input.keyboard.on('keydown-ESCAPE', () => {
+            this.scene.pause();
+            this.scene.launch('PauseScene');
+        });
+
 
     }
 
@@ -674,6 +688,27 @@ export default class RaceScene extends Phaser.Scene {
         });
     }
 
+    resetRaceState() {
+        this.state.running = false;
+        this.state.finished = false;
+
+        this.state.progress.top = 0;
+        this.state.progress.bottom = 0;
+
+        this.state.lanes.top = {
+            speed: CONFIG.BASE_SPEED,
+            altered: false,
+            immune: false,
+            lives: 3
+        };
+
+        this.state.lanes.bottom = {
+            speed: CONFIG.BASE_SPEED,
+            altered: false,
+            immune: false,
+            lives: 3
+        };
+    }
 
     applyAlteration(laneKey, factor) {
         const lane = this.state.lanes[laneKey];
@@ -910,7 +945,6 @@ export default class RaceScene extends Phaser.Scene {
         this.finishRace(laneKey);
     }
 
-
     spawnFinishLine() {
         const yTop = this.laneYTop + CONFIG.RED_OFFSET_FROM_CENTER + 250;
         const yBot = this.laneYBottom + CONFIG.RED_OFFSET_FROM_CENTER + 250;
@@ -1051,6 +1085,7 @@ export default class RaceScene extends Phaser.Scene {
         this.registry.set('looser', looserName);
 
         // Shows who won
+        this.winSound.play();
         const msg = `¡${winnerName} WON!`;
 
         const label = this.add.text(this.scale.width / 2, this.scale.height / 2, msg, {
@@ -1166,11 +1201,6 @@ export default class RaceScene extends Phaser.Scene {
         clean(this.boostersBot);
         clean(this.lifeBoostersBot);
         clean(this.kawikiBot);
-
-        this.input.keyboard.on('keydown-ESCAPE', () => {
-            this.scene.stop();
-            this.scene.resume('RaceScene');
-        });
 
         const controls = this.registry.get('controls');
         this.keys = this.input.keyboard.addKeys({
