@@ -10,6 +10,9 @@ export default class CreditsScene extends Phaser.Scene {
         // Click sound
         this.load.audio('clickSound', 'assets/sound/click.mp3');
 
+        // Music
+        this.load.audio('creditMusic', 'assets/sound/CreditsSong.mp3');
+
         // Background
         this.load.image('creditsBg', 'assets/Backgrounds/CreditsBg.JPG');
 
@@ -29,12 +32,16 @@ export default class CreditsScene extends Phaser.Scene {
         this.music = this.sound.add('clickSound', {
         });
 
+        this.musicCredit = this.sound.add('creditMusic', {
+            loop: true
+        });
+
         const { width, height } = this.scale;
 
         this.cameras.main.setBackgroundColor('#000000ff');
 
-        this.cameras.main.fadeIn(5000, 0, 0, 0);
-
+        this.cameras.main.fadeIn(5000, 0, 0, 0, () => {
+        });
         // Background
         this.add.image(width / 2, height / 2, 'creditsBg');
 
@@ -67,6 +74,7 @@ export default class CreditsScene extends Phaser.Scene {
             " ",
             "No ponies were harmed in the making of this video game",
             " ",
+            "Well, almost",
             " :) "
 
         ];
@@ -91,6 +99,7 @@ export default class CreditsScene extends Phaser.Scene {
 
         this.time.delayedCall(3000, () => { // 3000 ms = 3 s
             this.scrollActive = true;
+            this.musicCredit.play();
         }, [], this);
 
         //Button list
@@ -117,6 +126,7 @@ export default class CreditsScene extends Phaser.Scene {
             // Click
             button.on('pointerdown', () => {
                 btn.action();
+                this.musicCredit.stop(); 
                 this.music.play();
             });
         });
@@ -129,15 +139,45 @@ export default class CreditsScene extends Phaser.Scene {
 
         this.cameras.main.setZoom(zoom);
         this.cameras.main.centerOn(width / 2, height / 2);
+
+        // Click to x2
+        this.baseSpeed = 50;
+        this.fastSpeed = 200;
+        this.currentSpeed = this.baseSpeed;
+
+        this.input.on('pointerdown', (pointer) => {
+            if (!pointer.wasTouch && pointer.leftButtonDown()) {
+
+                // Speed Up
+                this.currentSpeed = this.fastSpeed;
+
+                if (this.musicCredit) {
+                    this.musicCredit.setRate(1.8);
+                }
+            }
+        });
+
+        this.input.on('pointerup', () => {
+
+            // Return to normal speed
+            this.currentSpeed = this.baseSpeed;
+
+            if (this.musicCredit) {
+                this.musicCredit.setRate(1.0);
+            }
+        });
+
+
     }
 
     update(time, delta) {
         if (this.scrollActive) {
-            const speed = 50;
+            const speed = this.currentSpeed;
             this.allScrollableTexts.forEach(text => {
-                text.y -= speed * delta / 1000;
+                text.y -= speed * (delta / 1000);
             });
         }
     }
+
 
 }

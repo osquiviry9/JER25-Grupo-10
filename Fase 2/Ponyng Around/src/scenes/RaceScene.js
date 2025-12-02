@@ -54,11 +54,20 @@ export default class RaceScene extends Phaser.Scene {
         //Click sound
         this.load.audio('clickSound', 'assets/sound/click.mp3');
 
+        // CountDown
+        this.load.audio('CountSound', 'assets/sound/RaceCountdown.mp3');
+
         // Jumping sound
         this.load.audio('boingSound', 'assets/sound/jump.mp3');
 
         // Apple sound
         this.load.audio('appleSound', 'assets/sound/Bit.mp3');
+
+        // Lemon sound
+        this.load.audio('lemonSound', 'assets/sound/Lemon.mp3');
+
+        // Kiwi sound
+        this.load.audio('kiwiSound', 'assets/sound/Kiwi.mp3');
 
         // Crash sound
         this.load.audio('bonkSound', 'assets/sound/WoodBonk.mp3');
@@ -169,6 +178,15 @@ export default class RaceScene extends Phaser.Scene {
         });
 
         this.appleSound = this.sound.add('appleSound', {
+        });
+
+        this.lemonSound = this.sound.add('lemonSound', {
+        });
+
+        this.kiwiSound = this.sound.add('kiwiSound', {
+        });
+
+        this.countSound = this.sound.add('CountSound', {
         });
 
         const { width, height } = this.scale;
@@ -569,6 +587,8 @@ export default class RaceScene extends Phaser.Scene {
         const steps = ['3', '2', '1', '¡GO!'];
         let i = 0;
 
+        this.countSound.play();
+
         const label = this.add.text(this.scale.width / 2, this.scale.height / 2, '', {
             fontFamily: 'Arial Black',
             fontSize: '96px',
@@ -729,7 +749,9 @@ export default class RaceScene extends Phaser.Scene {
 
     // Limelemon
     getLifeBooster(laneKey, booster) {
-        this.appleSound.play();
+
+        this.lemonSound.play();
+
         const player = (laneKey === 'top') ? this.playerTop : this.playerBottom;
         const lane = this.state.lanes[laneKey];
 
@@ -771,7 +793,7 @@ export default class RaceScene extends Phaser.Scene {
         let posX = WIDTH / 2;
         let posY;
 
-        this.appleSound.play();
+        this.kiwiSound.play();
         const player = (laneKey === 'top') ? this.playerTop : this.playerBottom;
         const lane = this.state.lanes[laneKey];
 

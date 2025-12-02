@@ -191,7 +191,7 @@ export default class SettingsScene extends Phaser.Scene {
         })
 
         // Player 2
-        const changeKeyBottom = this.add.text(655, 600, `Player 1 Jump Key: ${controls.jumpBottom}`, {
+        const changeKeyBottom = this.add.text(655, 600, `Player 2 Jump Key: ${controls.jumpBottom}`, {
             fontSize: '40px',
             fontFamily: 'Arial Black',
             color: '#6ccf68ff',
