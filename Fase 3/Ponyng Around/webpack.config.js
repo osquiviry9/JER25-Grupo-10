@@ -1,45 +1,51 @@
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
+import path from 'path';
+import { fileURLToPath } from 'url';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import CopyWebpackPlugin from 'copy-webpack-plugin';
 
-module.exports = {
-  entry: './src/main.js',
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default {
+  entry: './src/client/main.js',
+
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist'),
-    clean: true,
-    publicPath: ''
+    clean: true
   },
+
   mode: 'development',
   devtool: 'inline-source-map',
-  devServer: {
-    static: [
-      {
-        directory: path.join(__dirname, 'dist')
-      },
-      {
-        directory: path.join(__dirname, 'src/assets'),
-        publicPath: '/assets'
-      }
-    ],
-    hot: true,
-    port: 8080
-  },
+
   module: {
     rules: [
       {
-        test: /\.(png|jpe?g|gif)$/i,
-        type: 'asset/resource',
-        generator: {
-          filename: 'assets/[name][ext]'
+        test: /\.m?js$/,
+        resolve: {
+          fullySpecified: false
         }
       }
     ]
   },
+
+  // ❌ ELIMINADO → CAUSABA "Phaser is not defined"
+  // externals: {
+  //   phaser: 'Phaser'
+  // },
+
+  devServer: {
+    static: './dist',
+    hot: true,
+    port: 8080
+  },
+
   plugins: [
     new HtmlWebpackPlugin({
-            template: './public/index.html'
+      template: './public/index.html',
+      inject: true     // ⬅️ Esto AUTOINYECTA bundle.js en el dist/index.html
     }),
+
     new CopyWebpackPlugin({
       patterns: [
         {
@@ -50,7 +56,11 @@ module.exports = {
       ]
     })
   ],
+
   resolve: {
-    extensions: ['.js']
+    extensions: ['.js'],
+    alias: {
+      '@client': path.resolve(__dirname, 'src/client'),
+    }
   }
 };
