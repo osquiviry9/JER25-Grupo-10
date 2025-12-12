@@ -104,7 +104,7 @@ wss.on('connection', (ws) => {
     try {
       msg = JSON.parse(data.toString());
     } catch (err) {
-      console.error('❌ Mensaje inválido (no es JSON):', data.toString());
+      console.error('- Mensaje inválido (no es JSON):', data.toString());
       return;
     }
 
@@ -118,7 +118,7 @@ wss.on('connection', (ws) => {
           // Nadie esperando → este se queda en la cola
           waitingPlayer = ws;
           ws.role = 'player1';
-          console.log('👤 Cliente se pone a la cola (player1 en espera)');
+          console.log('- Cliente se pone a la cola (player1 en espera)');
 
           wsSend(ws, {
             type: 'queueStatus',
@@ -138,7 +138,7 @@ wss.on('connection', (ws) => {
           player2.roomId = roomId;
           player2.role = 'player2';
 
-          console.log(`🎮 Sala creada: ${roomId} (player1 + player2)`);
+          console.log(`- Sala creada: ${roomId} (player1 + player2)`);
 
           // Avisamos a ambos de que hay partida
           wsSend(player1, {
@@ -164,7 +164,7 @@ wss.on('connection', (ws) => {
       case 'leaveQueue': {
         if (waitingPlayer === ws) {
           waitingPlayer = null;
-          console.log('🚪 Cliente salió de la cola de espera');
+          console.log('- Cliente salió de la cola de espera');
         }
         break;
       }
@@ -219,7 +219,7 @@ wss.on('connection', (ws) => {
       }
 
       default:
-        console.warn('⚠️ Tipo de mensaje WS no reconocido:', type);
+        console.warn('- Tipo de mensaje WS no reconocido:', type);
     }
   });
 
@@ -263,8 +263,8 @@ app.use((err, req, res, next) => {
 
 server.listen(PORT, () => {
   console.log('========================================');
-  console.log(`  🌈 Ponyng Around server levantado en http://localhost:${PORT}`);
-  console.log(`  🎮 Juego: http://localhost:${PORT}`);
+  console.log(`   Ponyng Around server levantado en http://localhost:${PORT}`);
+  console.log(`   Juego: http://localhost:${PORT}`);
   console.log(`  `);
   console.log(`  API Endpoints disponibles:`);
   console.log(`   - GET    /health`);

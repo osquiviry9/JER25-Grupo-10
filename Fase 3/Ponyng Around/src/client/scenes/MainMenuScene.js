@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { connectionManager } from '@client/services/ConnectionManager.js';
 
+
 export default class MainMenuScene extends Phaser.Scene {
     constructor() {
         super('MainMenuScene');
@@ -65,7 +66,7 @@ export default class MainMenuScene extends Phaser.Scene {
                 shadow: { offsetX: 2, offsetY: 2, blur: 4, fill: true }
             }
         )
-            .setOrigin(1, 0)     
+            .setOrigin(1, 0)
             .setDepth(10);
 
         // Listen for connection updates
@@ -78,7 +79,9 @@ export default class MainMenuScene extends Phaser.Scene {
             { x: width * 0.84, y: height * 0.8, key: 'bttnSettings', hover: 'bttnSettingsHover', action: () => { this.scene.start('SettingsScene', { previousScene: this.scene.key }); this.game.bgchMusic.stop() }, scale: 1 },
             { x: width * 0.24, y: height * 0.35, key: 'bttnCredits', hover: 'bttnCreditsHover', action: () => { this.scene.start('CreditsScene'); this.game.bgchMusic.stop() }, scale: 0.7 },
             { x: width * 0.17, y: height * 0.8, key: 'bttnStory', hover: 'bttnStoryHover', action: () => { this.scene.start('StoryScene'); this.game.bgchMusic.stop() }, scale: 0.75 },
-            { x: width * 0.85, y: height * 0.18, key: 'bttnExit', hover: 'bttnExitHover', action: () => { this.time.delayedCall(50, () => { this.game.destroy(true); }); this.game.bgchMusic.stop() }, scale: 0.75 },
+            { x: width * 0.85, y: height * 0.35, key: 'bttnExit', hover: 'bttnExitHover', action: () => { this.time.delayedCall(50, () => { this.game.destroy(true); }); this.game.bgchMusic.stop() }, scale: 0.75 }, 
+            { x: width * 0.72, y: height * 0.35,key: 'bttnPlay',hover: 'bttnPlayHover',action: () => {this.startOnlineLobby();},scale: 0.75}
+
         ];
 
         buttons.forEach(btn => {
@@ -121,5 +124,23 @@ export default class MainMenuScene extends Phaser.Scene {
                 slowBottom: 'NUMPAD_TWO'
             });
         }
+
+        
     }
+
+    startOnlineLobby() {
+   //Websocket for online playing
+    const ws = new WebSocket(`ws://${window.location.host}`);
+
+    ws.onopen = () => {
+        
+        this.game.bgchMusic.stop();
+        this.scene.start('LobbyScene', { ws });
+    };
+
+    ws.onerror = () => {
+        console.error('WebSocket connection failed');
+    };
+}
+
 }
