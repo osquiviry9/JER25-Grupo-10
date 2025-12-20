@@ -28,6 +28,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Necesario para leer JSON en body
+
 app.use(express.json());
 
 // ==================== SERVICIOS ====================
@@ -50,6 +51,8 @@ app.get('/health', (req, res) => {
 });
 
 // API REST
+console.log(userController);
+
 app.use('/api/users', createUserRoutes(userController));
 app.use('/api/messages', createMessageRoutes(messageController));
 app.use('/api/connected', createConnectionRoutes(connectionController));
@@ -92,7 +95,7 @@ function wsSend(ws, obj) {
 
 // Cuando un cliente WebSocket se conecta
 wss.on('connection', (ws) => {
-  console.log('🔌 Nuevo cliente WebSocket conectado');
+  console.log('Nuevo cliente WebSocket conectado');
 
   // Metadatos de la conexión
   ws.roomId = null;

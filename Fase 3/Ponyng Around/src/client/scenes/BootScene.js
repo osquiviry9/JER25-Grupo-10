@@ -559,39 +559,64 @@ export default class BootScene extends Phaser.Scene {
 
     create() {
 
-        // Fade towards the intro scene
-        this.cameras.main.fadeOut(800, 0, 0, 0);
-        this.cameras.main.once('camerafadeoutcomplete', () => {
-            this.scene.start('IntroScene');
-        });
+        // =====================
+        // USER IDENTIFICATION 
+        // =====================
 
-        // === GLOBAL CONNECTION WATCHER ===
-        connectionManager.addListener((data) => {
+        let userId = localStorage.getItem('userId');
+        let nickname = localStorage.getItem('nickname');
 
-            // If connection drops
-            if (!data.connected) {
+        const goNext = () => {
+            this.cameras.main.fadeOut(800, 0, 0, 0);
+            this.cameras.main.once('camerafadeoutcomplete', () => {
+                this.scene.start('IntroScene');
+            });
+        };
 
-                // Avoid relaunching multiple times
-                if (this.scene.isActive('ConnectionLostScene')) return;
+        if (!userId || !nickname) {
 
-                // Stop global audio safely
-                if (this.game?.bgchMusic) this.game.bgchMusic.stop();
-                if (this.game?.windSound) this.game.windSound.stop();
+            nickname = prompt('Choose your nickname');
 
-                // Launch overlay without stopping current scene
-                this.scene.launch('ConnectionLostScene');
-                this.scene.bringToTop('ConnectionLostScene');
+            if (!nickname || nickname.trim() === '') {
+                nickname = 'AnonPony';
             }
 
-            // If reconnection succeeds
-            else {
+            fetch('/users', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nickname })
+            })
+                .then(res => res.json())
+                .then(user => {
+                    localStorage.setItem('userId', user.id);
+                    localStorage.setItem('nickname', user.nickname);
+                    goNext();
+                })
+                .catch(() => {
+                    localStorage.setItem('userId', 'offline');
+                    localStorage.setItem('nickname', nickname);
+                    goNext();
+                });
 
-                // Close overlay if active
+        } else {
+            goNext();
+        }
+
+        // =====================
+        // CONNECTION WATCHER
+        // =====================
+
+        connectionManager.addListener((data) => {
+            if (!data.connected) {
+                if (!this.scene.isActive('ConnectionLostScene')) {
+                    this.scene.launch('ConnectionLostScene');
+                    this.scene.bringToTop('ConnectionLostScene');
+                }
+            } else {
                 if (this.scene.isActive('ConnectionLostScene')) {
                     this.scene.stop('ConnectionLostScene');
                 }
             }
         });
     }
-
 }
