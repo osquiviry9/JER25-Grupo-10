@@ -563,43 +563,15 @@ export default class BootScene extends Phaser.Scene {
         // USER IDENTIFICATION 
         // =====================
 
-        let userId = localStorage.getItem('userId');
-        let nickname = localStorage.getItem('nickname');
+        const userId = localStorage.getItem('userId');
+        const nickname = localStorage.getItem('nickname');
 
-        const goNext = () => {
-            this.cameras.main.fadeOut(800, 0, 0, 0);
-            this.cameras.main.once('camerafadeoutcomplete', () => {
-                this.scene.start('IntroScene');
-            });
-        };
-
-        if (!userId || !nickname) {
-
-            nickname = prompt('Choose your nickname');
-
-            if (!nickname || nickname.trim() === '') {
-                nickname = 'AnonPony';
-            }
-
-            fetch('/users', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ nickname })
-            })
-                .then(res => res.json())
-                .then(user => {
-                    localStorage.setItem('userId', user.id);
-                    localStorage.setItem('nickname', user.nickname);
-                    goNext();
-                })
-                .catch(() => {
-                    localStorage.setItem('userId', 'offline');
-                    localStorage.setItem('nickname', nickname);
-                    goNext();
-                });
-
+        // If user already exists, go next
+        if (userId && nickname) {
+            this.goNext();
         } else {
-            goNext();
+            // Show new UI instead of prompt
+            this.createLoginUI();
         }
 
         // =====================
@@ -617,6 +589,124 @@ export default class BootScene extends Phaser.Scene {
                     this.scene.stop('ConnectionLostScene');
                 }
             }
+        });
+    }
+
+    goNext() {
+        this.cameras.main.fadeOut(800, 0, 0, 0);
+        this.cameras.main.once('camerafadeoutcomplete', () => {
+            this.scene.start('IntroScene');
+        });
+    }
+
+    createLoginUI() {
+        const { width, height } = this.scale;
+
+        // Dark Overlay
+        this.add.rectangle(width / 2, height / 2, width, height, 0x000000, 0.85).setInteractive();
+
+        // Frame used in other scenes
+        this.add.image(width / 2, height / 2, 'Frame').setScale(0.8);
+
+        // Title
+        this.add.text(width / 2, height / 2 - 120, 'Enter your Nickname:', {
+            fontFamily: 'Arial Black',
+            fontSize: '42px',
+            color: '#ff69b4',
+            stroke: '#ffffff',
+            strokeThickness: 6
+        }).setOrigin(0.5);
+
+        // Input Box Graphic
+        this.add.rectangle(width / 2, height / 2, 400, 60, 0xffffff).setOrigin(0.5);
+        
+        // The text object that will change
+        let inputText = '';
+        const nameText = this.add.text(width / 2, height / 2, '_', {
+            fontFamily: 'Arial',
+            fontSize: '36px',
+            color: '#000000'
+        }).setOrigin(0.5);
+
+        // Blinking cursor effect
+        this.time.addEvent({
+            delay: 500,
+            loop: true,
+            callback: () => {
+                if (nameText.text.endsWith('_')) {
+                    nameText.text = nameText.text.slice(0, -1);
+                } else {
+                    nameText.text += '_';
+                }
+            }
+        });
+
+        // Error text (hidden initially)
+        const errorText = this.add.text(width / 2, height / 2 + 50, '', {
+            fontFamily: 'Arial',
+            fontSize: '20px',
+            color: '#ff0000'
+        }).setOrigin(0.5);
+
+        // Instructions
+        this.add.text(width / 2, height / 2 + 150, 'Press ENTER to confirm', {
+            fontFamily: 'Arial',
+            fontSize: '24px',
+            color: '#aaaaaa'
+        }).setOrigin(0.5);
+
+        // --- KEYBOARD HANDLING ---
+        this.input.keyboard.on('keydown', (event) => {
+            
+            // Backspace
+            if (event.keyCode === 8 && inputText.length > 0) {
+                inputText = inputText.slice(0, -1);
+            } 
+            // Enter
+            else if (event.keyCode === 13) {
+                if (inputText.trim().length > 0) {
+                    this.registerUser(inputText.trim());
+                } else {
+                    errorText.setText("Name cannot be empty!");
+                }
+            }
+            // Valid characters (A-Z, 0-9) - Limit length to 12
+            else if (
+                (event.keyCode >= 48 && event.keyCode <= 90) || // Numbers & Letters
+                event.keyCode === 32 // Space
+            ) {
+                if (inputText.length < 12) {
+                    inputText += event.key;
+                    errorText.setText(""); // clear error
+                }
+            }
+
+            // Update display (remove cursor temporarily to update text clean)
+            nameText.setText(inputText + '_');
+        });
+    }
+
+    registerUser(nickname) {
+        if (!nickname || nickname.trim() === '') {
+            nickname = 'AnonPony';
+        }
+
+        fetch('/api/users', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nickname })
+        })
+        .then(res => res.json())
+        .then(user => {
+            localStorage.setItem('userId', user.id);
+            localStorage.setItem('nickname', user.nickname);
+            this.goNext();
+        })
+        .catch(() => {
+            // Fallback offline mode
+            localStorage.setItem('userId', 'offline');
+            localStorage.setItem('nickname', nickname);
+            this.goNext();
         });
     }
 }

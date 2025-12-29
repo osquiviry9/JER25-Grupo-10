@@ -1,6 +1,5 @@
 import Phaser from 'phaser';
-import { connectionManager } from '@client/services/ConnectionManager.js';
-
+import { connectionManager } from '@client/services/ConnectionManager.js'; // Asegúrate que la ruta sea correcta según tu proyecto
 
 export default class MainMenuScene extends Phaser.Scene {
     constructor() {
@@ -13,16 +12,17 @@ export default class MainMenuScene extends Phaser.Scene {
         const nickname = localStorage.getItem('nickname') ?? 'NoUserName';
         const userId = localStorage.getItem('userId');
 
-
-
         // BACKGROUND MUSIC
-        this.game.windSound.stop();
+        if (this.game.windSound) this.game.windSound.stop();
 
-        this.game.bgchMusic = this.sound.add('selectionSong', {
-            loop: true,
-            volume: (this.game.musicLevel ?? 5) / 10
-        });
-        this.game.bgchMusic.play();
+        // Evitar que la música se solape si ya está sonando
+        if (!this.game.bgchMusic || !this.game.bgchMusic.isPlaying) {
+            this.game.bgchMusic = this.sound.add('selectionSong', {
+                loop: true,
+                volume: (this.game.musicLevel ?? 5) / 10
+            });
+            this.game.bgchMusic.play();
+        }
 
         this.music = this.sound.add('clickSound', {});
 
@@ -41,9 +41,8 @@ export default class MainMenuScene extends Phaser.Scene {
             .setScale(0.8);
 
         // =====================
-        // USER INFO DISPLAY
+        // USER INFO DISPLAY (Requisito: Gestión de usuarios/Nickname)
         // =====================
-
 
         this.userInfoText = this.add.text(
             width / 2,
@@ -58,21 +57,20 @@ export default class MainMenuScene extends Phaser.Scene {
                 strokeThickness: 5
             }
         ).setOrigin(0.5).setDepth(10);
-
         
-        // ONLINE USERS COUNTER  FUCK THIS SHIT no puedo más poner bien lo de online
+        // =====================
+        // ONLINE USERS COUNTER (Requisito: Indicadores visuales de conexión)
+        // =====================
 
         const frame = this.add.image(width / 2, height / 2, 'Frame')
             .setDepth(3)
             .setScale(0.8);
-
+            
+        // Posicionamiento relativo al marco
         const frameWidth = frame.width * frame.scaleX;
         const frameHeight = frame.height * frame.scaleY;
-
-        // Supuesta posicion pero no funciona AAAAAA
         const paddingX = 40;
         const paddingY = 30;
-
         const onlineX = frame.x + frameWidth / 2 - paddingX;
         const onlineY = frame.y - frameHeight / 2 + paddingY;
 
@@ -90,22 +88,52 @@ export default class MainMenuScene extends Phaser.Scene {
                 shadow: { offsetX: 2, offsetY: 2, blur: 4, fill: true }
             }
         )
-            .setOrigin(1, 0)
-            .setDepth(10);
+        .setOrigin(1, 0)
+        .setDepth(10);
 
-        // Listen for connection updates
+        // Escuchar actualizaciones del ConnectionManager (Polling REST)
         connectionManager.addListener((data) => {
-            this.connectedText.setText("Online: " + data.count);
+            if (this.connectedText.active) {
+                this.connectedText.setText("Online: " + data.count);
+            }
         });
-        // BUTTONS
-        const buttons = [
-            { x: width * 0.5, y: height * 0.2, key: 'bttnPlay', hover: 'bttnPlayHover', action: () => { this.scene.start('CharacterSelectScene'); this.game.bgchMusic.stop(); this.cameras.main.fadeOut(600, 0, 0, 0); }, scale: 0.9 },
-            { x: width * 0.84, y: height * 0.8, key: 'bttnSettings', hover: 'bttnSettingsHover', action: () => { this.scene.start('SettingsScene', { previousScene: this.scene.key }); this.game.bgchMusic.stop() }, scale: 1 },
-            { x: width * 0.24, y: height * 0.35, key: 'bttnCredits', hover: 'bttnCreditsHover', action: () => { this.scene.start('CreditsScene'); this.game.bgchMusic.stop() }, scale: 0.7 },
-            { x: width * 0.17, y: height * 0.8, key: 'bttnStory', hover: 'bttnStoryHover', action: () => { this.scene.start('StoryScene'); this.game.bgchMusic.stop() }, scale: 0.75 },
-            { x: width * 0.85, y: height * 0.35, key: 'bttnExit', hover: 'bttnExitHover', action: () => { this.time.delayedCall(50, () => { this.game.destroy(true); }); this.game.bgchMusic.stop() }, scale: 0.75 },
-            { x: width * 0.72, y: height * 0.35, key: 'bttnPlay', hover: 'bttnPlayHover', action: () => { this.startOnlineLobby(); }, scale: 0.75 }
 
+        // =====================
+        // BUTTONS
+        // =====================
+        
+        // ACCIÓN DE JUGAR: Ahora va directo a selección de personaje (Fase 3 no requiere juego en red síncrono)
+        const playAction = () => {
+            this.cameras.main.fadeOut(600, 0, 0, 0);
+            this.cameras.main.once('camerafadeoutcomplete', () => {
+                 this.scene.start('CharacterSelectScene'); 
+                 // Nota: No paramos la música aquí para que siga en la selección
+            });
+        };
+
+        const buttons = [
+            // Botón central grande (PLAY)
+            { 
+                x: width * 0.5, 
+                y: height * 0.2, 
+                key: 'bttnPlay', 
+                hover: 'bttnPlayHover', 
+                action: playAction, 
+                scale: 0.9 
+            },
+            // Botón duplicado derecho (PLAY también, en vez de startOnlineLobby)
+            { 
+                x: width * 0.72, 
+                y: height * 0.35, 
+                key: 'bttnPlay', 
+                hover: 'bttnPlayHover', 
+                action: playAction, 
+                scale: 0.75 
+            },
+            { x: width * 0.84, y: height * 0.8, key: 'bttnSettings', hover: 'bttnSettingsHover', action: () => { this.scene.start('SettingsScene', { previousScene: this.scene.key }); }, scale: 1 },
+            { x: width * 0.24, y: height * 0.35, key: 'bttnCredits', hover: 'bttnCreditsHover', action: () => { this.scene.start('CreditsScene'); }, scale: 0.7 },
+            { x: width * 0.17, y: height * 0.8, key: 'bttnStory', hover: 'bttnStoryHover', action: () => { this.scene.start('StoryScene'); }, scale: 0.75 },
+            { x: width * 0.85, y: height * 0.35, key: 'bttnExit', hover: 'bttnExitHover', action: () => { this.time.delayedCall(50, () => { this.game.destroy(true); }); }, scale: 0.75 }
         ];
 
         buttons.forEach(btn => {
@@ -124,20 +152,19 @@ export default class MainMenuScene extends Phaser.Scene {
             });
 
             button.on('pointerdown', () => {
-                btn.action();
                 this.music.play();
+                btn.action();
             });
         });
 
-        // Defines starting volume
+        // Configuración de volumen inicial
         if (this.game.volumeLevel === undefined) {
             const savedVolume = localStorage.getItem('gameVolume');
             this.game.volumeLevel = savedVolume ? parseInt(savedVolume) : 5;
         }
-
         this.sound.volume = this.game.volumeLevel / 10;
 
-        // Default controls
+        // Controles por defecto
         if (!this.registry.get('controls')) {
             this.registry.set('controls', {
                 jumpTop: 'W',
@@ -149,16 +176,8 @@ export default class MainMenuScene extends Phaser.Scene {
             });
         }
 
+        // Cargar info del usuario (REST)
         this.updateUserInfo();
-
-    }
-
-    startOnlineLobby() {
-        const ws = new WebSocket(`ws://${window.location.host}`);
-        ws.onopen = () => {
-            this.game.bgchMusic.stop();
-            this.scene.start('LobbyScene', { ws });
-        };
     }
 
     updateUserInfo() {
@@ -167,14 +186,21 @@ export default class MainMenuScene extends Phaser.Scene {
 
         if (!userId || !this.userInfoText) return;
 
-        fetch(`/users/${userId}`)
-            .then(res => res.json())
+        // Llamada a API REST para obtener datos persistentes (Requisito Fase 3)
+        fetch(`/api/users/${userId}`)
+            .then(res => {
+                if (!res.ok) throw new Error("User not found");
+                return res.json();
+            })
             .then(user => {
+                // Obtenemos el pony favorito (calculado en el servidor)
                 const fav = user.favoritePony ?? '—';
                 this.userInfoText.setText(
                     `Player: ${nickname}\nFavorite pony: ${fav}`
                 );
             })
-            .catch(() => { });
+            .catch((err) => {
+                console.log("Error fetching user info:", err);
+            });
     }
 }
