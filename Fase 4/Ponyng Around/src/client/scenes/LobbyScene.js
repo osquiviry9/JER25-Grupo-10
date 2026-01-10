@@ -1,7 +1,5 @@
 import Phaser from 'phaser';
 
-//IMPORTANTE, ESTA ESCENA DEBE DE ENVIAR LOS DATOS A UNA NUEVA NO CREADA
-// PARA SELECCIONAR LOS PONIS EN UN SELECTOR ONLINE
 
 export default class LobbyScene extends Phaser.Scene {
     constructor() {
@@ -66,7 +64,7 @@ export default class LobbyScene extends Phaser.Scene {
 
         cancelBtn.on('pointerdown', () => {
             this.leaveLobby();
-            this.scene.start(''); //HERE!!!
+            this.scene.start('MainMenuScene'); 
         });
 
         this.joinQueue();
@@ -115,17 +113,15 @@ export default class LobbyScene extends Phaser.Scene {
 
     startMatch(payload) {
         // payload = { roomId, role }
-        
         try {
-            this.scene.start('RaceScene', {
+            this.scene.start('OnlineSelectScene', {
                 ws: this.ws,
                 roomId: payload.roomId,
-                role: payload.role,
-                online: true
+                role: payload.role
             });
-            console.log("Orden scene.start('RaceScene') enviada.");
+            console.log("Iniciando selección de personaje...");
         } catch (e) {
-            console.error("ERROR AL INICIAR RACESCENE:", e);
+            console.error("ERROR AL INICIAR SELECCIÓN:", e);
         }
     }
 

@@ -389,6 +389,8 @@ export default class RaceScene extends Phaser.Scene {
 
         this.startCountdown();
 
+        this.lastSyncTime = 0;
+
         // Camera adjustment to frame everything without cropping
         const margin = 0.8;
         const zoomX = (width * margin) / width;
@@ -404,23 +406,111 @@ export default class RaceScene extends Phaser.Scene {
             this.scene.launch('PauseScene');
         });
 
+        // ---ONLINE SYNC ---
         if (this.isOnline && this.ws) {
+            
             this.ws.onmessage = (event) => {
                 const msg = JSON.parse(event.data);
 
                 if (msg.type === 'raceEvent') {
                     this.handleRemoteEvent(msg.payload.event);
                 }
-
-                if (msg.type === 'opponentDisconnected') {
+                else if (msg.type === 'gameSync') {
+                    // MAP OF THE HOST 
+                    console.log("Mapa recibido del Host");
+                    this.syncedMapData = msg.payload.mapData;
+                }
+                else if (msg.type === 'playerUpdate') {
+                    this.handlePlayerSync(msg.payload);
+                }
+                else if (msg.type === 'opponentDisconnected') {
                     this.handleOpponentDisconnect();
                 }
             };
+
+            // If player 1, send the map
+            if (this.role === 'player1') {
+                const mapData = this.generateMapData();
+                this.syncedMapData = mapData; // Me lo guardo para mí
+                
+                console.log("Enviando datos de mapa al rival...");
+                this.ws.send(JSON.stringify({
+                    type: 'gameSync',
+                    payload: { roomId: this.roomId, mapData: mapData }
+                }));
+            }
+        } else {
+            // If its offline the map is not sended
+            this.syncedMapData = this.generateMapData();
         }
 
+        if (this.isOnline && this.state.running && !this.state.finished) {
+            if (time - this.lastSyncTime > 50) { // 500ms
+                this.lastSyncTime = time;
+                
+                const myPlayer = (this.myLane === 'top') ? this.playerTop : this.playerBottom;
+                const myProgress = this.state.progress[this.myLane];
+                const myLives = this.state.lanes[this.myLane].lives;
 
+                // Enviar estado al rival
+                this.ws.send(JSON.stringify({
+                    type: 'playerUpdate',
+                    payload: {
+                        roomId: this.roomId,
+                        state: {
+                            y: myPlayer.y,        
+                            progress: myProgress, 
+                            lives: myLives        
+                        }
+                    }
+                }));
+            }
+        }
+    }
+    // --- LAG FIX ---
+    handlePlayerSync(payload) {
+        // payload = { from: 'player1', state: { y, progress, lives } }
+        const { state } = payload;
+        
+        // Identify the other pony
+        const rivalLane = this.rivalLane; // 'top' or 'bottom'
+        const rivalPlayer = (rivalLane === 'top') ? this.playerTop : this.playerBottom;
+        
+        // If the difference its big (greater than 50px), force 
+        // If its small (less tan 50px), we let the pyshics correct the delay
+        if (Math.abs(rivalPlayer.y - state.y) > 50) {
+            this.tweens.add({
+                targets: rivalPlayer,
+                y: state.y,
+                duration: 100
+            });
+        }
 
+        //Correct camera
+        const currentRivalProgress = this.state.progress[rivalLane];
+        if (Math.abs(currentRivalProgress - state.progress) > 200) {
+            this.state.progress[rivalLane] = state.progress;
+        }
+        // Correct lives
+        if (this.state.lanes[rivalLane].lives !== state.lives) {
+            this.state.lanes[rivalLane].lives = state.lives;
+            this.updateLivesVisuals(rivalLane); // Necesitaremos crear este pequeño helper o actualizar a mano
+        }
+    }
 
+    updateLivesVisuals(laneKey) {
+        const lane = this.state.lanes[laneKey];
+        const lives = lane.lives;
+        
+        let l1, l2, l3;
+        if (laneKey === 'top') { l1 = this.live1Top; l2 = this.live2Top; l3 = this.live3Top; }
+        else { l1 = this.live1Bottom; l2 = this.live2Bottom; l3 = this.live3Bottom; }
+        
+        if (l1 && l2 && l3) {
+            l3.setTexture(lives >= 3 ? 'Lives' : 'LivesEmpty');
+            l2.setTexture(lives >= 2 ? 'Lives' : 'LivesEmpty');
+            l1.setTexture(lives >= 1 ? 'Lives' : 'LivesEmpty');
+        }
     }
 
     handleRemoteEvent(eventData) {
@@ -922,20 +1012,15 @@ export default class RaceScene extends Phaser.Scene {
 
     }
 
-    startSpawner() {
-
-        const createRandomSequence = () => {
-
-            // 4 fences and one booster 
+    // --- GENERATE MAP ---
+    generateMapData() {
+        const createSequence = () => {
             let seq = ["fence", "fence", "fence", "fence", "fence", "booster", "booster", "life", "kawiki", "kawiki"];
-
-            // Mix without restrictions
+            
+            // Shuffle (it is done by P1 and send to the P2)
             Phaser.Utils.Array.Shuffle(seq);
-
-            // Its makes sure the shuffle is differnt
             Phaser.Utils.Array.Shuffle(seq);
-
-            // Times between spawn and spawn
+            
             let t = 1500;
             return seq.map(type => {
                 const delay = t;
@@ -944,23 +1029,33 @@ export default class RaceScene extends Phaser.Scene {
             });
         };
 
-        // Sequence for each lane
-        this.spawnQueue = {
-            top: createRandomSequence(),
-            bottom: createRandomSequence()
+        return {
+            top: createSequence(),
+            bottom: createSequence()
         };
+    }
 
-        // -------- TOP lane --------
+    startSpawner() {
+        if (!this.syncedMapData) {
+            console.warn("Esperando datos del mapa...");
+            this.time.delayedCall(500, () => this.startSpawner());
+            return;
+        }
+
+        console.log("Iniciando Spawners con datos sincronizados");
+        this.spawnQueue = this.syncedMapData; //We use the data recieved
+
+        // -------- TOP LANE --------
         this.spawnQueue.top.forEach(spawn => {
             this.time.delayedCall(spawn.delay, () => {
-                //Block when we hit 90% of the lane
+                //Bloquea spawn si llegamos al 90%
                 if (this.state.running && !this.state.finished && !this.closeToFinish("top")) {
                     this.spawnFixed("top", spawn.type);
                 }
             });
         });
 
-        // -------- BOTTOM lane --------
+        // -------- BOTTOM LANE --------
         this.spawnQueue.bottom.forEach(spawn => {
             this.time.delayedCall(spawn.delay, () => {
                 if (this.state.running && !this.state.finished && !this.closeToFinish("bottom")) {
@@ -1085,38 +1180,39 @@ export default class RaceScene extends Phaser.Scene {
 
 
         if (this.isOnline) {
-            // --- MODO ONLINE: Solo controlo mi carril ---
+            // --- ONLINE MODE (WE ONY CONTROL OUR LANE) ---
 
-            // 1. Identificar mis teclas y mi jugador según mi carril (definido en init)
+            //Identiy my keys
             const myJumpKey = (this.myLane === 'top') ? this.keys.jumpTop : this.keys.jumpBottom;
             const myAccelKey = (this.myLane === 'top') ? this.keys.accelTop : this.keys.accelBottom;
             const mySlowKey = (this.myLane === 'top') ? this.keys.slowTop : this.keys.slowBottom;
 
             const myPlayer = (this.myLane === 'top') ? this.playerTop : this.playerBottom;
 
-            // 2. SALTO
+            // Jump
             if (Phaser.Input.Keyboard.JustDown(myJumpKey)) {
-                this.jump(myPlayer); // Salto local instantáneo
-                // Aviso al servidor
+                this.jump(myPlayer); 
+                // Notify the server
                 this.ws.send(JSON.stringify({
                     type: 'raceEvent',
                     payload: { roomId: this.roomId, event: 'jump' }
                 }));
             }
 
-            // 3. BOOSTS (Acelerar)
+            // Boosts
             if (Phaser.Input.Keyboard.JustDown(myAccelKey) && !this.state.lanes[this.myLane].altered) {
                 this.applyAlteration(this.myLane, CONFIG.ACCEL_FACTOR); // Local
-                // Aviso al servidor
+                // Notify the server
                 this.ws.send(JSON.stringify({
                     type: 'raceEvent',
                     payload: { roomId: this.roomId, event: 'accel' }
                 }));
             }
 
-            // 4. SLOW (Frenar - opcional si lo usas)
+            // Slow
             if (Phaser.Input.Keyboard.JustDown(mySlowKey) && !this.state.lanes[this.myLane].altered) {
                 this.applyAlteration(this.myLane, CONFIG.SLOW_FACTOR);
+                // Notify the server
                 this.ws.send(JSON.stringify({
                     type: 'raceEvent',
                     payload: { roomId: this.roomId, event: 'slow' }
@@ -1124,7 +1220,7 @@ export default class RaceScene extends Phaser.Scene {
             }
 
         } else {
-            // --- MODO LOCAL (EL CÓDIGO ORIGINAL QUE TENÍAS) ---
+            // --- LOCAL MODE ---
 
             // JUMP
             if (Phaser.Input.Keyboard.JustDown(this.keys.jumpTop)) this.jump(this.playerTop);
@@ -1141,11 +1237,8 @@ export default class RaceScene extends Phaser.Scene {
             if (Phaser.Input.Keyboard.JustDown(this.keys.slowBottom) && !this.state.lanes.bottom.altered)
                 this.applyAlteration('bottom', CONFIG.SLOW_FACTOR);
         }
-        // ==============================================================
-        //  FIN DEL CAMBIO
-        // ==============================================================
+        
 
-        // ==== ELEMENTS VELOCITY ====
         const vxTop = -(this.state.lanes.top.speed * 150); // do NOT touch this, ITS PERFECT!
         const vxBot = -(this.state.lanes.bottom.speed * 150);
 

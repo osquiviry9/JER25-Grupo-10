@@ -59,25 +59,20 @@ app.use('/api/connected', createConnectionRoutes(connectionController));
 
 // ==================== SERVIR EL JUEGO ====================
 
-// Carpeta dist generada por Webpack (bundle + assets)
 const distPath = path.join(__dirname, '..', '..', 'dist');
 app.use(express.static(distPath));
 
-// Ruta principal → index.html del juego
 app.get('/', (req, res) => {
   res.sendFile(path.join(distPath, 'index.html'));
 });
 
 // ==================== SERVIDOR HTTP + WEBSOCKETS ====================
 
-// Creamos el servidor HTTP a partir de la app de Express
 const server = http.createServer(app);
 
-// Creamos el servidor WebSocket sobre el mismo servidor HTTP
 const wss = new WebSocketServer({ server });
 
-// Estructuras para matchmaking muy simple (2 jugadores)
-let waitingPlayer = null; // socket que está esperando rival
+let waitingPlayer = null; 
 let nextRoomId = 1;
 
 function createRoomId() {
@@ -86,20 +81,17 @@ function createRoomId() {
   return id;
 }
 
-// Pequeño helper para mandar JSON por WebSocket
 function wsSend(ws, obj) {
   if (ws.readyState === ws.OPEN) {
     ws.send(JSON.stringify(obj));
   }
 }
 
-// Cuando un cliente WebSocket se conecta
 wss.on('connection', (ws) => {
   console.log('Nuevo cliente WebSocket conectado');
 
-  // Metadatos de la conexión
   ws.roomId = null;
-  ws.role = null; // 'player1' | 'player2'
+  ws.role = null; 
 
   ws.on('message', (data) => {
     let msg;
@@ -115,10 +107,8 @@ wss.on('connection', (ws) => {
     // console.log('📩 Mensaje WS recibido:', msg);
 
     switch (type) {
-      // Cliente quiere entrar en la cola de emparejamiento
       case 'joinQueue': {
         if (waitingPlayer == null) {
-          // Nadie esperando → este se queda en la cola
           waitingPlayer = ws;
           ws.role = 'player1';
           console.log('- Cliente se pone a la cola (player1 en espera)');
@@ -128,7 +118,6 @@ wss.on('connection', (ws) => {
             payload: { status: 'waiting' }
           });
         } else {
-          // Ya había alguien esperando → emparejamos
           const roomId = createRoomId();
           const player1 = waitingPlayer;
           const player2 = ws;
@@ -143,7 +132,6 @@ wss.on('connection', (ws) => {
 
           console.log(`- Sala creada: ${roomId} (player1 + player2)`);
 
-          // Avisamos a ambos de que hay partida
           wsSend(player1, {
             type: 'matchFound',
             payload: {
@@ -163,7 +151,6 @@ wss.on('connection', (ws) => {
         break;
       }
 
-      // Cliente abandona la cola (por ejemplo, se vuelve al menú)
       case 'leaveQueue': {
         if (waitingPlayer === ws) {
           waitingPlayer = null;
@@ -172,13 +159,10 @@ wss.on('connection', (ws) => {
         break;
       }
 
-      // Actualización del estado del jugador (posición, velocidad, etc.)
-      // Esto lo reenviamos al rival en la misma sala
       case 'playerUpdate': {
         const { roomId, state } = payload || {};
         if (!roomId || !state) return;
 
-        // Buscamos al rival en la misma sala
         wss.clients.forEach((client) => {
           if (
             client !== ws &&
@@ -197,12 +181,10 @@ wss.on('connection', (ws) => {
         break;
       }
 
-      // Evento genérico de la carrera (colisión, powerUp, fin de carrera, etc.)
       case 'raceEvent': {
         const { roomId, event } = payload || {};
         if (!roomId || !event) return;
 
-        // reenviamos al rival
         wss.clients.forEach((client) => {
           if (
             client !== ws &&
@@ -221,20 +203,69 @@ wss.on('connection', (ws) => {
         break;
       }
 
+      case 'characterSelect': {
+        const { roomId, charIndex, confirmed } = payload || {};
+        if (!roomId) return;
+
+        wss.clients.forEach((client) => {
+          if (client !== ws && client.readyState === client.OPEN && client.roomId === roomId) {
+            wsSend(client, {
+              type: 'characterSelectUpdate',
+              payload: {
+                from: ws.role, 
+                charIndex,
+                confirmed
+              }
+            });
+          }
+        });
+        break;
+      }
+
+      case 'startGame': {
+        const { roomId } = payload || {};
+        if (!roomId) return;
+
+        wss.clients.forEach((client) => {
+          if (client.readyState === client.OPEN && client.roomId === roomId) {
+            wsSend(client, {
+              type: 'startGameSignal',
+              payload: {}
+            });
+          }
+        });
+        break;
+      }
+
+      case 'gameSync': {
+        const { roomId, mapData } = payload || {};
+        if (!roomId) return;
+
+        wss.clients.forEach((client) => {
+          if (client !== ws && client.readyState === client.OPEN && client.roomId === roomId) {
+            wsSend(client, {
+              type: 'gameSync',
+              payload: { mapData }
+            });
+          }
+        });
+        break;
+      }
+
+
+
       default:
         console.warn('- Tipo de mensaje WS no reconocido:', type);
     }
   });
 
   ws.on('close', () => {
-    console.log('🔌 Cliente WebSocket desconectado');
+    console.log('Cliente WebSocket desconectado');
 
-    // Si estaba esperando en la cola, lo quitamos
     if (waitingPlayer === ws) {
       waitingPlayer = null;
     }
 
-    // Podríamos notificar al rival de que su oponente se ha desconectado:
     const { roomId } = ws;
     if (roomId) {
       wss.clients.forEach((client) => {
