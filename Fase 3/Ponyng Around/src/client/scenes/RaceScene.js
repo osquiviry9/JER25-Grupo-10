@@ -364,7 +364,8 @@ export default class RaceScene extends Phaser.Scene {
             slowBottom: 'NUMPAD_TWO'
         });
 
-        this.finishSpawned = false; // Finish line not spawned yet
+        this.finishSpawnedTop = false; // Finish line not spawned yet
+        this.finishSpawnedBottom = false; 
 
         this.createProgressUI();
 
@@ -476,10 +477,14 @@ export default class RaceScene extends Phaser.Scene {
         this.iconP1.x = startX + (endX - startX) * (pctTop / 100);
         this.iconP2.x = startX + (endX - startX) * (pctBot / 100);
 
-        // ---------- SPAWN DE LA META ----------
-        if (!this.finishSpawned && (pctTop >= 80 || pctBot >= 80)) {
-            this.finishSpawned = true;
-            this.spawnFinishLine();
+        // ---------- FINISH LINE SPAWN  ----------
+        if (!this.finishSpawnedTop && (pctTop >= 80 )) {
+            this.finishSpawnedTop = true;
+            this.spawnFinishLineTop();
+        }
+        if (!this.finishSpawnedBottom && (pctBot >= 80)) {
+            this.finishSpawnedBottom = true;
+            this.spawnFinishLineBottom();
         }
     }
 
@@ -816,10 +821,9 @@ export default class RaceScene extends Phaser.Scene {
         this.finishRace(laneKey);
     }
 
-    spawnFinishLine() {
+    spawnFinishLineTop() {
         const yTop = this.laneYTop + CONFIG.RED_OFFSET_FROM_CENTER + 250;
-        const yBot = this.laneYBottom + CONFIG.RED_OFFSET_FROM_CENTER + 250;
-
+       
         // TOP
         this.finishTop = this.physics.add.sprite(CONFIG.WIDTH + 50, yTop, 'FinishLine')
             .setOrigin(0.5, 1)
@@ -836,20 +840,21 @@ export default class RaceScene extends Phaser.Scene {
             this.finishRace('top');
 
         });
-
-        // BOTTOM
-        this.finishBottom = this.physics.add.sprite(CONFIG.WIDTH + 50, yBot, 'FinishLine')
+    }
+    spawnFinishLineBottom(){
+         const yBot = this.laneYBottom + CONFIG.RED_OFFSET_FROM_CENTER + 250;
+             // BOTTOM
+         this.finishBottom = this.physics.add.sprite(CONFIG.WIDTH + 50, yBot, 'FinishLine')
             .setOrigin(0.5, 1)
             .setDepth(4)
             .setScale(0.45)
             .setImmovable(true)
             .setVelocityX(-(this.state.lanes.bottom.speed * 150));
 
-        // Colision with BOTTOM player
-        this.physics.add.overlap(this.playerBottom, this.finishBottom, () => {
+         // Colision with BOTTOM player
+         this.physics.add.overlap(this.playerBottom, this.finishBottom, () => {
             this.finishRace('bottom');
         });
-
     }
 
     startSpawner() {
