@@ -130,9 +130,9 @@ export default class SettingsScene extends Phaser.Scene {
 
 
         // CHANGE CONTROLS
-        // Player 1
+        // Player 1 - Jump
         let controls = this.registry.get('controls');
-        const changeKeyTop = this.add.text(655, 500, `Player 1 Jump Key: ${controls.jumpTop}`, {
+        const changeKeyTop = this.add.text(250, 500, `Player 1 Jump Key: ${controls.jumpTop}`, {
             fontSize: '40px',
             fontFamily: 'Arial Black',
             color: '#6ccf68ff',
@@ -165,8 +165,42 @@ export default class SettingsScene extends Phaser.Scene {
             changeKeyTop.setText("Press a key...");
         })
 
-        // Player 2
-        const changeKeyBottom = this.add.text(655, 600, `Player 2 Jump Key: ${controls.jumpBottom}`, {
+        // Player 1 - Poop
+        const changePoopKeyTop = this.add.text(250, 600, `Player 1 Poop Key: ${controls.poopTop}`, {
+            fontSize: '40px',
+            fontFamily: 'Arial Black',
+            color: '#6ccf68ff',
+            stroke: '#3f723dff',
+            strokeThickness: 6,
+            align: 'center'
+        })
+            .setScale(1.2)
+            .setInteractive({ useHandCursor: true });
+
+        changePoopKeyTop.on('pointerover', () => {
+            changePoopKeyTop.setScale(1.25);
+            changePoopKeyTop.setColor('#61b45eff');
+            changePoopKeyTop.setStroke('#345e33ff')
+        });
+
+        changePoopKeyTop.on('pointerout', () => {
+            changePoopKeyTop.setScale(1.2);
+            changePoopKeyTop.setColor('#6ccf68ff');
+            changePoopKeyTop.setStroke('#3f723dff');
+        });
+
+        changePoopKeyTop.on('pointerdown', () => {
+            this.music.play();
+            if (this.waitingKey) {
+                this.sound.play('clickSound');
+                return
+            }
+            this.waitingKey = 'jumpTop';
+            changePoopKeyTop.setText("Press a key...");
+        })
+
+        // Player 2 - Move
+        const changeKeyBottom = this.add.text(1050, 500, `Player 2 Jump Key: ${controls.jumpBottom}`, {
             fontSize: '40px',
             fontFamily: 'Arial Black',
             color: '#6ccf68ff',
@@ -197,6 +231,40 @@ export default class SettingsScene extends Phaser.Scene {
             }
             this.waitingKey = 'jumpBottom';
             changeKeyBottom.setText("Press a key...");
+        })
+
+        // Player 2 - Poop
+        const changePoopKeyBottom = this.add.text(1050, 600, `Player 2 Poop Key: ${controls.poopBottom}`, {
+            fontSize: '40px',
+            fontFamily: 'Arial Black',
+            color: '#6ccf68ff',
+            stroke: '#3f723dff',
+            strokeThickness: 6,
+            align: 'center'
+        })
+            .setScale(1.2)
+            .setInteractive({ useHandCursor: true });
+
+        changePoopKeyBottom.on('pointerover', () => {
+            changePoopKeyBottom.setScale(1.25);
+            changePoopKeyBottom.setColor('#61b45eff');
+            changePoopKeyBottom.setStroke('#345e33ff')
+        });
+
+        changePoopKeyBottom.on('pointerout', () => {
+            changePoopKeyBottom.setScale(1.2);
+            changePoopKeyBottom.setColor('#6ccf68ff');
+            changePoopKeyBottom.setStroke('#3f723dff');
+        });
+
+        changePoopKeyBottom.on('pointerdown', () => {
+            this.music.play();
+            if (this.waitingKey) {
+                this.sound.play('clickSound');
+                return
+            }
+            this.waitingKey = 'jumpBottom';
+            changePoopKeyBottom.setText("Press a key...");
         })
 
         // Keyboard control

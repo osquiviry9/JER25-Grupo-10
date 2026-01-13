@@ -364,7 +364,7 @@ export default class RaceScene extends Phaser.Scene {
                 jumpTop: 'W',
                 jumpBottom: 'UP',
                 poopTop: 'D',
-                poopBottom: 'M'
+                poopBottom: 'RIGHT'
             });
         }
 

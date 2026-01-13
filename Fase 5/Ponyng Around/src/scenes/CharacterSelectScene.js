@@ -285,7 +285,7 @@ export default class CharacterSelectScene extends Phaser.Scene {
         const jumpKeyText = (player === 'p1') ? `Jump with  ${controls.jumpTop}` : `Jump with  ${controls.jumpBottom}`;
         const jumpKeyColor = (player === 'p1') ? '#ff69b4' : '#67b7ff';
 
-        this.add.text(centerX, centerY + 390, jumpKeyText, {
+        this.add.text(centerX, centerY + 370, jumpKeyText, {
             fontFamily: 'Arial Black',
             fontSize: '28px',
             color: jumpKeyColor,
@@ -300,6 +300,23 @@ export default class CharacterSelectScene extends Phaser.Scene {
             }
         }).setOrigin(0.5).setDepth(5);
 
+        const poopKeyText = (player === 'p1') ? `Poop with  ${controls.poopTop}` : `Poop with  ${controls.poopBottom}`;
+        const poopKeyColor = (player === 'p1') ? '#ff69b4' : '#67b7ff';
+
+        this.add.text(centerX, centerY + 410, poopKeyText, {
+            fontFamily: 'Arial Black',
+            fontSize: '28px',
+            color: jumpKeyColor,
+            stroke: '#000000',
+            strokeThickness: 5,
+            shadow: {
+                offsetX: 3,
+                offsetY: 3,
+                color: '#000000',
+                blur: 6,
+                fill: true
+            }
+        }).setOrigin(0.5).setDepth(5);
         // ----------- ARROWS  -----------
         const arrows = [
             { x: centerX - 337, y: centerY - 30, key: 'arrowIzq', hover: 'arrowIzqOn', scale: 0.43 },
