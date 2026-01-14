@@ -4,6 +4,8 @@ import { fileURLToPath } from 'url';
 import http from 'http';
 import { WebSocketServer } from 'ws';
 
+
+
 // Servicios (factory functions)
 import { createUserService } from './services/userService.js';
 import { createMessageService } from './services/messageService.js';
@@ -72,8 +74,9 @@ const server = http.createServer(app);
 
 const wss = new WebSocketServer({ server });
 
-let waitingPlayer = null; 
+let waitingPlayer = null;
 let nextRoomId = 1;
+const privateRooms = {}; // For the private rooms
 
 function createRoomId() {
   const id = `room_${nextRoomId}`;
@@ -91,7 +94,7 @@ wss.on('connection', (ws) => {
   console.log('Nuevo cliente WebSocket conectado');
 
   ws.roomId = null;
-  ws.role = null; 
+  ws.role = null;
 
   ws.on('message', (data) => {
     let msg;
@@ -212,7 +215,7 @@ wss.on('connection', (ws) => {
             wsSend(client, {
               type: 'characterSelectUpdate',
               payload: {
-                from: ws.role, 
+                from: ws.role,
                 charIndex,
                 confirmed
               }
@@ -251,6 +254,60 @@ wss.on('connection', (ws) => {
         });
         break;
       }
+
+      //CREATE EMPTY ROOM
+      case 'createPrivateRoom': {
+        const code = Math.random().toString(36).substring(2, 6).toUpperCase();
+
+        privateRooms[code] = { player1: ws };
+
+        ws.roomId = code;
+        ws.role = 'player1';
+
+        console.log(`- Sala Privada Creada: ${code}`);
+
+        wsSend(ws, {
+          type: 'privateRoomCreated',
+          payload: { roomId: code }
+        });
+        break;
+      }
+
+      //JOIN ROOM
+      case 'joinPrivateRoom': {
+        const { roomCode } = payload;
+        const room = privateRooms[roomCode];
+
+        if (room && room.player1) {
+          // Emparejar
+          const player1 = room.player1;
+          const player2 = ws;
+
+          // Clear waiting line
+          delete privateRooms[roomCode];
+
+          player2.roomId = roomCode;
+          player2.role = 'player2';
+
+          console.log(`- Jugador unido a sala privada: ${roomCode}`);
+
+          // Notify both
+          wsSend(player1, {
+            type: 'matchFound',
+            payload: { roomId: roomCode, role: 'player1' }
+          });
+
+          wsSend(player2, {
+            type: 'matchFound',
+            payload: { roomId: roomCode, role: 'player2' }
+          });
+
+        } else {
+          wsSend(ws, { type: 'joinError', payload: { message: 'Room not found' } });
+        }
+      }
+        break;
+
 
 
 
