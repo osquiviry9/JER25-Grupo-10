@@ -227,7 +227,6 @@ export default class OnlineSelectScene extends Phaser.Scene {
         this.registry.set('player1Character', this.ponies[p1Index]);
         this.registry.set('player2Character', this.ponies[p2Index]);
 
-        // ==========ESTO NO FUNCIONA CREO QUE EL ERROR ESTÁ AQUI ME VOY A MATAR AAAA===//
 
         // --- SAVING THE PONI ---
         const userId = localStorage.getItem('userId');

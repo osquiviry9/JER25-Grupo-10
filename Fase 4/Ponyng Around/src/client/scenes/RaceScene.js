@@ -1300,18 +1300,14 @@ export default class RaceScene extends Phaser.Scene {
             if (Phaser.Input.Keyboard.JustDown(this.keys.jumpTop)) this.jump(this.playerTop);
             if (Phaser.Input.Keyboard.JustDown(this.keys.jumpBottom)) this.jump(this.playerBottom);
 
-            // BOOSTS
+            // BOOSTS 
             if (Phaser.Input.Keyboard.JustDown(this.keys.accelTop) && !this.state.lanes.top.altered)
                 this.applyAlteration('top', CONFIG.ACCEL_FACTOR);
             if (Phaser.Input.Keyboard.JustDown(this.keys.accelBottom) && !this.state.lanes.bottom.altered)
                 this.applyAlteration('bottom', CONFIG.ACCEL_FACTOR);
 
-            if (Phaser.Input.Keyboard.JustDown(this.keys.slowTop) && !this.state.lanes.top.altered)
-                this.applyAlteration('top', CONFIG.SLOW_FACTOR);
-            if (Phaser.Input.Keyboard.JustDown(this.keys.slowBottom) && !this.state.lanes.bottom.altered)
-                this.applyAlteration('bottom', CONFIG.SLOW_FACTOR);
-
-           if (Phaser.Input.Keyboard.JustDown(this.keys.poopTop)) {
+            // AKAWIKI 
+            if (Phaser.Input.Keyboard.JustDown(this.keys.poopTop)) {
                 if (this.kawikiState.top.has) this.throwKawiki('top');
             }
             
@@ -1319,7 +1315,6 @@ export default class RaceScene extends Phaser.Scene {
                 if (this.kawikiState.bottom.has) this.throwKawiki('bottom');
             }
         }
-
 
         const vxTop = -(this.state.lanes.top.speed * 150); // do NOT touch this, ITS PERFECT!
         const vxBot = -(this.state.lanes.bottom.speed * 150);

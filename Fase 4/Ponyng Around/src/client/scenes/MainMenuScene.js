@@ -59,7 +59,7 @@ export default class MainMenuScene extends Phaser.Scene {
             }
         ).setOrigin(0.5).setDepth(10);
 
-        
+
         // ONLINE USERS COUNTER  FUCK THIS SHIT no puedo más poner bien lo de online
 
         const frame = this.add.image(width / 2, height / 2, 'Frame')
@@ -167,8 +167,8 @@ export default class MainMenuScene extends Phaser.Scene {
 
         if (!userId || !this.userInfoText) return;
 
-        fetch(`/users/${userId}`)
-            .then(res => res.json())
+        fetch(`/api/users/${userId}`)
+        .then(res => res.json())
             .then(user => {
                 const fav = user.favoritePony ?? '—';
                 this.userInfoText.setText(

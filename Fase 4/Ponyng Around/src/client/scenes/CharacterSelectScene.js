@@ -169,7 +169,7 @@ export default class CharacterSelectScene extends Phaser.Scene {
             const userId = localStorage.getItem('userId');
 
             if (userId && this.selectedPonies.p1) {
-                fetch(`/users/${userId}/pony`, {
+                fetch(`/api/users/${userId}/pony`, { 
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -177,7 +177,6 @@ export default class CharacterSelectScene extends Phaser.Scene {
                     })
                 });
             }
-
             
             this.cameras.main.fadeOut(600, 0, 0, 0);
             this.cameras.main.once('camerafadeoutcomplete', () => {
