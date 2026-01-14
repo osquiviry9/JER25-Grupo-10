@@ -129,111 +129,77 @@ export default class SettingsScene extends Phaser.Scene {
         );
 
 
-        // CHANGE CONTROLS
-        // Player 1
+        // ============== CHANGE CONTROLS ==============
         let controls = this.registry.get('controls');
-        const changeKeyTop = this.add.text(655, 500, `Player 1 Jump Key: ${controls.jumpTop}`, {
-            fontSize: '40px',
-            fontFamily: 'Arial Black',
-            color: '#6ccf68ff',
-            stroke: '#3f723dff',
-            strokeThickness: 6,
-            align: 'center'
-        })
-            .setScale(1.2)
+
+        const createControlText = (x, y, label, keyVal, waitingId) => {
+            const text = this.add.text(x, y, `${label}: ${keyVal}`, {
+                fontSize: '32px',
+                fontFamily: 'Arial Black',
+                color: '#6ccf68ff',
+                stroke: '#3f723dff',
+                strokeThickness: 6,
+                align: 'center'
+            })
+            .setOrigin(0.5)
             .setInteractive({ useHandCursor: true });
 
-        changeKeyTop.on('pointerover', () => {
-            changeKeyTop.setScale(1.25);
-            changeKeyTop.setColor('#61b45eff');
-            changeKeyTop.setStroke('#345e33ff')
-        });
+            text.on('pointerover', () => { text.setScale(1.1); text.setColor('#61b45eff'); });
+            text.on('pointerout', () => { text.setScale(1); text.setColor('#6ccf68ff'); });
+            
+            text.on('pointerdown', () => {
+                this.music.play();
+                if (this.waitingKey) {
+                    this.sound.play('clickSound');
+                    return;
+                }
+                this.waitingKey = waitingId;
+                text.setText("Press a key...");
+            });
+            return text;
+        };
 
-        changeKeyTop.on('pointerout', () => {
-            changeKeyTop.setScale(1.2);
-            changeKeyTop.setColor('#6ccf68ff');
-            changeKeyTop.setStroke('#3f723dff');
-        });
+        // Posiciones
+        const col1 = width * 0.35;
+        const col2 = width * 0.65;
+        const row1 = 550;
+        const row2 = 630; 
 
-        changeKeyTop.on('pointerdown', () => {
-            this.music.play();
-            if (this.waitingKey) {
-                this.sound.play('clickSound');
-                return
-            }
-            this.waitingKey = 'jumpTop';
-            changeKeyTop.setText("Press a key...");
-        })
+        // --- PLAYER 1 ---
+        const changeKeyTop = createControlText(col1, row1, "P1 Jump", controls.jumpTop, 'jumpTop');
+        const changePoopTop = createControlText(col1, row2, "P1 Action", controls.poopTop || 'NUMPAD_8', 'poopTop');
 
-        // Player 2
-        const changeKeyBottom = this.add.text(655, 600, `Player 2 Jump Key: ${controls.jumpBottom}`, {
-            fontSize: '40px',
-            fontFamily: 'Arial Black',
-            color: '#6ccf68ff',
-            stroke: '#3f723dff',
-            strokeThickness: 6,
-            align: 'center'
-        })
-            .setScale(1.2)
-            .setInteractive({ useHandCursor: true });
+        // --- PLAYER 2 ---
+        const changeKeyBottom = createControlText(col2, row1, "P2 Jump", controls.jumpBottom, 'jumpBottom');
+        const changePoopBottom = createControlText(col2, row2, "P2 Action", controls.poopBottom || 'NUMPAD_2', 'poopBottom');
 
-        changeKeyBottom.on('pointerover', () => {
-            changeKeyBottom.setScale(1.25);
-            changeKeyBottom.setColor('#61b45eff');
-            changeKeyBottom.setStroke('#345e33ff')
-        });
 
-        changeKeyBottom.on('pointerout', () => {
-            changeKeyBottom.setScale(1.2);
-            changeKeyBottom.setColor('#6ccf68ff');
-            changeKeyBottom.setStroke('#3f723dff');
-        });
-
-        changeKeyBottom.on('pointerdown', () => {
-            this.music.play();
-            if (this.waitingKey) {
-                this.sound.play('clickSound');
-                return
-            }
-            this.waitingKey = 'jumpBottom';
-            changeKeyBottom.setText("Press a key...");
-        })
-
-        // Keyboard control
+        // --- KEYBOARD LISTENER ---
         this.input.keyboard.on('keydown', event => {
             if (!this.waitingKey) return;
 
-            const controls = this.registry.get('controls');
+            const currentControls = this.registry.get('controls');
             const newKey = event.code.replace('Key', '').replace('Arrow', '').toUpperCase();
 
-            // Player 1
-            if (this.waitingKey === "jumpTop") {
-                if (newKey === controls.jumpBottom) {
-                    console.log("No puedes usar la misma tecla que el jugador 2.");
-                    return;
-                }
-
-                controls.jumpTop = newKey;
-                this.registry.set('controls', controls);
-
-                changeKeyTop.setText(`Player 1 Jump Key: ${newKey}`);
-                this.waitingKey = null;
-                return;
+            if (this.waitingKey === 'jumpTop') {
+                currentControls.jumpTop = newKey;
+                changeKeyTop.setText(`P1 Jump: ${newKey}`);
+            } 
+            else if (this.waitingKey === 'poopTop') {
+                currentControls.poopTop = newKey;
+                changePoopTop.setText(`P1 Action: ${newKey}`);
+            }
+            else if (this.waitingKey === 'jumpBottom') {
+                currentControls.jumpBottom = newKey;
+                changeKeyBottom.setText(`P2 Jump: ${newKey}`);
+            }
+            else if (this.waitingKey === 'poopBottom') {
+                currentControls.poopBottom = newKey;
+                changePoopBottom.setText(`P2 Action: ${newKey}`);
             }
 
-            // Player 2
-            if (this.waitingKey === "jumpBottom") {
-                if (newKey === controls.jumpTop) {
-                    console.log("No puedes usar la misma tecla que el jugador 1.");
-                    return;
-                }
-
-                controls.jumpBottom = newKey;
-                this.registry.set('controls', controls);
-
-                changeKeyBottom.setText(`Player 2 Jump Key: ${newKey}`);
-                this.waitingKey = null;
-            }
+            this.registry.set('controls', currentControls);
+            this.waitingKey = null;
         });
 
         // Zoom

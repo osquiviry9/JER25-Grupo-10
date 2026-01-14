@@ -370,21 +370,50 @@ export default class RaceScene extends Phaser.Scene {
             });
         }
 
-        const controls = this.registry.get('controls');
+        let controls = this.registry.get('controls');
+        if (!controls) {
+            controls = {
+                jumpTop: 'W',
+                jumpBottom: 'UP',
+                poopTop: 'NUMPAD_EIGHT',
+                poopBottom: 'NUMPAD_TWO'
+            };
+            this.registry.set('controls', controls);
+        }
 
+        if (!controls.poopTop) controls.poopTop = 'NUMPAD_EIGHT';
+        if (!controls.poopBottom) controls.poopBottom = 'NUMPAD_TWO';
+        this.registry.set('controls', controls);
+
+        // Crear las teclas UNA SOLA VEZ
         this.keys = this.input.keyboard.addKeys({
             jumpTop: controls.jumpTop,
             jumpBottom: controls.jumpBottom,
             accelTop: 'S',
             accelBottom: 'I',
-            slowTop: 'NUMPAD_EIGHT',
-            slowBottom: 'NUMPAD_TWO'
+            poopTop: controls.poopTop,
+            poopBottom: controls.poopBottom
         });
 
         this.finishSpawnedTop = false; // Finish line not spawned yet
         this.finishSpawnedBottom = false; // Finish line not spawned yet
 
         this.createProgressUI();
+
+        // --- KAWIKI MECHANIC SETUP ---
+        this.kawikiState = {
+            top: { has: false, timer: null },
+            bottom: { has: false, timer: null }
+        };
+
+        //Icons
+        //P1 (Top)
+        this.kawikiIconTop = this.add.image(this.progressBar.x - 450, this.progressBar.y, 'Kawiki')
+            .setScale(0.15).setDepth(21).setVisible(false);
+        
+        //P2 (Bottom)
+        this.kawikiIconBot = this.add.image(this.progressBar.x + 450, this.progressBar.y, 'Kawiki')
+            .setScale(0.15).setDepth(21).setVisible(false);
 
         this.resetRaceState();
 
@@ -409,7 +438,7 @@ export default class RaceScene extends Phaser.Scene {
 
         // ---ONLINE SYNC ---
         if (this.isOnline && this.ws) {
-            
+
             this.ws.onmessage = (event) => {
                 const msg = JSON.parse(event.data);
 
@@ -433,7 +462,7 @@ export default class RaceScene extends Phaser.Scene {
             if (this.role === 'player1') {
                 const mapData = this.generateMapData();
                 this.syncedMapData = mapData; // Me lo guardo para mí
-                
+
                 console.log("Enviando datos de mapa al rival...");
                 this.ws.send(JSON.stringify({
                     type: 'gameSync',
@@ -448,7 +477,7 @@ export default class RaceScene extends Phaser.Scene {
         if (this.isOnline && this.state.running && !this.state.finished) {
             if (time - this.lastSyncTime > 50) { // 500ms
                 this.lastSyncTime = time;
-                
+
                 const myPlayer = (this.myLane === 'top') ? this.playerTop : this.playerBottom;
                 const myProgress = this.state.progress[this.myLane];
                 const myLives = this.state.lanes[this.myLane].lives;
@@ -459,9 +488,9 @@ export default class RaceScene extends Phaser.Scene {
                     payload: {
                         roomId: this.roomId,
                         state: {
-                            y: myPlayer.y,        
-                            progress: myProgress, 
-                            lives: myLives        
+                            y: myPlayer.y,
+                            progress: myProgress,
+                            lives: myLives
                         }
                     }
                 }));
@@ -472,11 +501,11 @@ export default class RaceScene extends Phaser.Scene {
     handlePlayerSync(payload) {
         // payload = { from: 'player1', state: { y, progress, lives } }
         const { state } = payload;
-        
+
         // Identify the other pony
         const rivalLane = this.rivalLane; // 'top' or 'bottom'
         const rivalPlayer = (rivalLane === 'top') ? this.playerTop : this.playerBottom;
-        
+
         // If the difference its big (greater than 50px), force 
         // If its small (less tan 50px), we let the pyshics correct the delay
         if (Math.abs(rivalPlayer.y - state.y) > 50) {
@@ -502,11 +531,11 @@ export default class RaceScene extends Phaser.Scene {
     updateLivesVisuals(laneKey) {
         const lane = this.state.lanes[laneKey];
         const lives = lane.lives;
-        
+
         let l1, l2, l3;
         if (laneKey === 'top') { l1 = this.live1Top; l2 = this.live2Top; l3 = this.live3Top; }
         else { l1 = this.live1Bottom; l2 = this.live2Bottom; l3 = this.live3Bottom; }
-        
+
         if (l1 && l2 && l3) {
             l3.setTexture(lives >= 3 ? 'Lives' : 'LivesEmpty');
             l2.setTexture(lives >= 2 ? 'Lives' : 'LivesEmpty');
@@ -516,22 +545,19 @@ export default class RaceScene extends Phaser.Scene {
 
     handleRemoteEvent(eventData) {
         const action = (typeof eventData === 'string') ? eventData : eventData.action;
-
         const rivalPlayer = (this.rivalLane === 'top') ? this.playerTop : this.playerBottom;
 
         switch (action) {
             case 'jump':
                 this.jump(rivalPlayer);
                 break;
-
             case 'accel':
                 this.applyAlteration(this.rivalLane, CONFIG.ACCEL_FACTOR);
                 break;
-
-            case 'slow':
-                this.applyAlteration(this.rivalLane, CONFIG.SLOW_FACTOR);
+            
+            case 'kawiki':
+                this.throwKawiki(this.rivalLane);
                 break;
-
         }
     }
 
@@ -638,7 +664,7 @@ export default class RaceScene extends Phaser.Scene {
         this.iconP2.x = startX + (endX - startX) * (pctBot / 100);
 
         // ---------- SPAWN DE LA META ----------
-        if (!this.finishSpawnedTop && (pctTop >= 80 )) {
+        if (!this.finishSpawnedTop && (pctTop >= 80)) {
             this.finishSpawnedTop = true;
             this.spawnFinishLineTop();
         }
@@ -870,21 +896,15 @@ export default class RaceScene extends Phaser.Scene {
     }
 
     // Kawiki
-    getKawiki(laneKey, booster) {
-
-        const WIDTH = this.game.config.width;
-        const HEIGHT = this.game.config.height;
-
-        const spriteHeight = HEIGHT / 2;
-
-        let posX = WIDTH / 2;
-        let posY;
+   getKawiki(laneKey, booster) {
+        if (this.kawikiState[laneKey].has) {
+            booster.destroy();
+            return;
+        }
 
         this.kiwiSound.play();
+        
         const player = (laneKey === 'top') ? this.playerTop : this.playerBottom;
-        const lane = this.state.lanes[laneKey];
-
-        // Small animation on pony
         this.tweens.add({
             targets: player,
             alpha: 0.4,
@@ -894,30 +914,83 @@ export default class RaceScene extends Phaser.Scene {
 
         booster.destroy();
 
-        // Reduce visibility
+        this.kawikiState[laneKey].has = true;
 
         if (laneKey === 'top') {
-            posY = HEIGHT - (spriteHeight / 2);
-        } else if (laneKey === 'bottom') {
+            this.kawikiIconTop.setVisible(true);
+            this.startKawikiBlink(this.kawikiIconTop);
+        } else {
+            this.kawikiIconBot.setVisible(true);
+            this.startKawikiBlink(this.kawikiIconBot);
+        }
+
+        this.kawikiState[laneKey].timer = this.time.delayedCall(5000, () => {
+            this.throwKawiki(laneKey); 
+        });
+    }
+
+    throwKawiki(laneKey) {
+        if (!this.kawikiState[laneKey].has) return;
+
+        this.kawikiState[laneKey].has = false;
+        if (this.kawikiState[laneKey].timer) {
+            this.kawikiState[laneKey].timer.remove(); // Cancelar el timer automático
+        }
+
+        if (laneKey === 'top') {
+            this.kawikiIconTop.setVisible(false);
+            this.tweens.killTweensOf(this.kawikiIconTop);
+            this.kawikiIconTop.setAlpha(1);
+        } else {
+            this.kawikiIconBot.setVisible(false);
+            this.tweens.killTweensOf(this.kawikiIconBot);
+            this.kawikiIconBot.setAlpha(1);
+        }
+
+        if (this.isOnline && laneKey === this.myLane) {
+            this.ws.send(JSON.stringify({
+                type: 'raceEvent',
+                payload: { roomId: this.roomId, event: 'kawiki' }
+            }));
+        }
+
+    
+        
+        const WIDTH = this.game.config.width;
+        const HEIGHT = this.game.config.height;
+        const spriteHeight = HEIGHT / 2;
+        let posX = WIDTH / 2;
+        let posY;
+
+        if (laneKey === 'top') {
+            posY = HEIGHT - (spriteHeight / 2); 
+        } else {
             posY = spriteHeight / 2;
         }
 
         const poop = this.add.sprite(posX, posY, 'poop1')
             .setOrigin(0.5)
-            .setDepth(19);
+            .setDepth(30); 
 
         poop.play('poop');
 
+        this.crashSound.play(); 
+
         poop.on('animationcomplete', () => {
-
-            // Frame 4 stays
-            poop.setTexture('poop4');
-
-            // On screen for a while
+            poop.setTexture('poop4'); 
             this.time.delayedCall(4000, () => {
                 poop.destroy();
             });
+        });
+    }
 
+    startKawikiBlink(icon) {
+        this.tweens.add({
+            targets: icon,
+            alpha: 0.2,
+            duration: 300,
+            yoyo: true,
+            repeat: -1
         });
     }
 
@@ -983,7 +1056,7 @@ export default class RaceScene extends Phaser.Scene {
 
     spawnFinishLineTop() {
         const yTop = this.laneYTop + CONFIG.RED_OFFSET_FROM_CENTER + 250;
-       
+
         // TOP
         this.finishTop = this.physics.add.sprite(CONFIG.WIDTH + 50, yTop, 'FinishLine')
             .setOrigin(0.5, 1)
@@ -1001,18 +1074,18 @@ export default class RaceScene extends Phaser.Scene {
 
         });
     }
-    spawnFinishLineBottom(){
-         const yBot = this.laneYBottom + CONFIG.RED_OFFSET_FROM_CENTER + 250;
-             // BOTTOM
-         this.finishBottom = this.physics.add.sprite(CONFIG.WIDTH + 50, yBot, 'FinishLine')
+    spawnFinishLineBottom() {
+        const yBot = this.laneYBottom + CONFIG.RED_OFFSET_FROM_CENTER + 250;
+        // BOTTOM
+        this.finishBottom = this.physics.add.sprite(CONFIG.WIDTH + 50, yBot, 'FinishLine')
             .setOrigin(0.5, 1)
             .setDepth(4)
             .setScale(0.45)
             .setImmovable(true)
             .setVelocityX(-(this.state.lanes.bottom.speed * 150));
 
-         // Colision with BOTTOM player
-         this.physics.add.overlap(this.playerBottom, this.finishBottom, () => {
+        // Colision with BOTTOM player
+        this.physics.add.overlap(this.playerBottom, this.finishBottom, () => {
             this.finishRace('bottom');
         });
     }
@@ -1021,11 +1094,11 @@ export default class RaceScene extends Phaser.Scene {
     generateMapData() {
         const createSequence = () => {
             let seq = ["fence", "fence", "fence", "fence", "fence", "booster", "booster", "life", "kawiki", "kawiki"];
-            
+
             // Shuffle (it is done by P1 and send to the P2)
             Phaser.Utils.Array.Shuffle(seq);
             Phaser.Utils.Array.Shuffle(seq);
-            
+
             let t = 1500;
             return seq.map(type => {
                 const delay = t;
@@ -1190,13 +1263,12 @@ export default class RaceScene extends Phaser.Scene {
             //Identiy my keys
             const myJumpKey = (this.myLane === 'top') ? this.keys.jumpTop : this.keys.jumpBottom;
             const myAccelKey = (this.myLane === 'top') ? this.keys.accelTop : this.keys.accelBottom;
-            const mySlowKey = (this.myLane === 'top') ? this.keys.slowTop : this.keys.slowBottom;
-
+            const mySlowKey = (this.myLane === 'top') ? this.keys.poopTop : this.keys.poopBottom;
             const myPlayer = (this.myLane === 'top') ? this.playerTop : this.playerBottom;
 
             // Jump
             if (Phaser.Input.Keyboard.JustDown(myJumpKey)) {
-                this.jump(myPlayer); 
+                this.jump(myPlayer);
                 // Notify the server
                 this.ws.send(JSON.stringify({
                     type: 'raceEvent',
@@ -1214,15 +1286,12 @@ export default class RaceScene extends Phaser.Scene {
                 }));
             }
 
-            // Slow
-            if (Phaser.Input.Keyboard.JustDown(mySlowKey) && !this.state.lanes[this.myLane].altered) {
-                this.applyAlteration(this.myLane, CONFIG.SLOW_FACTOR);
-                // Notify the server
-                this.ws.send(JSON.stringify({
-                    type: 'raceEvent',
-                    payload: { roomId: this.roomId, event: 'slow' }
-                }));
+            if (Phaser.Input.Keyboard.JustDown(mySlowKey)) {
+                if (this.kawikiState[this.myLane].has) {
+                    this.throwKawiki(this.myLane);
+                } 
             }
+            
 
         } else {
             // --- LOCAL MODE ---
@@ -1241,8 +1310,16 @@ export default class RaceScene extends Phaser.Scene {
                 this.applyAlteration('top', CONFIG.SLOW_FACTOR);
             if (Phaser.Input.Keyboard.JustDown(this.keys.slowBottom) && !this.state.lanes.bottom.altered)
                 this.applyAlteration('bottom', CONFIG.SLOW_FACTOR);
+
+           if (Phaser.Input.Keyboard.JustDown(this.keys.poopTop)) {
+                if (this.kawikiState.top.has) this.throwKawiki('top');
+            }
+            
+            if (Phaser.Input.Keyboard.JustDown(this.keys.poopBottom)) {
+                if (this.kawikiState.bottom.has) this.throwKawiki('bottom');
+            }
         }
-        
+
 
         const vxTop = -(this.state.lanes.top.speed * 150); // do NOT touch this, ITS PERFECT!
         const vxBot = -(this.state.lanes.bottom.speed * 150);
@@ -1290,14 +1367,6 @@ export default class RaceScene extends Phaser.Scene {
         clean(this.lifeBoostersBot);
         clean(this.kawikiBot);
 
-        const controls = this.registry.get('controls');
-        this.keys = this.input.keyboard.addKeys({
-            jumpTop: controls.jumpTop,
-            jumpBottom: controls.jumpBottom,
-            accelTop: 'S',
-            accelBottom: 'I',
-            slowTop: 'NUMPAD_EIGHT',
-            slowBottom: 'NUMPAD_TWO'
-        });
+
     }
 }
