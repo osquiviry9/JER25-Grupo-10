@@ -158,33 +158,32 @@ export default class CharacterSelectScene extends Phaser.Scene {
             duration: 800
         });
 
-        this.startButton.on('pointerdown', () => {
-            this.music.play();
+      this.startButton.on('pointerdown', () => {
+    this.music.play();
 
-            
-            this.registry.set('player1Character', this.selectedPonies.p1);
-            this.registry.set('player2Character', this.selectedPonies.p2);
+    this.registry.set('player1Character', this.selectedPonies.p1);
+    this.registry.set('player2Character', this.selectedPonies.p2);
 
-            // Register favorite poni
-            const userId = localStorage.getItem('userId');
+    // Register favorite poni
+    const userId = localStorage.getItem('userId');
 
-            if (userId && this.selectedPonies.p1) {
-                fetch(`/users/${userId}/pony`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        pony: this.selectedPonies.p1.key
-                    })
-                });
-            }
+    if (userId && this.selectedPonies.p1) {
+        // CORRECCIÓN AQUÍ: Añadido '/api' al principio
+        fetch(`/api/users/${userId}/pony`, { 
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                pony: this.selectedPonies.p1.key
+            })
+        }).catch(err => console.error("Error guardando poni:", err));
+    }
 
-            
-            this.cameras.main.fadeOut(600, 0, 0, 0);
-            this.cameras.main.once('camerafadeoutcomplete', () => {
-                this.game.bgchMusic.stop();
-                this.scene.start('RaceScene');
-            });
-        });
+    this.cameras.main.fadeOut(600, 0, 0, 0);
+    this.cameras.main.once('camerafadeoutcomplete', () => {
+        this.game.bgchMusic.stop();
+        this.scene.start('RaceScene');
+    });
+});
 
 
         const margin = 0.8;

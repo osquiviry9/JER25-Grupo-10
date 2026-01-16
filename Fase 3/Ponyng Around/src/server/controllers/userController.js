@@ -2,30 +2,46 @@ import { getFavoritePony } from '../services/userService.js';
 
 export function createUserController(userService) {
 
+ 
   async function create(req, res, next) {
-    const { email, name, avatar, level } = req.body;
-    if (!email || !name) {
-      return res.status(400).json({ error: 'Los campos email y name son obligatorios' });
+    const { nickname } = req.body;
+
+    if (!nickname) {
+      return res.status(400).json({ error: 'El campo nickname es obligatorio' });
     }
-    const newUser = userService.createUser({ email, name, avatar, level });
-    res.status(201).json(newUser);
+
+    try {
+      const newUser = userService.createUser({ nickname });
+      
+      res.status(201).json(newUser);
+    } catch (error) {
+      next(error);
+    }
   }
 
+  
   async function getAll(req, res, next) {
     res.json(userService.getAllUsers());
   }
 
+ 
   async function getById(req, res, next) {
     const user = userService.getUserById(req.params.id);
     if (!user) return res.status(404).json({ error: 'Usuario no encontrado' });
-    res.json(user);
+    
+    // Calculamos el favorito al vuelo antes de devolverlo
+    const favorite = getFavoritePony(user);
+    
+    res.json({ ...user, favoritePony: favorite });
   }
 
+  
   async function update(req, res, next) {
     const user = userService.updateUser(req.params.id, req.body);
     if (!user) return res.status(404).json({ error: 'Usuario no encontrado' });
     res.json(user);
   }
+
 
   async function remove(req, res, next) {
     const ok = userService.deleteUser(req.params.id);
@@ -33,7 +49,7 @@ export function createUserController(userService) {
     res.status(204).end();
   }
 
-  // for registering the favorite poni os user
+  
   function registerPonyUse(req, res) {
     const { id } = req.params;
     const { pony } = req.body;
@@ -44,7 +60,7 @@ export function createUserController(userService) {
     }
 
     if (!user.ponyStats.hasOwnProperty(pony)) {
-      return res.status(400).json({ error: 'Invalid pony' });
+      return res.status(400).json({ error: 'Invalid pony name' });
     }
 
     user.ponyStats[pony]++;
@@ -57,7 +73,6 @@ export function createUserController(userService) {
     });
   }
 
-  
   return {
     create,
     getAll,

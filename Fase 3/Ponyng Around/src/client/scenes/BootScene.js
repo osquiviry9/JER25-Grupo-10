@@ -559,19 +559,28 @@ export default class BootScene extends Phaser.Scene {
 
     create() {
 
+       const { width, height } = this.scale;
+
+        const goNext = () => {
+            this.cameras.main.fadeOut(800, 0, 0, 0);
+            this.cameras.main.once('camerafadeoutcomplete', () => {
+                this.scene.start('IntroScene');
+            });
+        };
+
         // =====================
         // USER IDENTIFICATION 
         // =====================
 
-        const userId = localStorage.getItem('userId');
-        const nickname = localStorage.getItem('nickname');
+        let userId = localStorage.getItem('userId');
+        let nickname = localStorage.getItem('nickname');
 
-        // If user already exists, go next
-        if (userId && nickname) {
-            this.goNext();
+        if (!userId || !nickname) {
+            // IF THERE IS NOT USER, WE PUT THE IDENTIFICATION INTERFACE
+            this.createNicknameInput(width, height, goNext);
         } else {
-            // Show new UI instead of prompt
-            this.createLoginUI();
+            // IF IT EXISTS WE CONTINUE
+            goNext();
         }
 
         // =====================
@@ -592,105 +601,85 @@ export default class BootScene extends Phaser.Scene {
         });
     }
 
-    goNext() {
-        this.cameras.main.fadeOut(800, 0, 0, 0);
-        this.cameras.main.once('camerafadeoutcomplete', () => {
-            this.scene.start('IntroScene');
-        });
-    }
+    createNicknameInput(width, height, onComplete) {
+        
+        const overlay = this.add.rectangle(width/2, height/2, width, height, 0x000000, 0.9)
+            .setDepth(100)
+            .setInteractive(); 
 
-    createLoginUI() {
-        const { width, height } = this.scale;
-
-        // Dark Overlay
-        this.add.rectangle(width / 2, height / 2, width, height, 0x000000, 0.85).setInteractive();
-
-        // Frame used in other scenes
-        this.add.image(width / 2, height / 2, 'Frame').setScale(0.8);
-
-        // Title
-        this.add.text(width / 2, height / 2 - 120, 'Enter your Nickname:', {
+        this.add.text(width/2, height/2 - 120, 'WHO ARE YOU?', {
             fontFamily: 'Arial Black',
-            fontSize: '42px',
+            fontSize: '48px',
             color: '#ff69b4',
             stroke: '#ffffff',
             strokeThickness: 6
-        }).setOrigin(0.5);
+        }).setOrigin(0.5).setDepth(101);
 
-        // Input Box Graphic
-        this.add.rectangle(width / 2, height / 2, 400, 60, 0xffffff).setOrigin(0.5);
-        
-        // The text object that will change
-        let inputText = '';
-        const nameText = this.add.text(width / 2, height / 2, '_', {
+        const inputBox = this.add.rectangle(width/2, height/2, 600, 90, 0x222222)
+            .setStrokeStyle(4, 0xff69b4)
+            .setDepth(101);
+
+        const inputTextObj = this.add.text(width/2, height/2, '', {
             fontFamily: 'Arial',
-            fontSize: '36px',
-            color: '#000000'
-        }).setOrigin(0.5);
+            fontSize: '52px',
+            color: '#ffffff'
+        }).setOrigin(0.5).setDepth(102);
 
-        // Blinking cursor effect
-        this.time.addEvent({
-            delay: 500,
-            loop: true,
-            callback: () => {
-                if (nameText.text.endsWith('_')) {
-                    nameText.text = nameText.text.slice(0, -1);
-                } else {
-                    nameText.text += '_';
-                }
-            }
+        const cursor = this.add.text(width/2, height/2, '|', {
+            fontFamily: 'Arial', fontSize: '52px', color: '#ff69b4'
+        }).setOrigin(0.5).setDepth(102).setAlpha(0);
+
+        this.tweens.add({
+            targets: cursor,
+            alpha: 1,
+            duration: 500,
+            yoyo: true,
+            repeat: -1
         });
 
-        // Error text (hidden initially)
-        const errorText = this.add.text(width / 2, height / 2 + 50, '', {
+        const instructions = this.add.text(width/2, height/2 + 100, 'Type your name and press ENTER', {
             fontFamily: 'Arial',
-            fontSize: '20px',
-            color: '#ff0000'
-        }).setOrigin(0.5);
-
-        // Instructions
-        this.add.text(width / 2, height / 2 + 150, 'Press ENTER to confirm', {
-            fontFamily: 'Arial',
-            fontSize: '24px',
+            fontSize: '28px',
             color: '#aaaaaa'
-        }).setOrigin(0.5);
+        }).setOrigin(0.5).setDepth(101);
 
-        // --- KEYBOARD HANDLING ---
+        let currentText = '';
+        
+        const updateText = () => {
+            inputTextObj.setText(currentText);
+            const textWidth = inputTextObj.width;
+            cursor.x = (width/2) + (textWidth/2) + 10;
+        };
+
         this.input.keyboard.on('keydown', (event) => {
-            
-            // Backspace
-            if (event.keyCode === 8 && inputText.length > 0) {
-                inputText = inputText.slice(0, -1);
+            //BACKSPACE
+            if (event.keyCode === 8 && currentText.length > 0) { 
+                currentText = currentText.slice(0, -1);
+                updateText();
             } 
-            // Enter
-            else if (event.keyCode === 13) {
-                if (inputText.trim().length > 0) {
-                    this.registerUser(inputText.trim());
-                } else {
-                    errorText.setText("Name cannot be empty!");
+            //ENTER
+            else if (event.keyCode === 13 && currentText.trim().length > 0) {
+                
+                // Desactivar input para que no escriban más
+                this.input.keyboard.off('keydown');
+                
+                instructions.setText("Connecting...");
+                instructions.setColor("#ff69b4");
+                
+                this.registerUser(currentText.trim(), onComplete);
+            } 
+            else if (event.key.length === 1 && currentText.length < 12) {
+                // Only letters and numbers
+                if (/[a-zA-Z0-9 _-]/.test(event.key)) {
+                    currentText += event.key;
+                    updateText();
                 }
             }
-            // Valid characters (A-Z, 0-9) - Limit length to 12
-            else if (
-                (event.keyCode >= 48 && event.keyCode <= 90) || // Numbers & Letters
-                event.keyCode === 32 // Space
-            ) {
-                if (inputText.length < 12) {
-                    inputText += event.key;
-                    errorText.setText(""); // clear error
-                }
-            }
-
-            // Update display (remove cursor temporarily to update text clean)
-            nameText.setText(inputText + '_');
         });
     }
 
-    registerUser(nickname) {
-        if (!nickname || nickname.trim() === '') {
-            nickname = 'AnonPony';
-        }
-
+    // USER REGISTRATION
+    registerUser(nickname, onComplete) {
         fetch('/api/users', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -700,13 +689,8 @@ export default class BootScene extends Phaser.Scene {
         .then(user => {
             localStorage.setItem('userId', user.id);
             localStorage.setItem('nickname', user.nickname);
-            this.goNext();
+            onComplete(); 
         })
-        .catch(() => {
-            // Fallback offline mode
-            localStorage.setItem('userId', 'offline');
-            localStorage.setItem('nickname', nickname);
-            this.goNext();
-        });
+        
     }
 }

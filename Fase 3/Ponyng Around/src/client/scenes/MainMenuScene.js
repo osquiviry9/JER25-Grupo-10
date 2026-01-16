@@ -41,7 +41,7 @@ export default class MainMenuScene extends Phaser.Scene {
             .setScale(0.8);
 
         // =====================
-        // USER INFO DISPLAY (Requisito: Gestión de usuarios/Nickname)
+        // USER INFO DISPLAY 
         // =====================
 
         this.userInfoText = this.add.text(
@@ -59,7 +59,7 @@ export default class MainMenuScene extends Phaser.Scene {
         ).setOrigin(0.5).setDepth(10);
         
         // =====================
-        // ONLINE USERS COUNTER (Requisito: Indicadores visuales de conexión)
+        // ONLINE USERS COUNTER 
         // =====================
 
         const frame = this.add.image(width / 2, height / 2, 'Frame')
@@ -102,7 +102,7 @@ export default class MainMenuScene extends Phaser.Scene {
         // BUTTONS
         // =====================
         
-        // ACCIÓN DE JUGAR: Ahora va directo a selección de personaje (Fase 3 no requiere juego en red síncrono)
+        // PLAY
         const playAction = () => {
             this.cameras.main.fadeOut(600, 0, 0, 0);
             this.cameras.main.once('camerafadeoutcomplete', () => {
@@ -121,7 +121,7 @@ export default class MainMenuScene extends Phaser.Scene {
                 action: playAction, 
                 scale: 0.9 
             },
-            // Botón duplicado derecho (PLAY también, en vez de startOnlineLobby)
+            /* BOTON DE JUGAR ONLINE NO AÑADIR
             { 
                 x: width * 0.72, 
                 y: height * 0.35, 
@@ -129,7 +129,7 @@ export default class MainMenuScene extends Phaser.Scene {
                 hover: 'bttnPlayHover', 
                 action: playAction, 
                 scale: 0.75 
-            },
+            },*/
             { x: width * 0.84, y: height * 0.8, key: 'bttnSettings', hover: 'bttnSettingsHover', action: () => { this.scene.start('SettingsScene', { previousScene: this.scene.key }); }, scale: 1 },
             { x: width * 0.24, y: height * 0.35, key: 'bttnCredits', hover: 'bttnCreditsHover', action: () => { this.scene.start('CreditsScene'); }, scale: 0.7 },
             { x: width * 0.17, y: height * 0.8, key: 'bttnStory', hover: 'bttnStoryHover', action: () => { this.scene.start('StoryScene'); }, scale: 0.75 },
@@ -157,14 +157,12 @@ export default class MainMenuScene extends Phaser.Scene {
             });
         });
 
-        // Configuración de volumen inicial
         if (this.game.volumeLevel === undefined) {
             const savedVolume = localStorage.getItem('gameVolume');
             this.game.volumeLevel = savedVolume ? parseInt(savedVolume) : 5;
         }
         this.sound.volume = this.game.volumeLevel / 10;
 
-        // Controles por defecto
         if (!this.registry.get('controls')) {
             this.registry.set('controls', {
                 jumpTop: 'W',
@@ -176,7 +174,6 @@ export default class MainMenuScene extends Phaser.Scene {
             });
         }
 
-        // Cargar info del usuario (REST)
         this.updateUserInfo();
     }
 
@@ -186,14 +183,12 @@ export default class MainMenuScene extends Phaser.Scene {
 
         if (!userId || !this.userInfoText) return;
 
-        // Llamada a API REST para obtener datos persistentes (Requisito Fase 3)
         fetch(`/api/users/${userId}`)
             .then(res => {
                 if (!res.ok) throw new Error("User not found");
                 return res.json();
             })
             .then(user => {
-                // Obtenemos el pony favorito (calculado en el servidor)
                 const fav = user.favoritePony ?? '—';
                 this.userInfoText.setText(
                     `Player: ${nickname}\nFavorite pony: ${fav}`

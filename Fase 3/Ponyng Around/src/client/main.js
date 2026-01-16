@@ -13,7 +13,6 @@ import StoryScene from './scenes/StoryScene.js';
 import StableScene from './scenes/StableScene.js';
 import BootScene from './scenes/BootScene.js';
 import ConnectionLostScene from './scenes/ConnectionLostScene.js';
-import LobbyScene from './scenes/LobbyScene.js';
 
 
 const config = {
@@ -29,7 +28,7 @@ const config = {
         }
     },
     
-    scene: [BootScene, IntroScene, IntroAnimScene, MainMenuScene,LobbyScene, CharacterSelectScene, HelpScene, CreditsScene, SettingsScene, StoryScene, PauseScene, RaceScene, StableScene, FinalScene, FinalProductScene,ConnectionLostScene] 
+    scene: [BootScene, IntroScene, IntroAnimScene, MainMenuScene, CharacterSelectScene, HelpScene, CreditsScene, SettingsScene, StoryScene, PauseScene, RaceScene, StableScene, FinalScene, FinalProductScene,ConnectionLostScene] 
 };
 
 new Phaser.Game(config);

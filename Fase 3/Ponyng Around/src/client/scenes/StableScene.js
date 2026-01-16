@@ -55,12 +55,15 @@ export default class StableScene extends Phaser.Scene {
         });
 
         // Show data
-        const userId = this.registry.get('userId');
-        const nickname = this.registry.get('nickname');
+        const userId = this.registry.get('userId') || localStorage.getItem('userId'); // Aseguramos que lo pilla
+        const nickname = this.registry.get('nickname') || localStorage.getItem('nickname');
 
         if (userId && nickname) {
-            fetch(`/users/${userId}`)
-                .then(res => res.json())
+            fetch(`/api/users/${userId}`)
+                .then(res => {
+                    if (!res.ok) throw new Error("Error fetching user");
+                    return res.json();
+                })
                 .then(user => {
 
                     const favText = user.favoritePony
@@ -75,10 +78,13 @@ export default class StableScene extends Phaser.Scene {
                             fontSize: '28px',
                             fontFamily: 'Arial Black',
                             color: '#ffffff',
-                            align: 'center'
+                            align: 'center',
+                            stroke: '#000000',
+                            strokeThickness: 4
                         }
-                    ).setOrigin(0.5);
-                });
+                    ).setOrigin(0.5).setDepth(20);
+                })
+                .catch(e => console.error("Error en StableScene:", e));
         }
     }
 }
