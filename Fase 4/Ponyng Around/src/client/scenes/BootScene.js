@@ -303,6 +303,9 @@ export default class BootScene extends Phaser.Scene {
         this.load.image('bttnExit', 'assets/Buttons/crossBttn.png')
         this.load.image('bttnExitHover', 'assets/Buttons/crossBttn_hover.png')
 
+        // Online play button
+        this.load.image('bttnOnlinePlay', 'assets/Buttons/onlinePLayBttn.png')
+        this.load.image('bttnOnlinePlayHover', 'assets/Buttons/onlinePLayBttn_hover.png')
         //PAUSE SCENE
 
         //Click sound

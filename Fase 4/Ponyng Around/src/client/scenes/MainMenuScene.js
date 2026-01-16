@@ -43,24 +43,22 @@ export default class MainMenuScene extends Phaser.Scene {
         // =====================
         // USER INFO DISPLAY
         // =====================
-
-
         this.userInfoText = this.add.text(
-            width / 2,
-            height / 2 + 260,
+            width / 2 - 600,
+            height / 2 - 370,
             `Player: ${nickname}\nFavorite pony: —`,
             {
                 fontFamily: 'Arial Black',
                 fontSize: '28px',
-                color: '#ffffff',
+                color: '#9dcea1',
                 align: 'center',
-                stroke: '#000000',
+                stroke: '#15381b',
                 strokeThickness: 5
             }
         ).setOrigin(0.5).setDepth(10);
 
 
-        // ONLINE USERS COUNTER  FUCK THIS SHIT no puedo más poner bien lo de online
+        // ONLINE USERS COUNTER  
 
         const frame = this.add.image(width / 2, height / 2, 'Frame')
             .setDepth(3)
@@ -69,24 +67,23 @@ export default class MainMenuScene extends Phaser.Scene {
         const frameWidth = frame.width * frame.scaleX;
         const frameHeight = frame.height * frame.scaleY;
 
-        // Supuesta posicion pero no funciona AAAAAA
-        const paddingX = 40;
+        const paddingX = 100;
         const paddingY = 30;
 
         const onlineX = frame.x + frameWidth / 2 - paddingX;
         const onlineY = frame.y - frameHeight / 2 + paddingY;
 
         this.connectedText = this.add.text(
-            onlineX,
-            onlineY,
+            onlineX - 70,
+            onlineY + 70,
             "Online: ...",
             {
-                fontFamily: "Arial",
+                fontFamily: "Arial Black",
                 fontSize: "36px",
-                color: "#ffffff",
+                color: "#9dcea1",
                 align: "right",
-                stroke: "#000000",
-                strokeThickness: 6,
+                stroke: "#15381b",
+                strokeThickness: 5,
                 shadow: { offsetX: 2, offsetY: 2, blur: 4, fill: true }
             }
         )
@@ -103,8 +100,8 @@ export default class MainMenuScene extends Phaser.Scene {
             { x: width * 0.84, y: height * 0.8, key: 'bttnSettings', hover: 'bttnSettingsHover', action: () => { this.scene.start('SettingsScene', { previousScene: this.scene.key }); this.game.bgchMusic.stop() }, scale: 1 },
             { x: width * 0.24, y: height * 0.35, key: 'bttnCredits', hover: 'bttnCreditsHover', action: () => { this.scene.start('CreditsScene'); this.game.bgchMusic.stop() }, scale: 0.7 },
             { x: width * 0.17, y: height * 0.8, key: 'bttnStory', hover: 'bttnStoryHover', action: () => { this.scene.start('StoryScene'); this.game.bgchMusic.stop() }, scale: 0.75 },
-            { x: width * 0.85, y: height * 0.35, key: 'bttnExit', hover: 'bttnExitHover', action: () => { this.time.delayedCall(50, () => { this.game.destroy(true); }); this.game.bgchMusic.stop() }, scale: 0.75 },
-            { x: width * 0.72, y: height * 0.35, key: 'bttnPlay', hover: 'bttnPlayHover', action: () => { this.startOnlineLobby(); }, scale: 0.75 }
+            //{ x: width * 0.85, y: height * 0.35, key: 'bttnExit', hover: 'bttnExitHover', action: () => { this.time.delayedCall(50, () => { this.game.destroy(true); }); this.game.bgchMusic.stop() }, scale: 0.75 },
+            { x: width * 0.78, y: height * 0.4, key: 'bttnOnlinePlay', hover: 'bttnOnlinePlayHover', action: () => { this.startOnlineLobby(); }, scale: 1.1 }
 
         ];
 

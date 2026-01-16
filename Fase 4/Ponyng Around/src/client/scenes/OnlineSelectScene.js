@@ -30,32 +30,35 @@ export default class OnlineSelectScene extends Phaser.Scene {
     preload() { /* IN BOOT SCENE */}
 
     create() {
-        const { width, height } = this.scale;
         this.music = this.sound.add('clickSound');
         
         this.setupSocketListeners();
 
+        const { width, height } = this.scale;
         this.cameras.main.setBackgroundColor('#000000');
-        this.add.image(width / 2, height / 2, 'pinkBackground').setOrigin(0.5);
-        this.add.image(width / 2, height / 2, 'Frame').setDepth(10);
+        this.cameras.main.fadeIn(1000, 0, 0, 0);
         
-        this.add.text(width / 2, 100, 'Online Selection', {
+        this.add.image(width / 2, height / 2, 'pinkBackground').setOrigin(0.5).setScale(0.8);
+        this.add.image(width / 2, height / 2, 'Frame').setDepth(10).setScale(0.8);
+        
+        this.add.text(width / 2, height / 2 - 350, 'Online Selection', {
             fontSize: '50px',
             fontFamily: 'Arial Black',
             color: '#ff69b4',
             stroke: '#ffffff',
-            strokeThickness: 6
-        }).setOrigin(0.5);
+            strokeThickness: 7
+        }).setOrigin(0.5).setDepth(20);
 
         // Paneles
         this.createCharacterPanel('p1', width * 0.29, height * 0.55);
         this.createCharacterPanel('p2', width * 0.71, height * 0.55);
 
-        this.statusText = this.add.text(width / 2, height - 100, 'Waiting for players...', {
+        this.statusText = this.add.text(width / 2, height - 170, 'Waiting for players...', {
             fontSize: '32px',
-            fontFamily: 'Arial',
+            fontFamily: 'Arial black',
             color: '#ffffff',
-            backgroundColor: '#00000088'
+            stroke: '#612136',
+            strokeThickness: 8
         }).setOrigin(0.5).setDepth(20);
 
         // Teclado
@@ -72,19 +75,22 @@ export default class OnlineSelectScene extends Phaser.Scene {
     createCharacterPanel(side, x, y) {
         this[`img_${side}`] = this.add.image(x, y - 40, 'Ache_static')
             .setOrigin(0.5).setScale(0.5);
-            
-        this[`name_${side}`] = this.add.text(x, y - 380, 'Ache', {
+
+        this[`border_${side}`] = this.add.image(x, y - 40, 'border1')
+                .setOrigin(0.5).setDisplaySize(635, 700).setScale(0.5);
+
+        this[`name_${side}`] = this.add.text(x, y - 400, 'Ache', {
             fontSize: '28px', fontFamily: 'Arial Black', color: '#000'
         }).setOrigin(0.5);
 
-        this[`status_${side}`] = this.add.text(x, y + 320, 'SELECTING', {
-            fontSize: '32px', fontFamily: 'Arial Black', color: '#ffffff', backgroundColor: '#555555'
+        this[`status_${side}`] = this.add.text(x, y - 370, 'SELECTING...', {
+            fontSize: '27px', fontFamily: 'Arial Black', color: '#eea8cb', stroke: '#000000', strokeThickness: 5,
         }).setOrigin(0.5);
 
         if (side === this.mySide) {
             
             // Flecha Izquierda
-            const leftBtn = this.add.image(x - 300, y, 'arrowIzq')
+            const leftBtn = this.add.image(x - 330, y, 'arrowIzq')
                 .setInteractive({ useHandCursor: true })
                 .setScale(0.4);
 
@@ -94,7 +100,7 @@ export default class OnlineSelectScene extends Phaser.Scene {
                 this.changeSelection(-1); 
             });
 
-            const rightBtn = this.add.image(x + 300, y, 'arrowDer')
+            const rightBtn = this.add.image(x + 330, y, 'arrowDer')
                 .setInteractive({ useHandCursor: true })
                 .setScale(0.4);
 
@@ -104,9 +110,11 @@ export default class OnlineSelectScene extends Phaser.Scene {
                 this.changeSelection(1); 
             });
             
-            const confirmBtn = this[`btnConfirm_${side}`] = this.add.text(x, y + 200, 'CONFIRM (W)', {
-                fontSize: '28px', fontFamily: 'Arial Black', backgroundColor: '#ff69b4', color: '#fff', padding: { x: 10, y: 5 }
+            const confirmBtn = this[`btnConfirm_${side}`] = this.add.text(x, y + 310, 'CONFIRM (W)', {
+                fontSize: '32px', fontFamily: 'Arial Black', backgroundColor: '#ff69b4', color: '#fff', padding: { x: 12, y: 7 }
             }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+            confirmBtn.on('pointerover', () => { confirmBtn.setScale(1.1); confirmBtn.setBackgroundColor('rgb(211, 160, 177)'); confirmBtn.setColor('rgb(175, 58, 107)') }); 
+            confirmBtn.on('pointerout', () => { confirmBtn.setScale(1); confirmBtn.setBackgroundColor('#ff69b4'); confirmBtn.setColor('#fff'); }); 
 
             confirmBtn.on('pointerdown', () => this.confirmSelection());
         }
@@ -184,7 +192,7 @@ export default class OnlineSelectScene extends Phaser.Scene {
         const textObj = this[`status_${side}`];
         if (confirmed) {
             textObj.setText("READY!");
-            textObj.setStyle({ backgroundColor: '#00aa00' });
+            textObj.setStyle({ color: '#88e288' });
         } else {
             textObj.setText("SELECTING");
             textObj.setStyle({ backgroundColor: '#555555' });
