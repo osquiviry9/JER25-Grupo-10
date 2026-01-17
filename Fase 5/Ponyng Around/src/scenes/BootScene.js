@@ -64,7 +64,7 @@ export default class BootScene extends Phaser.Scene {
         this.load.audio('clickSound', 'assets/sound/click.mp3');
 
         // Frame
-        this.load.image('Frame', 'assets/Elements/GreenFrame.PNG');
+        this.load.image('Frame', 'assets/Elements/GreenFrame.png');
 
         this.ponies.forEach(pony => {
             this.load.image(`${pony.key}_static`, pony.path);
@@ -85,8 +85,8 @@ export default class BootScene extends Phaser.Scene {
         this.load.image('arrowDerOn', 'assets/UI/ArrowDerOn_Selector.png');
 
         // Back button
-        this.load.image('bttnBack', 'assets/Buttons/backBttn.png');
-        this.load.image('bttnBackHover', 'assets/Buttons/backBttn_hover.png');
+        this.load.image('bttnBack', 'assets/Buttons/backBttn.PNG');
+        this.load.image('bttnBackHover', 'assets/Buttons/backBttn_hover.PNG');
 
         // CREDITS SCENE//
 
@@ -101,13 +101,6 @@ export default class BootScene extends Phaser.Scene {
 
         // Melgarga head
         this.load.image('head', 'assets/Elements/Head.PNG');
-
-        // Back button
-        this.load.image('bttnBack', 'assets/Buttons/backBttn.PNG');
-        this.load.image('bttnBackHover', 'assets/Buttons/backBttn_hover.PNG');
-
-        // Frame
-        this.load.image('Frame', 'assets/Elements/GreenFrame.PNG');
 
         //FINAL PRODUCT SCENE//
 
@@ -153,10 +146,6 @@ export default class BootScene extends Phaser.Scene {
 
         // Frame
         this.load.image('redFrame', 'assets/Elements/RedFrame.PNG');
-
-        // Back button
-        this.load.image('bttnBack', 'assets/Buttons/backBttn.png');
-        this.load.image('bttnBackHover', 'assets/Buttons/backBttn_hover.png');
 
         //FINAL SCENE//
 
@@ -234,14 +223,6 @@ export default class BootScene extends Phaser.Scene {
         // Background
         this.load.image('helpScreen', 'assets/Backgrounds/helpScreen.JPG');
 
-        // Frame
-        this.load.image('Frame', 'assets/Elements/GreenFrame.PNG');
-
-        // =========== Buttons ===========
-        // Back button
-        this.load.image('bttnBack', 'assets/Buttons/backBttn.png');
-        this.load.image('bttnBackHover', 'assets/Buttons/backBttn_hover.png');
-
         //INTRO ANIM SCENE//
 
         //Wind Sound effect
@@ -277,9 +258,6 @@ export default class BootScene extends Phaser.Scene {
 
         // Background
         this.load.image('menuBackground', 'assets/Backgrounds/StartingMenu.JPG');
-
-        // Frame
-        this.load.image('Frame', 'assets/Elements/GreenFrame.PNG');
 
         // Buttons
         // Play button
@@ -467,19 +445,13 @@ export default class BootScene extends Phaser.Scene {
         // Background
         this.load.image('BackgroundSet', 'assets/Backgrounds/SettingsBg.JPG');
 
-        // Frame
-        this.load.image('Frame', 'assets/Elements/GreenFrame.PNG');
-
         // Music icon
         this.load.image('Music', 'assets/Buttons/soundbttn.png');
 
         // Sound icon
-        this.load.image('Sound', 'assets/Buttons/soundLvl.png');
+        this.load.image('Sound', 'assets/Buttons/soundLvl.PNG');
 
-        // =========== Buttons ===========
-        // Back button
-        this.load.image('bttnBack', 'assets/Buttons/backBttn.png');
-        this.load.image('bttnBackHover', 'assets/Buttons/backBttn_hover.png');
+        // =========== Buttons ==========
 
         // Help button
         this.load.image('bttnHelp', 'assets/Buttons/helpBttn.PNG');
@@ -534,7 +506,6 @@ export default class BootScene extends Phaser.Scene {
 
         // Background and general frame
         this.load.image('pinkBackground', 'assets/Backgrounds/pinkBackground.png');
-        this.load.image('Frame', 'assets/Elements/GreenFrame.PNG'); // <-- el marco correcto
 
         // Selector frame
         this.load.image('border1', 'assets/UI/Border1_Selector.png');
@@ -544,10 +515,6 @@ export default class BootScene extends Phaser.Scene {
         this.load.image('arrowIzq_hover', 'assets/UI/ArrowIzqOn_Selector.png');
         this.load.image('arrowDer', 'assets/UI/ArrowDer_Selector.png');
         this.load.image('arrowDer_hover', 'assets/UI/ArrowDerOn_Selector.png');
-
-        // Back button
-        this.load.image('bttnBack', 'assets/Buttons/backBttn.png');
-        this.load.image('bttnBackHover', 'assets/Buttons/backBttn_hover.png');
 
         // Poni pic
         this.ponies.forEach(p => {
